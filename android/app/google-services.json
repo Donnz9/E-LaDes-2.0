@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "609172713088",
+    "project_id": "flutter-elades",
+    "storage_bucket": "flutter-elades.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609172713088:android:ade5684dc3becd71d90065",
+        "android_client_info": {
+          "package_name": "com.example.elades20"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi1mqUqlEXFNMkAh2MYYNVrBLQ7gCaXWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
