@@ -73,65 +73,82 @@ class _MainNavigationState extends State<MainNavigation> {
           onPressed: () => _onItemTapped(3),
           backgroundColor: const Color.fromARGB(255, 106, 159, 115),
           shape: const CircleBorder(), // <-- memastikan bentuk bulat
-          elevation: 2,
+          elevation: 10,
           child: const Icon(
             Icons.home,
-            size: 28,
+            size: 30,
             color: Colors.white,
           ), // kecilin icon dikit biar proporsional
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10,
-        child: SizedBox(
-          height: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              // kiri home
-              Expanded(
-                child: navItem(
-                  icon: Icons.file_copy,
-                  label: 'Pengajuan',
-                  index: 0,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          // color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2), // warna bayangan
+              offset: const Offset(0, -2), // bayangan ke atas
+              blurRadius: 8, // sebaran bayangan
+            ),
+          ],
+        ),
+        child: BottomAppBar(
+          color: Colors.white,
+          shape: const CircularNotchedRectangle(),
+          notchMargin: 10,
+          elevation: 0, // matikan elevation bawaan
+          child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                // kiri home
+                Expanded(
+                  child: navItem(
+                    icon: Icons.file_copy,
+                    label: 'Pengajuan',
+                    index: 0,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: navItem(
-                  icon: Icons.history,
-                  label: 'Riwayat',
-                  index: 1,
+                Expanded(
+                  child: navItem(
+                    icon: Icons.history,
+                    label: 'Riwayat',
+                    index: 1,
+                  ),
                 ),
-              ),
 
-              const SizedBox(width: 40), // Space for FAB
+                const SizedBox(width: 40), // Space for FAB
 
-              // kanan home
-              Expanded(
-                child: navItem(
-                  icon: Icons.report,
-                  label: 'Pengaduan',
-                  index: 2,
+                // kanan home
+                Expanded(
+                  child: navItem(
+                    icon: Icons.report,
+                    label: 'Pengaduan',
+                    index: 2,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: navItem(
-                  icon: Icons.article,
-                  label: 'Berita',
-                  index: 4,
+                Expanded(
+                  child: navItem(
+                    icon: Icons.article,
+                    label: 'Berita',
+                    index: 4,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget navItem(
-      {required IconData icon, required String label, required int index}) {
+  Widget navItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
     final isSelected = _selectedIndex == index;
     return GestureDetector(
       onTap: () => _onItemTapped(index),
@@ -141,13 +158,18 @@ class _MainNavigationState extends State<MainNavigation> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: isSelected ? Colors.black : Colors.grey),
-            const SizedBox(height: 4),
+            Icon(
+              icon,
+              color: isSelected ? Colors.black : Colors.grey,
+            ),
+            const SizedBox(
+              height: 1,
+            ),
             Text(
               label,
               style: TextStyle(
                 color: isSelected ? Colors.black : Colors.grey,
-                fontSize: 12,
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
               ),
             )
@@ -166,14 +188,14 @@ class _MainNavigationState extends State<MainNavigation> {
           // Kiri: Profile icon + sapaan
           Row(
             children: [
-                GestureDetector(
-                  onTap: () => _onItemTapped(6), // Index ke-6 = Profil,
-                  child: const CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Color(0xFF7A9E7A),
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
+              GestureDetector(
+                onTap: () => _onItemTapped(6), // Index ke-6 = Profil,
+                child: const CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Color(0xFF7A9E7A),
+                  child: Icon(Icons.person, color: Colors.white),
                 ),
+              ),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

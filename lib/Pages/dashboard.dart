@@ -67,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
                                       Text(
                                         "Selamat Datang!",
                                         style: GoogleFonts.inter(
-                                          fontSize: 22,
+                                          fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
                                         ),
