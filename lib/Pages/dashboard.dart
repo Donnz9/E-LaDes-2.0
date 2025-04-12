@@ -232,6 +232,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   // Widget untuk membuat kartu layanan desa
+  // ignore: non_constant_identifier_names
   Widget _LayananDesaCard(String title, IconData icon) {
     return Expanded(
       child: Container(
@@ -267,6 +268,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   // Widget untuk membuat kartu status pengajuan surat
+  // ignore: non_constant_identifier_names
   Widget _StatusPengajuanSuratCard(String title, String count) {
     return Expanded(
       child: Container(

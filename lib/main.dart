@@ -1,4 +1,7 @@
+import 'package:elades20/Pages/Pengaduan/pengaduan.dart';
+import 'package:elades20/Pages/Profil/profile.dart';
 import 'package:elades20/Pages/dashboard.dart';
+import 'package:elades20/Pages/Pengajuan/pengajuan.dart';
 import 'package:flutter/material.dart';
 import 'package:elades20/Pages/SplashScreen.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -40,13 +43,13 @@ class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 3;
 
   final List<Widget> _pages = [
-    Center(child: Text("Pengajuan Surat")), //0
-    Center(child: Text("Riwayat Surat")), //1
-    Center(child: Text("Pengaduan")), //2
-    Dashboard(), //3
-    Center(child: Text("Berita")), //4
-    Center(child: Text("Notifikasi")), //5
-    Center(child: Text("Profil")), //6
+    const Pengajuan(), //0
+    const Center(child: Text("Riwayat Surat")), //1
+    const Pengaduan(), //2
+    const Dashboard(), //3
+    const Center(child: Text("Berita")), //4
+    const Center(child: Text("Notifikasi")), //5
+    const Profile(), //6
   ];
 
   void _onItemTapped(int index) {
@@ -197,9 +200,9 @@ class _MainNavigationState extends State<MainNavigation> {
                 ),
               ),
               const SizedBox(width: 12),
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     "Hai!",
                     style: TextStyle(
