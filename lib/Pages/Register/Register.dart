@@ -1,5 +1,7 @@
 import 'package:elades20/Pages/Register/Register2.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -43,8 +45,8 @@ class _RegisterState extends State<Register> {
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  labelText: 'Email/No Hp',
-                  hintText: 'Masukkan Email/Nomor Hp',
+                  labelText: 'Email atau No Hp',
+                  hintText: 'Masukkan Email atau Nomor Hp',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -109,17 +111,102 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               const SizedBox(height: 25),
-              // Login Button
+              // lanjut Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context, MaterialPageRoute(
-                        builder: (context) => const Register2()
-                      ),
-                    );
+                  onPressed: () async {
+                    String emailOrPhone = emailController.text.trim();
+                    String nama = namaController.text.trim();
+                    String password = passwordController.text;
+                    String konfirmasiPassword =
+                        konfirmasipasswordController.text;
+
+                    bool isEmail(String input) {
+                      return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(input);
+                    }
+
+                    bool isPhoneNumber(String input) {
+                      return RegExp(r'^08\d{8,12}$')
+                          .hasMatch(input); // Indo number
+                    }
+
+                    if (emailOrPhone.isEmpty ||
+                        nama.isEmpty ||
+                        password.isEmpty ||
+                        konfirmasiPassword.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Semua field harus diisi'),
+                        ),
+                      );
+                      return;
+                    }
+                    if (!(isEmail(emailOrPhone) ||
+                        isPhoneNumber(emailOrPhone))) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                                Text('Masukkan email atau no HP yang valid')),
+                      );
+                      return;
+                    }
+                    if (password.length < 8) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Password minimal 8 karakter')),
+                      );
+                      return;
+                    }
+                    if (password != konfirmasiPassword) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                                Text('Password dan konfirmasi tidak sama')),
+                      );
+                      return;
+                    }
+
+                    try {
+                      final response = await http.post(
+                        Uri.parse(
+                            'http://192.168.0.3/elades20_api/send_otp.php'),
+                        body: {'email_or_phone': emailOrPhone},
+                      );
+
+                      final data = jsonDecode(response.body);
+                      if (data['success']) {
+                        // print(
+                        //     'OTP: ${data['kode_otp']}'); 
+                        
+                        // Jika OTP berhasil, lanjutkan ke Register2
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Register2(
+                              email: emailOrPhone,
+                              nama: nama,
+                              password: password,
+                            ),
+                          ),
+                        );
+                      } else {
+                        print('Gagal kirim OTP: ${data['error']}');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Gagal kirim OTP')),
+                        );
+                        print('Response: ${response.body}');
+
+                      }
+                    } catch (e) {
+                      print('Error: $e');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Tidak dapat menghubungi server')),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7A9E7A),

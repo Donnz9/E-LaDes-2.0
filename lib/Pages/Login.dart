@@ -2,6 +2,7 @@ import 'package:elades20/Pages/Register/Register.dart';
 import 'package:elades20/Pages/LupaPassword/ResetPassword.dart';
 import 'package:elades20/main.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -106,11 +107,32 @@ class _LoginState extends State<Login> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MainNavigation()),
-                    );
+                  onPressed: () async {
+                    String email = emailController.text.trim();
+                    String password = passwordController.text.trim();
+
+                    try{
+                      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      //berhasil login
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MainNavigation()),
+                      );
+                    } on FirebaseAuthException catch (e) {
+                      String errorMessage = 'Terjadi kesalahan.';
+                      if (e.code == 'user-not-found') {
+                        errorMessage = 'Email tidak ditemukan.';
+                      } else if (e.code == 'wrong-password') {
+                        errorMessage = 'Password salah.';
+                      }
+                      //error
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(errorMessage)),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7A9E7A),

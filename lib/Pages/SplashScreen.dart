@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(), // Bagian atas kosong untuk distribusi yang merata
+              const SizedBox(),
 
               // Bagian Utama (Logo dan Teks)
               Column(
@@ -47,10 +47,10 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  Text(
+                  const Text(
                     'LAYANAN PENGAJUAN SURAT\nKELURAHAN KAUMAN',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Inter',
                       color: Color(0xFF6A6A6A),
                       fontSize: 15,
