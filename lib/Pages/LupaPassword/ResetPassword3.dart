@@ -1,4 +1,3 @@
-import 'package:elades20/Pages/Register/Register2.dart';
 import 'package:flutter/material.dart';
 
 class ResestPassword3 extends StatefulWidget {

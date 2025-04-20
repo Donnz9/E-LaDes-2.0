@@ -1,0 +1,2 @@
+D:/VsCode/ELADES20/MOBILE/elades20/android/app/.cxx/Debug/493k3y1g/x86/CMakeFiles/edit_cache.dir
+D:/VsCode/ELADES20/MOBILE/elades20/android/app/.cxx/Debug/493k3y1g/x86/CMakeFiles/rebuild_cache.dir

@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'package:elades20/Pages/Register/Register2.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
@@ -14,7 +14,8 @@ class _RegisterState extends State<Register> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController namaController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController konfirmasipasswordController = TextEditingController();
+  final TextEditingController konfirmasipasswordController =
+      TextEditingController();
   bool _obscureText = true;
 
   @override
@@ -111,7 +112,7 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               const SizedBox(height: 25),
-              // lanjut Button
+              // Login Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -139,11 +140,11 @@ class _RegisterState extends State<Register> {
                         konfirmasiPassword.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Semua field harus diisi'),
-                        ),
+                            content: Text('Semua field harus diisi')),
                       );
                       return;
                     }
+
                     if (!(isEmail(emailOrPhone) ||
                         isPhoneNumber(emailOrPhone))) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -153,6 +154,7 @@ class _RegisterState extends State<Register> {
                       );
                       return;
                     }
+
                     if (password.length < 8) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -160,6 +162,7 @@ class _RegisterState extends State<Register> {
                       );
                       return;
                     }
+
                     if (password != konfirmasiPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -172,15 +175,15 @@ class _RegisterState extends State<Register> {
                     try {
                       final response = await http.post(
                         Uri.parse(
-                            'http://192.168.0.3/elades20_api/send_otp.php'),
+                            'http://192.168.1.50/elades20_api/send_otp.php'),
                         body: {'email_or_phone': emailOrPhone},
                       );
 
                       final data = jsonDecode(response.body);
                       if (data['success']) {
-                        // print(
-                        //     'OTP: ${data['kode_otp']}'); 
-                        
+                        // Simpan kode_otp sementara untuk dibandingin nanti
+                        print(
+                            'OTP: ${data['kode_otp']}'); // Hapus ini di production
                         // Jika OTP berhasil, lanjutkan ke Register2
                         Navigator.push(
                           context,
@@ -197,8 +200,6 @@ class _RegisterState extends State<Register> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Gagal kirim OTP')),
                         );
-                        print('Response: ${response.body}');
-
                       }
                     } catch (e) {
                       print('Error: $e');

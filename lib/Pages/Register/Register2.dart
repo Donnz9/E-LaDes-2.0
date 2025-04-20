@@ -79,7 +79,7 @@ class _Register2State extends State<Register2> {
                 child: TextButton(
                   onPressed: () async {
                     final response = await http.post(
-                      Uri.parse('http://192.168.0.3/elades20_api/send_otp.php'),
+                      Uri.parse('http://192.168.1.50/elades20_api/send_otp.php'),
                       body: {'email_or_phone': widget.email},
                     );
                     final data = jsonDecode(response.body);
@@ -104,7 +104,7 @@ class _Register2State extends State<Register2> {
                 ),
               ),
               const SizedBox(height: 10),
-              // Login Button
+              // regis Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -119,21 +119,21 @@ class _Register2State extends State<Register2> {
                     }
 
                     String email = '';
-                    String no_hp = '';
+                    String noHp = '';
 
                     if (isEmail(widget.email)) {
                       email = widget.email;
                     } else {
-                      no_hp = widget.email;
+                      noHp = widget.email;
                     }
 
                     // Kirim data registrasi ke server
                     final respons = await http.post(
                       Uri.parse(
-                          'http://192.168.0.3/elades20_api/register.php'), // ganti dengan URL API yang benar
+                          'http://192.168.1.50/elades20_api/register.php'), // ganti dengan URL API yang benar
                       body: {
                         'email': email,
-                        'no_hp': no_hp,
+                        'no_hp': noHp,
                         'nama': widget.nama,
                         'password': widget.password,
                         'kode_otp': kodeOtpController.text,

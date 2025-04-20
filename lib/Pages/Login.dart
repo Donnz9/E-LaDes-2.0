@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:elades20/Pages/Register/Register.dart';
 import 'package:elades20/Pages/LupaPassword/ResetPassword.dart';
 import 'package:elades20/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -87,17 +90,18 @@ class _LoginState extends State<Login> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.push(
-                      context, MaterialPageRoute(
-                        builder: (context) => const Resetpassword()
-                      ),
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Resetpassword()),
                     );
                   },
-                  child: const Text('Lupa Password',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  child: const Text(
+                    'Lupa Password',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -108,29 +112,33 @@ class _LoginState extends State<Login> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () async {
-                    String email = emailController.text.trim();
+                    String login =
+                        emailController.text.trim(); // bisa email atau no_hp
                     String password = passwordController.text.trim();
 
-                    try{
-                      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-                      //berhasil login
+                    var url = Uri.parse(
+                        "http://192.168.1.50/elades20_api/login.php"); // ganti sesuai IP server kamu
+                    var response = await http.post(
+                      url,
+                      headers: {"Content-Type": "application/json"},
+                      body: jsonEncode({
+                        "login": login,
+                        "password": password,
+                      }),
+                    );
+
+                    var result = jsonDecode(response.body);
+
+                    if (result['success']) {
+                      // simpan data user jika perlu
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const MainNavigation()),
+                        MaterialPageRoute(
+                            builder: (context) => const MainNavigation()),
                       );
-                    } on FirebaseAuthException catch (e) {
-                      String errorMessage = 'Terjadi kesalahan.';
-                      if (e.code == 'user-not-found') {
-                        errorMessage = 'Email tidak ditemukan.';
-                      } else if (e.code == 'wrong-password') {
-                        errorMessage = 'Password salah.';
-                      }
-                      //error
+                    } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(errorMessage)),
+                        SnackBar(content: Text(result['message'])),
                       );
                     }
                   },
@@ -156,10 +164,10 @@ class _LoginState extends State<Login> {
                 width: double.infinity,
                 height: 50,
                 child: OutlinedButton.icon(
-                  onPressed: () { },  //diisi halaman dashboard
+                  onPressed: () {}, //diisi halaman dashboard
                   icon: Image.asset(
                     'assets/images/google.png',
-                    width: 25, 
+                    width: 25,
                     height: 25,
                   ),
                   label: const Text(
@@ -167,7 +175,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
-                      ),
+                    ),
                   ),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -190,18 +198,18 @@ class _LoginState extends State<Login> {
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                        context, MaterialPageRoute(
-                          builder: (context) => const Register()
-                        ),
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Register()),
                       );
-                    },//diisi halaman register
+                    }, //diisi halaman register
                     child: const Text(
                       'Daftar Sekarang',
                       style: TextStyle(
                         color: Color(0xFF6A6A6A),
                         fontSize: 15,
-                        ),
                       ),
+                    ),
                   ),
                 ],
               ),

@@ -1,3 +1,18 @@
+buildscript {
+    ext.kotlin_version = '1.9.0' // Pastikan versi ini cocok, bisa disesuaikan
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.15' // Hanya jika kamu pakai Firebase
+    }
+}
+
 allprojects {
     repositories {
         google()

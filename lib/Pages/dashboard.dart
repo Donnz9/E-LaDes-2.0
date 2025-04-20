@@ -10,6 +10,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
@@ -89,7 +90,7 @@ class _DashboardState extends State<Dashboard> {
                                 Align(
                                   alignment: Alignment
                                       .centerRight, // Bisa jadi centerRight, topRight, dsb.
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 100, // atur tinggi sesuka hati
                                     width: 100, // atur lebar sesuka hati
                                     child: Image.asset(
