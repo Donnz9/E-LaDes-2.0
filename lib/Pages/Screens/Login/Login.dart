@@ -1,8 +1,7 @@
 import 'dart:convert';
-
-import 'package:elades20/Pages/Register/Register.dart';
-import 'package:elades20/Pages/LupaPassword/ResetPassword.dart';
-import 'package:elades20/main.dart';
+import 'package:elades20/Pages/Screens/Register/Register.dart';
+import 'package:elades20/Pages/Screens/LupaPassword/ResetPassword.dart';
+import 'package:elades20/Pages/main_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -117,7 +116,7 @@ class _LoginState extends State<Login> {
                     String password = passwordController.text.trim();
 
                     var url = Uri.parse(
-                        "http://192.168.1.50/elades20_api/login.php"); // ganti sesuai IP server kamu
+                        "http://192.168.0.3/elades20_api/login.php"); // ganti sesuai IP server kamu
                     var response = await http.post(
                       url,
                       headers: {"Content-Type": "application/json"},

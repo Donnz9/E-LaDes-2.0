@@ -1,4 +1,4 @@
-import 'package:elades20/Pages/LupaPassword/ResetPassword2.dart';
+import 'package:elades20/Pages/Screens/LupaPassword/ResetPassword2.dart';
 import 'package:flutter/material.dart';
 
 class Resetpassword extends StatefulWidget {

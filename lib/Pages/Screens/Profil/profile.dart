@@ -1,4 +1,4 @@
-import 'package:elades20/Pages/Profil/ganti_password.dart';
+import 'package:elades20/Pages/Screens/Profil/ganti_password.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {

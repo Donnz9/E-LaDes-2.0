@@ -1,38 +1,10 @@
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
-// class AuthServices{
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
+class AuthService {
+  static Future<bool> sendOtp(String emailOrPhone) async {
+    final url = Uri.parse("https://192.168.0.3/elades20_api/send_otp.php");
+    final response = await http.post(url, body: {'email_or_phone': emailOrPhone});
 
-//   //regis
-//   Future<UserModel?> register(String email, String password) async{
-//     try{
-//       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-//         email: email,
-//         password: password,
-//       );
-//       return UserModel(uid: userCredential.user!.uid, email: email);
-//     } catch (e){
-//       print(e.toString());
-//       return null;
-//     }
-//   }
-
-//   //login
-//   Future<UserModel?> login(String email, String password) async{
-//     try{
-//       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-//         email: email,
-//         password: password,
-//       );
-//       return UserModel(uid: userCredential.user!.uid, email: email);
-//     } catch (e){
-//       print(e.toString());
-//       return null;
-//     }
-//   }
-
-//   //logout
-//   Future<void> logout() async{
-//     await _auth.signOut();
-//   }
-// }
+    return response.statusCode == 200 && response.body.contains("success");
+  }
+}

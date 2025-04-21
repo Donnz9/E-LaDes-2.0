@@ -1,4 +1,4 @@
-import 'package:elades20/Pages/Login.dart';
+import 'package:elades20/Pages/Screens/Login/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -29,7 +29,6 @@ class Register2 extends StatefulWidget {
 
 class _Register2State extends State<Register2> {
   final TextEditingController kodeOtpController = TextEditingController();
-  // bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +78,7 @@ class _Register2State extends State<Register2> {
                 child: TextButton(
                   onPressed: () async {
                     final response = await http.post(
-                      Uri.parse('http://192.168.1.50/elades20_api/send_otp.php'),
+                      Uri.parse('http://192.168.0.3/elades20_api/send_otp.php'),
                       body: {'email_or_phone': widget.email},
                     );
                     final data = jsonDecode(response.body);
@@ -130,7 +129,7 @@ class _Register2State extends State<Register2> {
                     // Kirim data registrasi ke server
                     final respons = await http.post(
                       Uri.parse(
-                          'http://192.168.1.50/elades20_api/register.php'), // ganti dengan URL API yang benar
+                          'http://192.168.0.3/elades20_api/register.php'), // ganti dengan URL API yang benar
                       body: {
                         'email': email,
                         'no_hp': noHp,
@@ -182,3 +181,30 @@ class _Register2State extends State<Register2> {
     );
   }
 }
+
+
+// // pages/screens/otp_verification_screen.dart
+// import 'package:flutter/material.dart';
+
+// class Register2 extends StatelessWidget {
+//   final String email;
+//   final String nama;
+//   final String password;
+
+//   const Register2({
+//     super.key,
+//     required this.email,
+//     required this.nama,
+//     required this.password,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Verifikasi OTP')),
+//       body: Center(
+//         child: Text("Lanjutkan verifikasi untuk $email"),
+//       ),
+//     );
+//   }
+// }
