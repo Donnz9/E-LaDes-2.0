@@ -1,7 +1,9 @@
 import 'package:elades20/Pages/Screens/Login/Login.dart';
+import 'package:elades20/Services/Register/firebase_auth.dart';
+import 'package:elades20/Services/Register/otp_services.dart';
+import 'package:elades20/Services/Register/register.service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 bool isEmail(String input) {
   return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(input);
@@ -77,12 +79,9 @@ class _Register2State extends State<Register2> {
                 alignment: Alignment.topLeft,
                 child: TextButton(
                   onPressed: () async {
-                    final response = await http.post(
-                      Uri.parse('http://192.168.0.3/elades20_api/send_otp.php'),
-                      body: {'email_or_phone': widget.email},
-                    );
-                    final data = jsonDecode(response.body);
-                    if (data['success']) {
+                    final otpResponse = await OtpServices.sendOtp(widget.email);
+                    if (otpResponse.success) {
+                      print("OTP dikirim: ${otpResponse.message}");
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Kode OTP telah dikirim ulang')),
                       );
@@ -126,23 +125,32 @@ class _Register2State extends State<Register2> {
                       noHp = widget.email;
                     }
 
-                    // Kirim data registrasi ke server
-                    final respons = await http.post(
-                      Uri.parse(
-                          'http://192.168.0.3/elades20_api/register.php'), // ganti dengan URL API yang benar
-                      body: {
-                        'email': email,
-                        'no_hp': noHp,
-                        'nama': widget.nama,
-                        'password': widget.password,
-                        'kode_otp': kodeOtpController.text,
-                      },
+                    final result = await RegisterService.registerWithOtp(
+                      email: email,
+                      noHp: noHp,
+                      nama: widget.nama,
+                      password: widget.password,
+                      kodeOtp: kodeOtpController.text,
                     );
 
-                    final result = jsonDecode(respons.body);
-
-                    // Jika sukses, tampilkan SnackBar dan navigasi ke halaman Login
-                    if (result['success']) {
+                    // Jika sukses
+                    bool firebaseSuccess = true;
+                    if (result.success) {
+                      if (isEmail(widget.email)) {
+                        try {
+                          firebaseSuccess = await registerWithFirebase(widget.email, widget.password);
+                          print("Akun terdaftar di Firebase Auth");
+                        } catch (e) {
+                          print("Firebase Auth Error: $e");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Gagal register ke Firebase: $e')),
+                          );
+                          return;
+                        }
+                      }
+                      if (!firebaseSuccess) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Akun berhasil dibuat!')),
                       );
@@ -151,13 +159,12 @@ class _Register2State extends State<Register2> {
                         MaterialPageRoute(builder: (context) => const Login()),
                       );
                     } else {
-                      // Jika gagal, tampilkan pesan error dari server
+                      // Jika gagal
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Gagal: ${result['error']}')),
+                        SnackBar(content: Text('Gagal: ${result.message}')),
                       );
                     }
                   },
-
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7A9E7A),
                     shape: RoundedRectangleBorder(
@@ -181,30 +188,3 @@ class _Register2State extends State<Register2> {
     );
   }
 }
-
-
-// // pages/screens/otp_verification_screen.dart
-// import 'package:flutter/material.dart';
-
-// class Register2 extends StatelessWidget {
-//   final String email;
-//   final String nama;
-//   final String password;
-
-//   const Register2({
-//     super.key,
-//     required this.email,
-//     required this.nama,
-//     required this.password,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Verifikasi OTP')),
-//       body: Center(
-//         child: Text("Lanjutkan verifikasi untuk $email"),
-//       ),
-//     );
-//   }
-// }

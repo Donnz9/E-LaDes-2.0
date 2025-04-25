@@ -1,7 +1,10 @@
+import 'package:elades20/Pages/Screens/Login/Login.dart';
+import 'package:elades20/Services/LupaPassword/GantiPassword_Services.dart';
 import 'package:flutter/material.dart';
 
 class ResestPassword3 extends StatefulWidget {
-  const ResestPassword3({super.key});
+  final String emailOrPhone;
+  const ResestPassword3({super.key, required this.emailOrPhone});
 
   @override
   State<ResestPassword3> createState() => _ResestPassword3State();
@@ -9,7 +12,8 @@ class ResestPassword3 extends StatefulWidget {
 
 class _ResestPassword3State extends State<ResestPassword3> {
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController konfirmasipasswordController = TextEditingController();
+  final TextEditingController konfirmasipasswordController =
+      TextEditingController();
   bool _obscureText = true;
 
   @override
@@ -82,18 +86,12 @@ class _ResestPassword3State extends State<ResestPassword3> {
                 ),
               ),
               const SizedBox(height: 25),
-              // Login Button
+              // Lanjut Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Navigator.push(
-                    //   // context, MaterialPageRoute(
-                    //   //   builder: (context) => ()
-                    //   // ),
-                    // );
-                  },
+                  onPressed: _ubahPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7A9E7A),
                     shape: RoundedRectangleBorder(
@@ -114,6 +112,50 @@ class _ResestPassword3State extends State<ResestPassword3> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _ubahPassword() async {
+    String password = passwordController.text.trim();
+    String konfirmasiPassword = konfirmasipasswordController.text.trim();
+
+    if (password.isEmpty || konfirmasiPassword.isEmpty) {
+      _showSnackBar("Password dan Konfirmasi wajib diisi");
+      return;
+    }
+
+    if (password != konfirmasiPassword) {
+      _showSnackBar("Password dan Konfirmasi tidak sama");
+      return;
+    }
+
+    if (password.length < 8) {
+      _showSnackBar("Password minimal 8 karakter");
+      return;
+    }
+
+    try {
+      final response =
+          await UbahPasswordService.ubahPassword(widget.emailOrPhone, password);
+
+      if (response['success']) {
+        _showSnackBar("Password berhasil diubah");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const Login()),
+        );
+      } else {
+        _showSnackBar("Gagal mengubah password: ${response['message']}");
+      }
+    } catch (e) {
+      print('ERROR ubah password : $e');
+      _showSnackBar("Terjadi kesalahan: $e");
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }

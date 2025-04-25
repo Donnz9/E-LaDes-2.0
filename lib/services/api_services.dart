@@ -1,11 +1,10 @@
 import 'dart:convert';
+import 'package:elades20/Services/config.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String _baseUrl = "http://192.168.0.3/elades20_api";
-
   static Future<List<dynamic>> fetchUsers() async {
-    final response = await http.get(Uri.parse("$_baseUrl/get_users.php"));
+    final response = await http.get(Uri.parse("${AppConfig.baseUrl}/get_users.php"));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {

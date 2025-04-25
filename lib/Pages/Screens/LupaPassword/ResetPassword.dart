@@ -1,4 +1,5 @@
 import 'package:elades20/Pages/Screens/LupaPassword/ResetPassword2.dart';
+import 'package:elades20/Services/LupaPassword/kirimotp_services.dart';
 import 'package:flutter/material.dart';
 
 class Resetpassword extends StatefulWidget {
@@ -61,12 +62,51 @@ class _ResetpasswordState extends State<Resetpassword> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context, MaterialPageRoute(
-                        builder: (context) => const Resetpassword2()
-                      ),
-                    );
+                  onPressed: () async {
+                    String emailOrPhone = emailController.text.trim();
+
+                    if (emailOrPhone.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                                Text("Email atau No HP tidak boleh kosong")),
+                      );
+                      return;
+                    }
+                    try {
+                      final response = await KirimOtpService.sendOtp(emailOrPhone);
+
+                      if (response.success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("OTP telah dikirim. Cek email/no hp kamu"),
+                          ),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Resetpassword2(emailOrPhone: emailController.text),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(response.message)),
+                        );
+                      }
+                    } catch (e) {
+                      print('ERROR SEND OTP RESET: $e');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                                Text("Terjadi kesalahan. Coba lagi nanti.")),
+                      );
+                    }
+
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => const Resetpassword2()),
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7A9E7A),

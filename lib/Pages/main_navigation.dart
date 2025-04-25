@@ -1,3 +1,4 @@
+import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Dashboard/dashboard.dart';
 import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
@@ -7,7 +8,8 @@ import 'package:elades20/Pages/Widgets/top_bar.dart';
 import 'package:flutter/material.dart';
 
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+  final UserModel user;
+  const MainNavigation({super.key, required this.user});
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
@@ -16,15 +18,15 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 3;
 
-  final List<Widget> _pages = [
-    const Pengajuan(),
-    const Center(child: Text("Riwayat Surat")),
-    const Pengaduan(),
-    const Dashboard(),
-    const Center(child: Text("Berita")),
-    const Center(child: Text("Notifikasi")),
-    const Profile(),
-  ];
+  // final List<Widget> _pages = [
+  //   const Pengajuan(),
+  //   const Center(child: Text("Riwayat Surat")),
+  //   const Pengaduan(),
+  //   Dashboard(onNavigate: _onItemTapped),
+  //   const Center(child: Text("Berita")),
+  //   const Center(child: Text("Notifikasi")),
+  //   const Profile(),
+  // ];
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
@@ -32,13 +34,25 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _pages = [
+      const Pengajuan(),
+      const Center(child: Text("Riwayat Surat")),
+      const Pengaduan(),
+      Dashboard(onNavigate: _onItemTapped),
+      const Center(child: Text("Berita")),
+      const Center(child: Text("Notifikasi")),
+      const Profile(),
+    ];
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             TopBar(
-                onProfileTap: () => _onItemTapped(6),
-                onNotifTap: () => _onItemTapped(5)),
+              onProfileTap: () => _onItemTapped(6),
+              onNotifTap: () => _onItemTapped(5),
+              user: widget.user,
+            ),
             Expanded(child: _pages[_selectedIndex]),
           ],
         ),

@@ -12,7 +12,20 @@
           "package_name": "com.example.elades20"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "609172713088-esaev084dsvb3jnto3nn7kq74bprmdvq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.elades20",
+            "certificate_hash": "9d8663ab6ec70d2f721b3a69b1c566ad1310ace5"
+          }
+        },
+        {
+          "client_id": "609172713088-8d2vun047uerkcjq98mafbj4eu01svih.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBi1mqUqlEXFNMkAh2MYYNVrBLQ7gCaXWc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609172713088-8d2vun047uerkcjq98mafbj4eu01svih.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "609172713088-6imelbouljm3g8chkagpij11mkgkdf6b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.elades20"
+              }
+            }
+          ]
         }
       }
     }

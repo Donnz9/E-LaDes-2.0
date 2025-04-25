@@ -1,10 +1,12 @@
-import 'dart:convert';
+import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Register/Register.dart';
 import 'package:elades20/Pages/Screens/LupaPassword/ResetPassword.dart';
 import 'package:elades20/Pages/main_navigation.dart';
+import 'package:elades20/Services/Login/login_services.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -115,29 +117,30 @@ class _LoginState extends State<Login> {
                         emailController.text.trim(); // bisa email atau no_hp
                     String password = passwordController.text.trim();
 
-                    var url = Uri.parse(
-                        "http://192.168.0.3/elades20_api/login.php"); // ganti sesuai IP server kamu
-                    var response = await http.post(
-                      url,
-                      headers: {"Content-Type": "application/json"},
-                      body: jsonEncode({
-                        "login": login,
-                        "password": password,
-                      }),
-                    );
-
-                    var result = jsonDecode(response.body);
-
+                    final result = await LoginService.login(login, password);
                     if (result['success']) {
-                      // simpan data user jika perlu
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MainNavigation()),
-                      );
+                      UserModel? user = result['user'];
+                      if (user != null) {
+                        print("Welcome ${user.nama}");
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainNavigation(user: user),
+                          ),
+                        );
+                      } else {
+                        // Jika user null, beri pesan bahwa login gagal
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  "Login gagal: Pengguna tidak ditemukan")),
+                        );
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(result['message'])),
+                        SnackBar(
+                            content: Text(result['message'] ?? 'Login failed')),
                       );
                     }
                   },
@@ -163,7 +166,28 @@ class _LoginState extends State<Login> {
                 width: double.infinity,
                 height: 50,
                 child: OutlinedButton.icon(
-                  onPressed: () {}, //diisi halaman dashboard
+                  onPressed: () async {
+                    // Melakukan login dengan Google
+                    User? user = await signInWithGoogle();
+
+                    if (user != null) {
+                      UserModel userModel = await UserModel.fromFirebaseUser(user);
+
+                      // login berhasil
+                      print("Welcome ${userModel.nama}");
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainNavigation(user:userModel), // Ganti dengan halaman navigasi utama
+                        ),
+                      );
+                    } else {
+                      // login gagal
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Login gagal dengan Google')),
+                      );
+                    }
+                  },
                   icon: Image.asset(
                     'assets/images/google.png',
                     width: 25,
@@ -217,5 +241,40 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<User?> signInWithGoogle() async {
+    try {
+      // Memulai proses login Google
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      // Jika pengguna memilih akun Google
+      if (googleUser == null) {
+        return null; // Pengguna membatalkan login
+      }
+
+      // Mengambil otentikasi Google
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Membuat kredensial Firebase dari token yang didapat dari Google
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Menggunakan kredensial untuk sign-in ke Firebase
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      // Mengembalikan user Firebase
+      return userCredential.user;
+    } catch (e) {
+      print("Error during Google sign-in: $e");
+      return null;
+    }
   }
 }

@@ -1,10 +1,12 @@
+import 'package:elades20/Models/user_model.dart';
 import 'package:flutter/material.dart';
 
 class TopBar extends StatelessWidget {
   final VoidCallback onProfileTap;
   final VoidCallback onNotifTap;
+  final UserModel user;
 
-  const TopBar({super.key, required this.onProfileTap, required this.onNotifTap});
+  TopBar({super.key, required this.onProfileTap, required this.onNotifTap, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +26,11 @@ class TopBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Hai!", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                  Text("Doni Hermawan", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text("Hai!", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
+                  Text(user.nama, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ],
               ),
             ],

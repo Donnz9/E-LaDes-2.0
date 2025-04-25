@@ -1,9 +1,15 @@
+import 'package:elades20/Models/user_model.dart';
+import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
+import 'package:elades20/Pages/Widgets/layanan_desa.dart';
+import 'package:elades20/Pages/Widgets/status_pengajuan_surat.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  final Function(int) onNavigate;
+  const Dashboard({super.key, required this.onNavigate});
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -61,9 +67,8 @@ class _DashboardState extends State<Dashboard> {
                                   flex: 3,
                                   child: Column(
                                     crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                    mainAxisAlignment: 
-                                      MainAxisAlignment.center,
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         "Selamat Datang!",
@@ -171,9 +176,21 @@ class _DashboardState extends State<Dashboard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _LayananDesaCard("Pengajuan Surat", Icons.file_copy),
-                    _LayananDesaCard("Riwayat Surat", Icons.history),
-                    _LayananDesaCard("Pengaduan", Icons.report),
+                    LayananDesaCard(
+                      title: "Pengajuan Surat",
+                      icon: Icons.file_copy,
+                      onTap: () => widget.onNavigate(0),
+                    ),
+                    LayananDesaCard(
+                      title: "Riwayat Surat",
+                      icon: Icons.history,
+                      onTap: () => widget.onNavigate(1),
+                    ),
+                    LayananDesaCard(
+                      title: "Pengaduan",
+                      icon: Icons.report,
+                      onTap: () => widget.onNavigate(2),
+                    ),
                   ],
                 ),
 
@@ -191,10 +208,10 @@ class _DashboardState extends State<Dashboard> {
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _StatusPengajuanSuratCard("Masuk", "2"),
-                    _StatusPengajuanSuratCard("Selesai", "1"),
-                    _StatusPengajuanSuratCard("Tolak", "1"),
+                  children: const [
+                    StatusPengajuanSuratCard(title: "Masuk", count: "2"),
+                    StatusPengajuanSuratCard(title: "Selesai", count: "1"),
+                    StatusPengajuanSuratCard(title: "Tolak", count: "1"),
                   ],
                 ),
 
@@ -227,80 +244,6 @@ class _DashboardState extends State<Dashboard> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  // Widget untuk membuat kartu layanan desa
-  // ignore: non_constant_identifier_names
-  Widget _LayananDesaCard(String title, IconData icon) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.all(12),
-        constraints:
-            const BoxConstraints(minHeight: 111), 
-        decoration: BoxDecoration(
-          color: Colors.green.shade300,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center, // biar icon & teks tengah
-          children: [
-            Icon(icon, color: Colors.white, size: 40),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Widget untuk membuat kartu status pengajuan surat
-  // ignore: non_constant_identifier_names
-  Widget _StatusPengajuanSuratCard(String title, String count) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.all(12),
-        constraints:
-            const BoxConstraints(minHeight: 90), 
-        decoration: BoxDecoration(
-          color: Colors.green.shade300,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          children: [
-            Text(
-              count,
-              style: GoogleFonts.inter(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ],
         ),
       ),
     );
