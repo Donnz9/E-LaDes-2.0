@@ -1,4 +1,5 @@
 import 'package:elades20/Pages/Screens/Profil/ganti_password.dart';
+import 'package:elades20/Services/Profile/logout_service.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
@@ -163,6 +164,30 @@ class Profile extends StatelessWidget {
                   ),
                   child: const Text(
                     'Ganti Password',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Logout.performLogout(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text(
+                    'Logout',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
