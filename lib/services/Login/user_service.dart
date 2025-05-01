@@ -20,4 +20,20 @@ class UserService {
     }
     return null; // Jika tidak ditemukan
   }
+
+  static Future<UserModel?> getUserByUid(String uid) async {
+  try {
+    List<dynamic> users = await ApiService.fetchUsers();
+
+    for (var userData in users) {
+      if (userData['uid'] == uid) {
+        return UserModel.fromJson(userData);
+      }
+    }
+  } catch (e) {
+    print("Error fetching user by UID: $e");
+  }
+  return null;
+}
+
 }

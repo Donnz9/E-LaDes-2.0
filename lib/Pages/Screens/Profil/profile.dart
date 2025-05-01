@@ -1,19 +1,38 @@
+import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Profil/ganti_password.dart';
 import 'package:elades20/Services/Profile/logout_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class Profile extends StatelessWidget {
-  const Profile({super.key});
+class Profile extends StatefulWidget {
+  final UserModel user;
+  const Profile({Key? key, required this.user}) : super(key: key);
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  late TextEditingController emailController;
+  late TextEditingController nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController(
+        text: widget.user.email ?? widget.user.noHp ?? '');
+    nameController = TextEditingController(text: widget.user.nama);
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController(
-      text: "donihermawwan@gmail.com",
-    );
-    final TextEditingController nameController = TextEditingController(
-      text: "Doni Hermawan",
-    );
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
       body: SafeArea(
@@ -72,7 +91,7 @@ class Profile extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Email',
+                  'Email/No HP',
                   style: TextStyle(
                     color: Colors.grey[700],
                     fontWeight: FontWeight.w500,

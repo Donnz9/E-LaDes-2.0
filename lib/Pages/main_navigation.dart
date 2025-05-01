@@ -18,16 +18,6 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 3;
 
-  // final List<Widget> _pages = [
-  //   const Pengajuan(),
-  //   const Center(child: Text("Riwayat Surat")),
-  //   const Pengaduan(),
-  //   Dashboard(onNavigate: _onItemTapped),
-  //   const Center(child: Text("Berita")),
-  //   const Center(child: Text("Notifikasi")),
-  //   const Profile(),
-  // ];
-
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
   }
@@ -41,7 +31,8 @@ class _MainNavigationState extends State<MainNavigation> {
       Dashboard(onNavigate: _onItemTapped),
       const Center(child: Text("Berita")),
       const Center(child: Text("Notifikasi")),
-      const Profile(),
+      Profile(user: widget.user),
+
     ];
 
     return Scaffold(

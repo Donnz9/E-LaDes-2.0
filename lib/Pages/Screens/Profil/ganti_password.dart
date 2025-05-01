@@ -1,3 +1,5 @@
+import 'package:elades20/Services/Profile/gantipassword_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class GantiPassword extends StatefulWidget {
@@ -11,9 +13,7 @@ class _GantiPasswordState extends State<GantiPassword> {
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
 
-  // ignore: non_constant_identifier_names
   final TextEditingController PasswordBaru = TextEditingController();
-  // ignore: non_constant_identifier_names
   final TextEditingController KonfirmasiPasswordBaru = TextEditingController();
 
   @override
@@ -126,9 +126,7 @@ class _GantiPasswordState extends State<GantiPassword> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureConfirm
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                      _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() {
@@ -142,8 +140,61 @@ class _GantiPasswordState extends State<GantiPassword> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Validasi dan simpan password baru
+                  onPressed: () async {
+                    final newPassword = PasswordBaru.text.trim();
+                    final confirmPassword = KonfirmasiPasswordBaru.text.trim();
+
+                    if (newPassword.isEmpty || confirmPassword.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Password tidak boleh kosong')),
+                      );
+                      return;
+                    }
+
+                    if (newPassword != confirmPassword) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Password tidak cocok')),
+                      );
+                      return;
+                    }
+
+                    try {
+                      // Step 1: Update password di backend kamu
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('User tidak ditemukan')),
+                        );
+                        return;
+                      }
+
+                      // Step 2: Update password di Firebase (jika user login dengan Firebase email/password)
+                      final success = await update_password(user.uid, newPassword);
+                      if (!success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Gagal update password di server'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      // Step 3: Update password di Firebase
+                      if (user.providerData.any((p) => p.providerId == 'password')) {
+                        await user.updatePassword(newPassword);
+                      }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Password berhasil diperbarui')),
+                      );
+                      Navigator.pop(context);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                                Text('Terjadi kesalahan: ${e.toString()}')),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF4B9560),
@@ -156,7 +207,7 @@ class _GantiPasswordState extends State<GantiPassword> {
                     'Simpan',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white,  
+                      color: Colors.white,
                     ),
                   ),
                 ),

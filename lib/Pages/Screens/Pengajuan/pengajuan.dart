@@ -1,3 +1,9 @@
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20izin/keramaian.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20izin/tidak_masuk_kerja.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20keterangan/penghasilan_orang_tua.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20keterangan/sktm.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20pengantar/kehilangan_barang.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20pengantar/skck.dart';
 import 'package:flutter/material.dart';
 
 class Pengajuan extends StatelessWidget {
@@ -41,15 +47,31 @@ class Pengajuan extends StatelessWidget {
               const SizedBox(height: 20),
               Expanded(
                 child: ListView(
-                  children: const [
+                  children: [
                     SuratKategori(
                       title: "Surat Pengantar",
                       items: [
                         SuratItem(
-                            icon: Icons.shield, text: "Surat Pengantar SKCK"),
+                            icon: Icons.shield, text: "Surat Pengantar SKCK", 
+                            onTap: () { 
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SuratPengantarSkck(),
+                                )
+                              );
+                             },),
                         SuratItem(
                             icon: Icons.search,
-                            text: "Surat Pengantar Kehilangan Barang"),
+                            text: "Surat Pengantar Kehilangan Barang", 
+                            onTap: () { 
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SuratPengantarKehilanganBarang(),
+                                )
+                              );
+                             },),
                       ],
                     ),
                     SuratKategori(
@@ -57,10 +79,26 @@ class Pengajuan extends StatelessWidget {
                       items: [
                         SuratItem(
                             icon: Icons.attach_money,
-                            text: "Surat Keterangan Tidak Mampu (SKTM)"),
+                            text: "Surat Keterangan Tidak Mampu (SKTM)", 
+                            onTap: () {  
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SuratKeteranganTidakMampu(),
+                                )
+                              );
+                            },),
                         SuratItem(
                             icon: Icons.family_restroom,
-                            text: "Surat Keterangan Penghasilan Orang Tua"),
+                            text: "Surat Keterangan Penghasilan Orang Tua", 
+                            onTap: () {  
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SuratKeteranganPenghasilanOrangTua(),
+                                )
+                              );
+                            },),
                       ],
                     ),
                     SuratKategori(
@@ -68,10 +106,26 @@ class Pengajuan extends StatelessWidget {
                       items: [
                         SuratItem(
                             icon: Icons.work_off,
-                            text: "Surat Izin Tidak Masuk Kerja"),
+                            text: "Surat Izin Tidak Masuk Kerja", 
+                            onTap: () {  
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SuratIzinTidakMasukKerja(),
+                                )
+                              );
+                            },),
                         SuratItem(
                             icon: Icons.celebration,
-                            text: "Surat Izin Keramaian"),
+                            text: "Surat Izin Keramaian", 
+                            onTap: () {  
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SuratIzinKeramaian(),
+                                )
+                              );
+                            },),
                       ],
                     ),
                   ],
@@ -132,29 +186,33 @@ class SuratKategori extends StatelessWidget {
 class SuratItem extends StatelessWidget {
   final IconData icon;
   final String text;
+  final VoidCallback onTap;
 
-  const SuratItem({super.key, required this.icon, required this.text});
+  const SuratItem({super.key, required this.icon, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFF4B9560),
+    return InkWell( // Membuat item bisa ditekan
+      onTap: onTap, // Menambahkan fungsi saat item ditekan
+      child: Row(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xFF4B9560),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Icon(icon, size: 20, color: Colors.white),
           ),
-          padding: const EdgeInsets.all(8),
-          child: Icon(icon, size: 20, color: Colors.white),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
