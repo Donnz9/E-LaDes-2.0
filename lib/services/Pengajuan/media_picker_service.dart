@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 class MediaPickerService {
   static Future<void> showMediaPicker({
     required BuildContext context,
-    required Function(String path) onFilePicked,
+    required Function(List<String> path) onFilePicked,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -17,8 +17,8 @@ class MediaPickerService {
               title: const Text('Ambil Foto dari Kamera'),
               onTap: () async {
                 Navigator.of(context).pop();
-                final file = await _pickImage(ImageSource.camera);
-                if (file != null) onFilePicked(file);
+                final file = await _pickImageFromCamera();
+                if (file != null) onFilePicked([file]);
               },
             ),
             ListTile(
@@ -26,8 +26,8 @@ class MediaPickerService {
               title: const Text('Pilih dari Galeri'),
               onTap: () async {
                 Navigator.of(context).pop();
-                final file = await _pickImage(ImageSource.gallery);
-                if (file != null) onFilePicked(file);
+                final files = await _pickImagesFromGallery();
+                if (files.isNotEmpty) onFilePicked(files);
               },
             ),
             ListTile(
@@ -35,8 +35,8 @@ class MediaPickerService {
               title: const Text('Pilih File (PDF, dll)'),
               onTap: () async {
                 Navigator.of(context).pop();
-                final file = await _pickFile();
-                if (file != null) onFilePicked(file);
+                final files = await _pickFile();
+                if (files.isNotEmpty) onFilePicked(files);
               },
             ),
           ],
@@ -45,17 +45,30 @@ class MediaPickerService {
     );
   }
 
-  static Future<String?> _pickImage(ImageSource source) async {
+  static Future<String?> _pickImageFromCamera() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
     return pickedFile?.path;
   }
 
-  static Future<String?> _pickFile() async {
+  static Future<List<String>> _pickImagesFromGallery() async {
     final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'png'],
+      type: FileType.image,
+      allowMultiple: true,
     );
-    return result != null && result.files.isNotEmpty ? result.files.first.path : null;
+    return result?.paths.whereType<String>().toList() ?? [];
+  }
+
+  static Future<List<String>> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
+      withData: true,
+    );
+    if (result != null && result.files.isNotEmpty) {
+    return result.paths.whereType<String>().toList();
+  }
+  return [];
   }
 }

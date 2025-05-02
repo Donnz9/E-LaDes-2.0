@@ -1,9 +1,38 @@
+import 'dart:io';
+
+import 'package:elades20/Services/permission_services.dart';
 import 'package:flutter/material.dart';
 import 'package:elades20/Services/Pengajuan/media_picker_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-
-class SuratPengantarKehilanganBarang extends StatelessWidget {
+class SuratPengantarKehilanganBarang extends StatefulWidget {
   const SuratPengantarKehilanganBarang({super.key});
+
+  @override
+  State<SuratPengantarKehilanganBarang> createState() =>
+      _SuratPengantarKehilanganBarangState();
+}
+
+class _SuratPengantarKehilanganBarangState
+    extends State<SuratPengantarKehilanganBarang> {
+  List<String> _mediaPaths = [];
+
+  @override
+  void initState() {
+    super.initState();
+    requestPermissions();
+  }
+
+  Future<void> requestPermissions() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+  }
+
+  final TextEditingController _tanggalLahirController = TextEditingController();
+  final TextEditingController _tanggalHilangController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -73,13 +102,13 @@ class SuratPengantarKehilanganBarang extends StatelessWidget {
               const SizedBox(height: 16),
               _buildTextField(label: "Nama Lengkap"),
               _buildTextField(label: "Tempat Lahir"),
-              _buildDateField(label: "Tanggal Lahir"),
+              _buildDateField(label: "Tanggal Lahir", controller: _tanggalLahirController),
               _buildTextField(label: "Agama"),
               _buildDropdownField(label: "Jenis Kelamin"),
               _buildTextField(label: "Pekerjaan"),
               _buildTextField(label: "Alamat"),
               _buildTextField(label: "Barang yang Hilang"),
-              _buildDateField(label: "Hilang Pada Tanggal"),
+              _buildDateField(label: "Hilang Pada Tanggal", controller: _tanggalHilangController),
               _buildTextField(label: "Tempat Kehilangan"),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -114,10 +143,11 @@ class SuratPengantarKehilanganBarang extends StatelessWidget {
     );
   }
 
-  Widget _buildDateField({required String label}) {
+  Widget _buildDateField({required String label, required TextEditingController controller}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
+        controller: controller,
         decoration: InputDecoration(
           labelText: label,
           suffixIcon: const Icon(Icons.calendar_today),
@@ -126,8 +156,20 @@ class SuratPengantarKehilanganBarang extends StatelessWidget {
           ),
         ),
         readOnly: true,
-        onTap: () {
-          // Tambahkan date picker jika diperlukan
+        onTap: () async {
+          DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+          );
+          if (pickedDate != null) {
+            String formattedDate =
+                "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+            setState(() {
+              controller.text = formattedDate;
+            });
+          }
         },
       ),
     );
@@ -161,43 +203,82 @@ class SuratPengantarKehilanganBarang extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.image, size: 40, color: Colors.grey),
-            ),
-            const SizedBox(width: 12),
-            ElevatedButton.icon(
-              onPressed: () {
-                MediaPickerService.showMediaPicker(
-                  context: context,
-                  onFilePicked: (path) {
-                    debugPrint('Media dipilih: $path');
-                    // Tambahkan penanganan lain di sini jika perlu
-                  },
-                );
-              },
-              icon: const Icon(Icons.add),
-              label: const Text("Tambah Media"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-                side: const BorderSide(color: Colors.grey),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-          ],
+        SizedBox(
+          height: 100,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _mediaPaths.length + 1,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              if (index == _mediaPaths.length) {
+                return _buildAddMediaButton(context);
+              }
+
+              final path = _mediaPaths[index];
+              final isImage = path.endsWith('.jpg') ||
+                  path.endsWith('.png') ||
+                  path.endsWith('.jpeg');
+
+              return Stack(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: isImage
+                        ? Image.file(File(path), fit: BoxFit.cover)
+                        : const Icon(Icons.insert_drive_file,
+                            size: 40, color: Colors.grey),
+                  ),
+                  Positioned(
+                    top: -8,
+                    right: -8,
+                    child: IconButton(
+                      icon:
+                          const Icon(Icons.cancel, color: Colors.red, size: 20),
+                      onPressed: () {
+                        setState(() {
+                          _mediaPaths.removeAt(index);
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildAddMediaButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        MediaPickerService.showMediaPicker(
+          context: context,
+          onFilePicked: (paths) {
+            debugPrint('Media dipilih: $paths');
+            setState(() {
+              _mediaPaths.addAll(paths);
+            });
+          },
+        );
+      },
+      child: Container(
+        width: 80,
+        height: 80,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Icon(Icons.add, size: 30, color: Colors.black54),
+      ),
     );
   }
 }
