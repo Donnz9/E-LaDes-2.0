@@ -120,7 +120,13 @@ class _SuratPengantarKehilanganBarangState
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text("Ajukan Permohonan"),
+                child: const Text(
+                  "Ajukan Permohonan",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
