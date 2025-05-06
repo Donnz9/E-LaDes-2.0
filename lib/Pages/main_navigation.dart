@@ -1,8 +1,17 @@
 import 'package:elades20/Models/user_model.dart';
+import 'package:elades20/Pages/Screens/Berita/berita.dart';
 import 'package:elades20/Pages/Screens/Dashboard/dashboard.dart';
+import 'package:elades20/Pages/Screens/Notifikasi/notifikasi.dart';
 import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20izin/keramaian.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20izin/tidak_masuk_kerja.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20keterangan/penghasilan_orang_tua.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20keterangan/sktm.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20pengantar/kehilangan_barang.dart';
+import 'package:elades20/Pages/Screens/Pengajuan/surat%20pengantar/skck.dart';
 import 'package:elades20/Pages/Screens/Profil/profile.dart';
+import 'package:elades20/Pages/Screens/Riwayat/riwayat.dart';
 import 'package:elades20/Pages/Widgets/nav_item.dart';
 import 'package:elades20/Pages/Widgets/top_bar.dart';
 import 'package:flutter/material.dart';
@@ -25,14 +34,20 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
-      const Pengajuan(),
-      const Center(child: Text("Riwayat Surat")),
+      Pengajuan(onNavigate: _onItemTapped),
+      const Riwayat(),
       const Pengaduan(),
       Dashboard(onNavigate: _onItemTapped),
-      const Center(child: Text("Berita")),
-      const Center(child: Text("Notifikasi")),
+      const Berita(),
+      const Notifikasi(),
       Profile(user: widget.user),
-
+      const SuratPengantarSkck(),
+      const SuratPengantarKehilanganBarang(),
+      const SuratKeteranganTidakMampu(),
+      const SuratKeteranganPenghasilanOrangTua(),
+      const SuratIzinTidakMasukKerja(),
+      const SuratIzinKeramaian(),
+      //nek pengin nambahne tambahne ng ngisore ae, mergo kudu urut index
     ];
 
     return Scaffold(

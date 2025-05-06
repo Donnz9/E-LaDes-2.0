@@ -24,25 +24,6 @@ class UserModel {
   }
 
   static Future<UserModel> fromFirebaseUser(User user) async {
-    // if (user.email != null) {
-    //   // Jika user.email tidak null, ambil data dari database
-    //   final userData = await UserService.getUserByEmail(user.email!);
-
-    //   // Jika data ditemukan, gunakan nama dan ID dari database, jika tidak gunakan displayName
-    //   return UserModel(
-    //     id: userData?.id ?? int.tryParse(user.uid) ?? 0, // Ambil ID dari database, jika tidak ada gunakan UID dari Firebase
-    //     nama: userData?.nama ?? user.displayName ?? 'Unknown', // Ambil nama dari database, jika tidak ada gunakan displayName
-    //     email: user.email, // Email tetap nullable
-    //   );
-    // } else {
-    //   // Jika email null, langsung buat UserModel tanpa data dari database
-    //   return UserModel(
-    //     id: int.tryParse(user.uid) ?? 0, // Gunakan UID dari Firebase untuk ID
-    //     nama: user.displayName ?? 'Unknown', // Gunakan displayName atau 'Unknown'
-    //     email: null, // Tidak ada email jika tidak tersedia
-    //   );
-    // }
-
     UserModel? userData;
 
   if (user.email != null) {

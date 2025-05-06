@@ -7,7 +7,8 @@ import 'package:elades20/Pages/Screens/Pengajuan/surat%20pengantar/skck.dart';
 import 'package:flutter/material.dart';
 
 class Pengajuan extends StatelessWidget {
-  const Pengajuan({super.key});
+  final void Function(int) onNavigate;
+  const Pengajuan({super.key, required this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
@@ -53,25 +54,13 @@ class Pengajuan extends StatelessWidget {
                       items: [
                         SuratItem(
                             icon: Icons.shield, text: "Surat Pengantar SKCK", 
-                            onTap: () { 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SuratPengantarSkck(),
-                                )
-                              );
-                             },),
+                            onTap: () => onNavigate(7),
+                            ),
                         SuratItem(
                             icon: Icons.search,
                             text: "Surat Pengantar Kehilangan Barang", 
-                            onTap: () { 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SuratPengantarKehilanganBarang(),
-                                )
-                              );
-                             },),
+                            onTap: () => onNavigate(8),
+                            ),
                       ],
                     ),
                     SuratKategori(
@@ -80,25 +69,13 @@ class Pengajuan extends StatelessWidget {
                         SuratItem(
                             icon: Icons.attach_money,
                             text: "Surat Keterangan Tidak Mampu (SKTM)", 
-                            onTap: () {  
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SuratKeteranganTidakMampu(),
-                                )
-                              );
-                            },),
+                            onTap: () => onNavigate(9),
+                            ),
                         SuratItem(
                             icon: Icons.family_restroom,
                             text: "Surat Keterangan Penghasilan Orang Tua", 
-                            onTap: () {  
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SuratKeteranganPenghasilanOrangTua(),
-                                )
-                              );
-                            },),
+                            onTap: () => onNavigate(10),
+                            ),
                       ],
                     ),
                     SuratKategori(
@@ -107,25 +84,13 @@ class Pengajuan extends StatelessWidget {
                         SuratItem(
                             icon: Icons.work_off,
                             text: "Surat Izin Tidak Masuk Kerja", 
-                            onTap: () {  
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SuratIzinTidakMasukKerja(),
-                                )
-                              );
-                            },),
+                            onTap: () => onNavigate(11),
+                            ),
                         SuratItem(
                             icon: Icons.celebration,
                             text: "Surat Izin Keramaian", 
-                            onTap: () {  
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SuratIzinKeramaian(),
-                                )
-                              );
-                            },),
+                            onTap: () => onNavigate(12),
+                            ),
                       ],
                     ),
                   ],

@@ -1,8 +1,8 @@
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
-import 'package:elades20/Pages/Widgets/layanan_desa.dart';
-import 'package:elades20/Pages/Widgets/status_pengajuan_surat.dart';
+import 'package:elades20/Pages/Widgets/dashboard/layanan_desa.dart';
+import 'package:elades20/Pages/Widgets/dashboard/status_pengajuan_surat.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -28,7 +28,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF5F6F8), // Background abu-abu muda
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

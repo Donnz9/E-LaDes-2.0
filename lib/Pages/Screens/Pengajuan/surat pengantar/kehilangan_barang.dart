@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:elades20/Services/Pengajuan/pengajuan_service.dart';
 import 'package:elades20/Services/permission_services.dart';
 import 'package:flutter/material.dart';
 import 'package:elades20/Services/Pengajuan/media_picker_service.dart';
@@ -33,6 +34,15 @@ class _SuratPengantarKehilanganBarangState
   final TextEditingController _tanggalLahirController = TextEditingController();
   final TextEditingController _tanggalHilangController =
       TextEditingController();
+  final TextEditingController _namaController = TextEditingController();
+  final TextEditingController _tempatLahirController = TextEditingController();
+  final TextEditingController _agamaController = TextEditingController();
+  final TextEditingController _pekerjaanController = TextEditingController();
+  final TextEditingController _alamatController = TextEditingController();
+  final TextEditingController _barangHilangController = TextEditingController();
+  final TextEditingController _tempatKehilanganController =
+      TextEditingController();
+  String? _selectedGender;
 
   @override
   Widget build(BuildContext context) {
@@ -100,19 +110,103 @@ class _SuratPengantarKehilanganBarangState
               const SizedBox(height: 16),
               _buildMedia(context),
               const SizedBox(height: 16),
-              _buildTextField(label: "Nama Lengkap"),
-              _buildTextField(label: "Tempat Lahir"),
-              _buildDateField(label: "Tanggal Lahir", controller: _tanggalLahirController),
-              _buildTextField(label: "Agama"),
+              _buildTextField(
+                  label: "Nama Lengkap", controller: _namaController),
+              _buildTextField(
+                  label: "Tempat Lahir", controller: _tempatLahirController),
+              _buildDateField(
+                  label: "Tanggal Lahir", controller: _tanggalLahirController),
+              _buildTextField(label: "Agama", controller: _agamaController),
               _buildDropdownField(label: "Jenis Kelamin"),
-              _buildTextField(label: "Pekerjaan"),
-              _buildTextField(label: "Alamat"),
-              _buildTextField(label: "Barang yang Hilang"),
-              _buildDateField(label: "Hilang Pada Tanggal", controller: _tanggalHilangController),
-              _buildTextField(label: "Tempat Kehilangan"),
+              _buildTextField(
+                  label: "Pekerjaan", controller: _pekerjaanController),
+              _buildTextField(label: "Alamat", controller: _alamatController),
+              _buildTextField(
+                  label: "Barang yang Hilang",
+                  controller: _barangHilangController),
+              _buildDateField(
+                  label: "Hilang Pada Tanggal",
+                  controller: _tanggalHilangController),
+              _buildTextField(
+                  label: "Tempat Kehilangan",
+                  controller: _tempatKehilanganController),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  if (_namaController.text.isEmpty ||
+                      _tempatLahirController.text.isEmpty ||
+                      _tanggalLahirController.text.isEmpty ||
+                      _agamaController.text.isEmpty ||
+                      _selectedGender == null ||
+                      _pekerjaanController.text.isEmpty ||
+                      _alamatController.text.isEmpty ||
+                      _barangHilangController.text.isEmpty ||
+                      _tanggalHilangController.text.isEmpty ||
+                      _tempatKehilanganController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Semua data wajib diisi!"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Tampilkan dialog konfirmasi
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Konfirmasi"),
+                      content: const Text("Apakah semua data sudah benar?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text("Belum"),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text("Sudah"),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  // Jika user batal, hentikan
+                  if (confirm != true) return;
+
+                  // jika user sudah
+                  final response = await KehilanganBarangService.submitForm(
+                    nama: _namaController.text,
+                    tempatLahir: _tempatLahirController.text,
+                    tanggalLahir: _tanggalLahirController.text,
+                    agama: _agamaController.text,
+                    jenisKelamin: _selectedGender!,
+                    pekerjaan: _pekerjaanController.text,
+                    alamat: _alamatController.text,
+                    barang: _barangHilangController.text,
+                    tanggalHilang: _tanggalHilangController.text,
+                    tempatKehilangan: _tempatKehilanganController.text,
+                    filePath: _mediaPaths.isNotEmpty ? _mediaPaths.first : null,
+                  );
+
+                  if (response['status'] == 'success') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Pengajuan berhasil dikirim!"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    // widget.onNavigate(0);
+
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Gagal: ${response['message']}"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4B9560),
                   minimumSize: const Size.fromHeight(50),
@@ -135,10 +229,12 @@ class _SuratPengantarKehilanganBarangState
     );
   }
 
-  Widget _buildTextField({required String label}) {
+  Widget _buildTextField(
+      {required String label, TextEditingController? controller}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
+        controller: controller,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
@@ -149,7 +245,8 @@ class _SuratPengantarKehilanganBarangState
     );
   }
 
-  Widget _buildDateField({required String label, required TextEditingController controller}) {
+  Widget _buildDateField(
+      {required String label, required TextEditingController controller}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
@@ -191,11 +288,16 @@ class _SuratPengantarKehilanganBarangState
             borderRadius: BorderRadius.circular(8),
           ),
         ),
+        value: _selectedGender,
         items: const [
           DropdownMenuItem(value: "Laki-laki", child: Text("Laki-laki")),
           DropdownMenuItem(value: "Perempuan", child: Text("Perempuan")),
         ],
-        onChanged: (value) {},
+        onChanged: (value) {
+          setState(() {
+            _selectedGender = value;
+          });
+        },
       ),
     );
   }
