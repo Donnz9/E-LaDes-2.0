@@ -34,19 +34,19 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
-      Pengajuan(onNavigate: _onItemTapped),
+      Pengajuan(onNavigate: _onItemTapped, user: widget.user,),
       const Riwayat(),
       const Pengaduan(),
-      Dashboard(onNavigate: _onItemTapped),
+      Dashboard(onNavigate: _onItemTapped, user: widget.user,),
       const Berita(),
       const Notifikasi(),
       Profile(user: widget.user),
-      const SuratPengantarSkck(),
-      const SuratPengantarKehilanganBarang(),
-      const SuratKeteranganTidakMampu(),
-      const SuratKeteranganPenghasilanOrangTua(),
-      const SuratIzinTidakMasukKerja(),
-      const SuratIzinKeramaian(),
+      SuratPengantarSkck(user: widget.user, onNavigate: _onItemTapped),
+      SuratPengantarKehilanganBarang(user: widget.user, onNavigate: _onItemTapped),
+      SuratKeteranganTidakMampu(user: widget.user, onNavigate: _onItemTapped),
+      SuratKeteranganPenghasilanOrangTua(user: widget.user, onNavigate: _onItemTapped),
+      SuratIzinTidakMasukKerja(user: widget.user, onNavigate: _onItemTapped),
+      SuratIzinKeramaian(user: widget.user, onNavigate: _onItemTapped),
       //nek pengin nambahne tambahne ng ngisore ae, mergo kudu urut index
     ];
 

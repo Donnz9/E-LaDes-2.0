@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 
 class Pengajuan extends StatelessWidget {
   final void Function(int) onNavigate;
-  const Pengajuan({super.key, required this.onNavigate});
+  final dynamic user;
+  const Pengajuan({super.key, required this.onNavigate, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -53,44 +54,116 @@ class Pengajuan extends StatelessWidget {
                       title: "Surat Pengantar",
                       items: [
                         SuratItem(
-                            icon: Icons.shield, text: "Surat Pengantar SKCK", 
-                            onTap: () => onNavigate(7),
-                            ),
+                          icon: Icons.shield,
+                          text: "Surat Pengantar SKCK",
+                          // onTap: () => onNavigate(7),
+                          onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SuratPengantarSkck(
+                                    user: user,
+                                    onNavigate: onNavigate,
+                                  ),
+                                ),
+                              );
+                            }
+                        ),
                         SuratItem(
                             icon: Icons.search,
-                            text: "Surat Pengantar Kehilangan Barang", 
-                            onTap: () => onNavigate(8),
-                            ),
+                            text: "Surat Pengantar Kehilangan Barang",
+                            // onTap: () => onNavigate(8),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SuratPengantarKehilanganBarang(
+                                    user: user,
+                                    onNavigate: onNavigate,
+                                  ),
+                                ),
+                              );
+                            }),
                       ],
                     ),
                     SuratKategori(
                       title: "Surat Keterangan",
                       items: [
                         SuratItem(
-                            icon: Icons.attach_money,
-                            text: "Surat Keterangan Tidak Mampu (SKTM)", 
-                            onTap: () => onNavigate(9),
-                            ),
+                          icon: Icons.attach_money,
+                          text: "Surat Keterangan Tidak Mampu (SKTM)",
+                          // onTap: () => onNavigate(9),
+                          onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SuratKeteranganTidakMampu(
+                                    user: user,
+                                    onNavigate: onNavigate,
+                                  ),
+                                ),
+                              );
+                            }
+                        ),
                         SuratItem(
-                            icon: Icons.family_restroom,
-                            text: "Surat Keterangan Penghasilan Orang Tua", 
-                            onTap: () => onNavigate(10),
-                            ),
+                          icon: Icons.family_restroom,
+                          text: "Surat Keterangan Penghasilan Orang Tua",
+                          // onTap: () => onNavigate(10),
+                          onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SuratKeteranganPenghasilanOrangTua(
+                                    user: user,
+                                    onNavigate: onNavigate,
+                                  ),
+                                ),
+                              );
+                            }
+                        ),
                       ],
                     ),
                     SuratKategori(
                       title: "Surat Izin",
                       items: [
                         SuratItem(
-                            icon: Icons.work_off,
-                            text: "Surat Izin Tidak Masuk Kerja", 
-                            onTap: () => onNavigate(11),
-                            ),
+                          icon: Icons.work_off,
+                          text: "Surat Izin Tidak Masuk Kerja",
+                          // onTap: () => onNavigate(11),
+                          onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SuratIzinTidakMasukKerja(
+                                    user: user,
+                                    onNavigate: onNavigate,
+                                  ),
+                                ),
+                              );
+                            }
+                        ),
                         SuratItem(
-                            icon: Icons.celebration,
-                            text: "Surat Izin Keramaian", 
-                            onTap: () => onNavigate(12),
-                            ),
+                          icon: Icons.celebration,
+                          text: "Surat Izin Keramaian",
+                          // onTap: () => onNavigate(12),
+                          onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SuratIzinKeramaian(
+                                    user: user,
+                                    onNavigate: onNavigate,
+                                  ),
+                                ),
+                              );
+                            }
+                        ),
                       ],
                     ),
                   ],
@@ -153,11 +226,13 @@ class SuratItem extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
 
-  const SuratItem({super.key, required this.icon, required this.text, required this.onTap});
+  const SuratItem(
+      {super.key, required this.icon, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell( // Membuat item bisa ditekan
+    return InkWell(
+      // Membuat item bisa ditekan
       onTap: onTap, // Menambahkan fungsi saat item ditekan
       child: Row(
         children: [

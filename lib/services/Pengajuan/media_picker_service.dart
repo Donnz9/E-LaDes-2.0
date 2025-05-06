@@ -62,13 +62,12 @@ class MediaPickerService {
   static Future<List<String>> _pickFile() async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
+      type: FileType.any,
       withData: true,
     );
     if (result != null && result.files.isNotEmpty) {
-    return result.paths.whereType<String>().toList();
-  }
-  return [];
+      return result.paths.whereType<String>().toList();
+    }
+    return [];
   }
 }

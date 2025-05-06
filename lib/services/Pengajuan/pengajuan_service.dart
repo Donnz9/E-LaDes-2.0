@@ -3,6 +3,11 @@ import 'package:elades20/Services/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
+//pengantar
+class SKCKService {
+
+}
+
 class KehilanganBarangService {
   static Future<Map<String, dynamic>> submitForm({
     required String nama,
@@ -15,7 +20,8 @@ class KehilanganBarangService {
     required String barang,
     required String tanggalHilang,
     required String tempatKehilangan,
-    required String? filePath, // boleh null
+    required List<String> filePaths, // boleh null
+    required String username,
   }) async {
     var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_kehilangan.php");
     var request = http.MultipartRequest("POST", uri);
@@ -31,14 +37,19 @@ class KehilanganBarangService {
     request.fields['barang'] = barang;
     request.fields['tanggal_hilang'] = tanggalHilang;
     request.fields['tempat_kehilangan'] = tempatKehilangan;
+    request.fields['username'] = username;
 
-    if (filePath != null && filePath.isNotEmpty) {
-      var file = await http.MultipartFile.fromPath(
-        'file',
-        filePath,
-        contentType: MediaType('application', 'octet-stream'),
-      );
-      request.files.add(file);
+    if (filePaths.isNotEmpty) {
+      for (int i = 0; i < filePaths.length; i++) {
+        if (filePaths[i].isNotEmpty) {
+          var file = await http.MultipartFile.fromPath(
+            'file[]', // Changed to array notation for PHP
+            filePaths[i],
+            contentType: MediaType('application', 'octet-stream'),
+          );
+          request.files.add(file);
+        }
+      }
     }
 
     var response = await request.send();
@@ -46,4 +57,22 @@ class KehilanganBarangService {
     print("Response: $respStr");
     return json.decode(respStr);
   }
+}
+
+//keterangan
+class SKTMService {
+  
+}
+
+class PenghasilanService {
+  
+}
+
+//izin
+class TidakMasukKerjaService {
+  
+}
+
+class KeramaianService {
+  
 }

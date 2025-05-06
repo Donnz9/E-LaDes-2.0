@@ -1,21 +1,32 @@
+import 'package:elades20/Models/dashboard/dashboard_model.dart';
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
 import 'package:elades20/Pages/Widgets/dashboard/layanan_desa.dart';
 import 'package:elades20/Pages/Widgets/dashboard/status_pengajuan_surat.dart';
+import 'package:elades20/Services/Dashboard/StatusPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Dashboard extends StatefulWidget {
   final Function(int) onNavigate;
-  const Dashboard({super.key, required this.onNavigate});
+  final UserModel user;
+  const Dashboard({super.key, required this.onNavigate, required this.user});
 
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
+  StatusPengajuan? statusPengajuan;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStatusPengajuan();
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -208,10 +219,19 @@ class _DashboardState extends State<Dashboard> {
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    StatusPengajuanSuratCard(title: "Masuk", count: "2"),
-                    StatusPengajuanSuratCard(title: "Selesai", count: "1"),
-                    StatusPengajuanSuratCard(title: "Tolak", count: "1"),
+                  children: [
+                    StatusPengajuanSuratCard(
+                      title: "Masuk",
+                      count: statusPengajuan?.masuk.toString() ?? "0",
+                    ),
+                    StatusPengajuanSuratCard(
+                      title: "Selesai",
+                      count: statusPengajuan?.selesai.toString() ?? "0",
+                    ),
+                    StatusPengajuanSuratCard(
+                      title: "Tolak",
+                      count: statusPengajuan?.tolak.toString() ?? "0",
+                    ),
                   ],
                 ),
 
@@ -247,5 +267,22 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  Future<void> fetchStatusPengajuan() async {
+    final service = StatusPengajuanService();
+    try {
+      final result = await service.fetchStatus(widget.user.nama);
+
+      if (result != null) {
+        setState(() {
+          statusPengajuan = result;
+        });
+      } else {
+        print("Gagal ambil data status pengajuan");
+      }
+    } catch (e) {
+      print("Terjadi kesalahan: $e");
+    }
   }
 }

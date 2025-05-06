@@ -1,7 +1,10 @@
+import 'package:elades20/Models/user_model.dart';
 import 'package:flutter/material.dart';
 
 class SuratKeteranganTidakMampu extends StatelessWidget {
-  const SuratKeteranganTidakMampu({super.key});
+  final void Function(int) onNavigate;
+  final UserModel user;
+  const SuratKeteranganTidakMampu({super.key, required this.onNavigate, required this.user});
 
   @override
   Widget build(BuildContext context) {
