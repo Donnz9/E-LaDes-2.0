@@ -22,18 +22,33 @@ class UserService {
   }
 
   static Future<UserModel?> getUserByUid(String uid) async {
-  try {
-    List<dynamic> users = await ApiService.fetchUsers();
+    try {
+      List<dynamic> users = await ApiService.fetchUsers();
 
-    for (var userData in users) {
-      if (userData['uid'] == uid) {
-        return UserModel.fromJson(userData);
+      for (var userData in users) {
+        if (userData['uid'] == uid) {
+          return UserModel.fromJson(userData);
+        }
       }
+    } catch (e) {
+      print("Error fetching user by UID: $e");
     }
-  } catch (e) {
-    print("Error fetching user by UID: $e");
+    return null;
   }
-  return null;
-}
 
+  // Get user by phone number
+  static Future<UserModel?> getUserByPhone(String phone) async {
+    try {
+      List<dynamic> users = await ApiService.fetchUsers();
+      
+      for (var userData in users) {
+        if (userData['no_hp'] == phone) {
+          return UserModel.fromJson(userData);
+        }
+      }
+    } catch (e) {
+      print("Error fetching user by phone: $e");
+    }
+    return null;
+  }
 }
