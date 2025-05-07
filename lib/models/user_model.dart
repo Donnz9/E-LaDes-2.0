@@ -36,14 +36,6 @@ class UserModel {
       // Login via nomor HP
       userData = await UserService.getUserByUid(user.uid);
     }
-
-    // return UserModel(
-    //   id: userData?.id ?? int.tryParse(user.uid) ?? 0,
-    //   nama: userData?.nama ?? user.displayName ?? 'Unknown',
-    //   email: userData?.email,
-    //   noHp: userData?.noHp,
-    // );
-
     return userData ??
         UserModel(
           id: int.tryParse(user.uid.substring(0, 9)) ?? 0, // Better id handling
@@ -61,5 +53,23 @@ class UserModel {
       'no_hp': noHp,
       'profile_image': profileImage,
     };
+  }
+
+  UserModel copyWith({
+    int? id,
+    String? nama,
+    String? email,
+    String? noHp,
+    String? profileImage,
+    // Parameter untuk properti lain
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      nama: nama ?? this.nama,
+      email: email ?? this.email,
+      noHp: noHp ?? this.noHp,
+      profileImage: profileImage ?? this.profileImage,
+      // Properti lain
+    );
   }
 }

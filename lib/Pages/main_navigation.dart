@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Berita/berita.dart';
 import 'package:elades20/Pages/Screens/Dashboard/dashboard.dart';
@@ -26,27 +28,46 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 3;
+  late UserModel currentUser;
+  File? _imageFile; 
+
+  @override
+  void initState() {
+    super.initState();
+    currentUser = widget.user;
+  }
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
   }
 
+  // Fungsi untuk memperbarui UserModel saat profil diubah
+  void _updateUserModel(UserModel updatedUser) {
+    setState(() {
+      currentUser = updatedUser;
+    });
+    print("User model diperbarui: ${updatedUser.nama}, ${updatedUser.email ?? updatedUser.noHp}");
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
-      Pengajuan(onNavigate: _onItemTapped, user: widget.user,),
+      Pengajuan(onNavigate: _onItemTapped, user: currentUser,),
       const Riwayat(),
       const Pengaduan(),
-      Dashboard(onNavigate: _onItemTapped, user: widget.user,),
+      Dashboard(onNavigate: _onItemTapped, user: currentUser,),
       const Berita(),
       const Notifikasi(),
-      Profile(user: widget.user),
-      SuratPengantarSkck(user: widget.user, onNavigate: _onItemTapped),
-      SuratPengantarKehilanganBarang(user: widget.user, onNavigate: _onItemTapped),
-      SuratKeteranganTidakMampu(user: widget.user, onNavigate: _onItemTapped),
-      SuratKeteranganPenghasilanOrangTua(user: widget.user, onNavigate: _onItemTapped),
-      SuratIzinTidakMasukKerja(user: widget.user, onNavigate: _onItemTapped),
-      SuratIzinKeramaian(user: widget.user, onNavigate: _onItemTapped),
+      Profile(
+        user: currentUser,
+        onProfileUpdated: _updateUserModel,
+      ),
+      SuratPengantarSkck(user: currentUser, onNavigate: _onItemTapped),
+      SuratPengantarKehilanganBarang(user: currentUser, onNavigate: _onItemTapped),
+      SuratKeteranganTidakMampu(user: currentUser, onNavigate: _onItemTapped),
+      SuratKeteranganPenghasilanOrangTua(user: currentUser, onNavigate: _onItemTapped),
+      SuratIzinTidakMasukKerja(user: currentUser, onNavigate: _onItemTapped),
+      SuratIzinKeramaian(user: currentUser, onNavigate: _onItemTapped),
       //nek pengin nambahne tambahne ng ngisore ae, mergo kudu urut index
     ];
 
@@ -57,7 +78,7 @@ class _MainNavigationState extends State<MainNavigation> {
             TopBar(
               onProfileTap: () => _onItemTapped(6),
               onNotifTap: () => _onItemTapped(5),
-              user: widget.user,
+              user: currentUser,
             ),
             Expanded(child: _pages[_selectedIndex]),
           ],

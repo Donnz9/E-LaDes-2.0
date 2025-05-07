@@ -1,4 +1,5 @@
 import 'package:elades20/Models/user_model.dart';
+import 'package:elades20/Services/config.dart'; // Import AppConfig
 import 'package:flutter/material.dart';
 
 class TopBar extends StatelessWidget {
@@ -6,10 +7,28 @@ class TopBar extends StatelessWidget {
   final VoidCallback onNotifTap;
   final UserModel user;
 
-  TopBar({super.key, required this.onProfileTap, required this.onNotifTap, required this.user});
+  const TopBar({
+    super.key,
+    required this.onProfileTap,
+    required this.onNotifTap,
+    required this.user,
+  });
+
+  String? getFormattedProfileImageUrl() {
+    if (user.profileImage == null || user.profileImage!.isEmpty) {
+      return null;
+    }
+    String filename = user.profileImage!.split('/').last;
+    String encodedFilename = Uri.encodeComponent(filename);
+    String formattedUrl = "${AppConfig.baseUrl}/profile/foto_profile/$encodedFilename";
+    debugPrint('TopBar profile image URL: $formattedUrl');
+    return formattedUrl;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl = getFormattedProfileImageUrl();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Row(
@@ -19,10 +38,23 @@ class TopBar extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: onProfileTap,
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Color(0xFF7A9E7A),
-                  child: Icon(Icons.person, color: Colors.white),
+                  backgroundColor: const Color(0xFF7A9E7A),
+                  child: ClipOval(
+                    child: imageUrl != null
+                        ? FadeInImage.assetNetwork(
+                            placeholder: 'assets/images/placeholder_profil.png',
+                            image: imageUrl,
+                            fit: BoxFit.cover,
+                            width: 40,
+                            height: 40,
+                            imageErrorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.person, color: Colors.white);
+                            },
+                          )
+                        : const Icon(Icons.person, color: Colors.white),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -30,7 +62,7 @@ class TopBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text("Hai!", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                  Text(user.nama, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(user.nama, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
