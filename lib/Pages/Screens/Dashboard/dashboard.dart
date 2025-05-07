@@ -308,18 +308,28 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> fetchKabarDesa() async {
+    print("Dashboard: Starting fetchKabarDesa method");
+  setState(() {
+    isLoadingKabarDesa = true;
+  });
+
     final service = KabarDesaService();
     try {
+      print("Dashboard: Calling KabarDesaService.fetchKabarDesa()");
       final result = await service.fetchKabarDesa();
+
+      print("Dashboard: Received result from service with ${result.length} items");
       
       setState(() {
         kabarDesaList = result;
         isLoadingKabarDesa = false;
+        print("Dashboard: Updated state with ${kabarDesaList.length} items, isLoadingKabarDesa=$isLoadingKabarDesa");
       });
     } catch (e) {
-      print("Terjadi kesalahan saat mengambil kabar desa: $e");
+      print("Dashboard: Exception in fetchKabarDesa: $e");
       setState(() {
         isLoadingKabarDesa = false;
+        print("Dashboard: Set isLoadingKabarDesa=false due to error");
       });
     }
   }

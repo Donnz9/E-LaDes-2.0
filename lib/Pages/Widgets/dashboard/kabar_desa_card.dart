@@ -2,10 +2,11 @@ import 'package:elades20/Models/dashboard/dashboard_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:elades20/Services/config.dart';
 
 class KabarDesaCard extends StatelessWidget {
   final KabarDesaModel kabarDesa;
-  
+
   const KabarDesaCard({super.key, required this.kabarDesa});
 
   @override
@@ -14,11 +15,22 @@ class KabarDesaCard extends StatelessWidget {
     final DateFormat formatter = DateFormat('dd MMMM yyyy');
     final String formattedDate = formatter.format(kabarDesa.tanggal);
 
+    // Construct the image URL properly - make sure it's a valid network URL
+    String imageUrl = "";
+    if (kabarDesa.gambar.isNotEmpty) {
+      // Make sure we have a valid URL with properly encoded path components
+      String encodedFilename = Uri.encodeComponent(kabarDesa.gambar);
+      imageUrl = "${AppConfig.baseUrl}/dashboard/gambar_kabar_desa/$encodedFilename";
+      
+      // Debug log the image URL
+      print("KabarDesaCard: Loading image from URL: $imageUrl");
+    }
+
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.green.shade300,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
@@ -36,23 +48,37 @@ class KabarDesaCard extends StatelessWidget {
           if (kabarDesa.gambar.isNotEmpty)
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-              child: Image.network(
-                kabarDesa.gambar,
+              child: FadeInImage.assetNetwork(
+                placeholder: 'assets/images/placeholder.png', // Make sure you have this asset
+                image: imageUrl,
                 width: double.infinity,
                 height: 150,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
+                imageErrorBuilder: (context, error, stackTrace) {
+                  print("KabarDesaCard: Error loading image: $error for URL: $imageUrl");
+                  // Attempt to diagnose URI parsing issues
+                  print("KabarDesaCard: URI parsing test: ${Uri.parse(imageUrl)}");
                   return Container(
                     height: 150,
                     color: Colors.grey[200],
-                    child: const Center(
-                      child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Gambar tidak tersedia',
+                            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
               ),
             ),
-          
+
           // Konten
           Padding(
             padding: const EdgeInsets.all(12),
@@ -65,11 +91,12 @@ class KabarDesaCard extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
-                
+
                 const SizedBox(height: 4),
-                
+
                 // Tanggal
                 Text(
                   formattedDate,
@@ -78,14 +105,15 @@ class KabarDesaCard extends StatelessWidget {
                     color: Colors.grey[600],
                   ),
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 // Deskripsi
                 Text(
                   kabarDesa.deskripsi,
                   style: GoogleFonts.inter(
                     fontSize: 13,
+                    color: Colors.white,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,

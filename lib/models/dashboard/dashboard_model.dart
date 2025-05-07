@@ -50,7 +50,7 @@ class KabarDesaModel {
 
   factory KabarDesaModel.fromJson(Map<String, dynamic> json) {
     return KabarDesaModel(
-      id: json['id'],
+      id: json['id'] is String ? int.parse(json['id']) : json['id'],
       judul: json['judul'],
       deskripsi: json['deskripsi'],
       gambar: json['gambar'] ?? '',
