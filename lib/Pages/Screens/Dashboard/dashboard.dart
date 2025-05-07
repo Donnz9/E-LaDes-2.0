@@ -2,8 +2,10 @@ import 'package:elades20/Models/dashboard/dashboard_model.dart';
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
+import 'package:elades20/Pages/Widgets/dashboard/kabar_desa_card.dart';
 import 'package:elades20/Pages/Widgets/dashboard/layanan_desa.dart';
 import 'package:elades20/Pages/Widgets/dashboard/status_pengajuan_surat.dart';
+import 'package:elades20/Services/Dashboard/KabarDesa_service.dart';
 import 'package:elades20/Services/Dashboard/StatusPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,11 +22,14 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   StatusPengajuan? statusPengajuan;
+  List<KabarDesaModel> kabarDesaList = []; // List untuk menyimpan data kabar desa
+  bool isLoadingKabarDesa = true;
 
   @override
   void initState() {
     super.initState();
     fetchStatusPengajuan();
+    fetchKabarDesa(); 
   }
 
   @override
@@ -246,21 +251,37 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade200,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    "SUDAHKAH KALIAN MENGETAHUI KEPALA DESA KAUMAN?",
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+
+                isLoadingKabarDesa
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : kabarDesaList.isEmpty
+                        ? Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade100,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              "Belum ada kabar desa terbaru",
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        : Column(
+                            children: kabarDesaList
+                                .map((kabar) => KabarDesaCard(kabarDesa: kabar))
+                                .toList(),
+                          ),
+                          
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -283,6 +304,23 @@ class _DashboardState extends State<Dashboard> {
       }
     } catch (e) {
       print("Terjadi kesalahan: $e");
+    }
+  }
+
+  Future<void> fetchKabarDesa() async {
+    final service = KabarDesaService();
+    try {
+      final result = await service.fetchKabarDesa();
+      
+      setState(() {
+        kabarDesaList = result;
+        isLoadingKabarDesa = false;
+      });
+    } catch (e) {
+      print("Terjadi kesalahan saat mengambil kabar desa: $e");
+      setState(() {
+        isLoadingKabarDesa = false;
+      });
     }
   }
 }
