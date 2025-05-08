@@ -22,8 +22,35 @@ class UserModel {
 
   static Future<UserModel> fromFirebaseUser(User user) async {
     if (user.email != null) {
+<<<<<<< Updated upstream
       // Jika user.email tidak null, ambil data dari database
       final userData = await UserService.getUserByEmail(user.email!);
+=======
+      // Login via email
+      userData = (await UserService.getUserByEmail(user.email!)) as UserModel?;
+    } else {
+      // Login via nomor HP
+      userData = (await UserService.getUserByUid(user.uid)) as UserModel?;
+    }
+    return userData ??
+        UserModel(
+          id: int.tryParse(user.uid.substring(0, 9)) ?? 0, // Better id handling
+          nama: user.displayName ?? 'Unknown',
+          email: user.email,
+          noHp: user.phoneNumber,
+          profileImage: user.photoURL,
+        );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id_user': id,
+      'nama': nama,
+      'email': email,
+      'no_hp': noHp,
+      'profile_image': profileImage,
+    };
+  }
+>>>>>>> Stashed changes
 
       // Jika data ditemukan, gunakan nama dan ID dari database, jika tidak gunakan displayName
       return UserModel(
