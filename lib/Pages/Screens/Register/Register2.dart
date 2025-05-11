@@ -1,7 +1,7 @@
 import 'package:elades20/Pages/Screens/Login/Login.dart';
 import 'package:elades20/Services/Register/firebase_auth.dart';
 import 'package:elades20/Services/Register/otp_services.dart';
-import 'package:elades20/Services/Register/register.service.dart';
+import 'package:elades20/Services/Register/register_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

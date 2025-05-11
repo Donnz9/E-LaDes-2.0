@@ -24,6 +24,36 @@ class _LoginState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  @override
+  void initState() {
+    super.initState();
+    // Menghapus riwayat Firebase dan Google Sign-In saat halaman Login dimuat
+    _clearFirebaseHistory();
+  }
+
+  // Method untuk menghapus riwayat Firebase dan memaksa pemilihan akun Google
+  Future<void> _clearFirebaseHistory() async {
+    try {
+      // Sign out dari Firebase Auth jika ada sesi yang aktif
+      if (_auth.currentUser != null) {
+        await _auth.signOut();
+      }
+      
+      // Sign out dari Google Sign In
+      final isSignedIn = await _googleSignIn.isSignedIn();
+      if (isSignedIn) {
+        await _googleSignIn.signOut();
+      }
+      
+      // Disconnect dari Google untuk menghapus semua jejak
+      await _googleSignIn.disconnect();
+      
+      debugPrint("Berhasil menghapus riwayat Firebase dan Google Sign-In");
+    } catch (e) {
+      debugPrint("Error saat menghapus riwayat Firebase: $e");
+    }
+  }
+
   // Show error message
   void _showErrorMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -47,23 +77,23 @@ class _LoginState extends State<Login> {
   // Regular email/phone login
   Future<void> _handleRegularLogin() async {
     setState(() => _isLoading = true);
-    
+
     try {
       String login = emailController.text.trim();
       String password = passwordController.text.trim();
-      
+
       if (login.isEmpty || password.isEmpty) {
         _showErrorMessage("Email/No HP dan password harus diisi");
         return;
       }
 
       final result = await LoginService.login(login, password);
-      
+
       if (result['success']) {
         UserModel? user = result['user'];
         if (user != null) {
           _showSuccessMessage("Login berhasil");
-          
+
           // Navigate to main page
           Navigator.pushReplacement(
             context,
@@ -87,7 +117,7 @@ class _LoginState extends State<Login> {
   // Google sign-in
   Future<void> _handleGoogleSignIn() async {
     setState(() => _isLoading = true);
-    
+
     try {
       // Start Google sign-in process
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -99,7 +129,8 @@ class _LoginState extends State<Login> {
       }
 
       // Get authentication details
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create Firebase credential
       final OAuthCredential credential = GoogleAuthProvider.credential(
@@ -108,25 +139,44 @@ class _LoginState extends State<Login> {
       );
 
       // Sign in to Firebase
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
       final User? firebaseUser = userCredential.user;
 
       if (firebaseUser != null) {
-        // Convert Firebase user to your app's user model
-        UserModel userModel = await UserModel.fromFirebaseUser(firebaseUser);
-        
-        // Save Google user to your database if needed
-        await LoginService.saveGoogleUser(userModel);
-        
-        _showSuccessMessage("Login berhasil dengan Google");
-        
-        // Navigate to main page
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainNavigation(user: userModel),
-          ),
-        );
+        // Cek apakah pengguna ada di database kita
+        final UserModel? existingUser =
+            await UserModel.fromFirebaseUser(firebaseUser);
+
+        if (existingUser == null) {
+          // Pengguna tidak ditemukan di database kita, buat model sementara untuk dibawa ke halaman Register
+          final UserModel tempUserModel =
+              UserModel.fromGoogleAccount(firebaseUser);
+
+          // Arahkan ke halaman register
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Register(
+                googleUser: tempUserModel,
+                firebaseUser:
+                    firebaseUser, // Mengirim data firebaseUser untuk referensi
+              ),
+            ),
+          );
+        } else {
+          // Pengguna sudah terdaftar, lanjutkan proses login
+          await LoginService.saveGoogleUser(existingUser);
+          _showSuccessMessage("Login berhasil dengan akun Google");
+
+          // Navigate to main page
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainNavigation(user: existingUser),
+            ),
+          );
+        }
       } else {
         _showErrorMessage('Login gagal dengan Google');
       }
@@ -147,11 +197,13 @@ class _LoginState extends State<Login> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(height: 30),
               Image.asset(
-                'assets/images/logo.png',
-                width: 200,
-                height: 200,
+                'assets/images/LogoApp.png',
+                width: 100,
+                height: 100,
               ),
+              const SizedBox(height: 30),
               const Text(
                 'SELAMAT DATANG',
                 style: TextStyle(
@@ -168,7 +220,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 30),
-              
+
               // Email/No HP Field
               TextField(
                 controller: emailController,
@@ -183,7 +235,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 15),
-              
+
               // Password Field
               TextField(
                 controller: passwordController,
@@ -207,7 +259,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              
+
               // Lupa Password
               Align(
                 alignment: Alignment.centerRight,
@@ -230,7 +282,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 10),
-              
+
               // Login Button
               SizedBox(
                 width: double.infinity,
@@ -256,7 +308,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Google Login Button
               SizedBox(
                 width: double.infinity,
@@ -283,7 +335,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Register Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -1,12 +1,18 @@
 import 'dart:convert';
+import 'package:elades20/Models/user_model.dart';
+import 'package:elades20/Pages/Screens/Login/Login.dart';
 import 'package:elades20/Pages/Screens/Register/Register2.dart';
 import 'package:elades20/Services/Register/otp_services.dart';
 import 'package:elades20/Services/config.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
-  const Register({super.key});
+  final UserModel? googleUser;
+  final User? firebaseUser;
+  const Register({Key? key, this.googleUser, this.firebaseUser})
+      : super(key: key);
 
   @override
   State<Register> createState() => _RegisterState();
@@ -21,6 +27,16 @@ class _RegisterState extends State<Register> {
   bool _obscureText = true;
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.googleUser != null) {
+      namaController.text = widget.googleUser!.nama;
+      emailController.text = widget.googleUser!.email ?? '';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -30,11 +46,27 @@ class _RegisterState extends State<Register> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/logo.png',
-                width: 200,
-                height: 200,
+              Row(
+                children: [
+                  IconButton(
+                    icon:
+                        const Icon(Icons.arrow_back, color: Color(0xFF4B9560)),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Login()),
+                      );
+                    },
+                  ),
+                  const Spacer(),
+                ],
               ),
+              Image.asset(
+                'assets/images/LogoApp.png',
+                width: 100,
+                height: 100,
+              ),
+              const SizedBox(height: 15),
               const Text(
                 'DAFTAR AKUN',
                 style: TextStyle(
@@ -114,7 +146,7 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               const SizedBox(height: 25),
-              // Login Button
+              // Lanjut Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -176,7 +208,8 @@ class _RegisterState extends State<Register> {
 
                     try {
                       // final success = await OtpServices.sendOtp(emailOrPhone);
-                      final otpResponse = await OtpServices.sendOtp(emailOrPhone);
+                      final otpResponse =
+                          await OtpServices.sendOtp(emailOrPhone);
                       if (otpResponse.success) {
                         print("OTP dikirim: ${otpResponse.message}");
                         Navigator.push(

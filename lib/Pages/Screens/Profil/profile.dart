@@ -373,7 +373,7 @@ class _ProfileState extends State<Profile> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const GantiPassword(),
+                        builder: (context) => GantiPassword(user: currentUser),
                       ),
                     );
                   },

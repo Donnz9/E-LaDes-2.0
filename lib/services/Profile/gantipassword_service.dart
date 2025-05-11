@@ -9,7 +9,7 @@ import 'package:elades20/Services/Login/user_service.dart';
 Future<bool> update_password(String idUser, String newPassword) async {
   try {
     // Convert Firebase UID to application user ID if needed
-    int userId;
+    int? userId;
     
     // Check if the provided ID is numeric (from UserModel) or a Firebase UID
     if (int.tryParse(idUser) != null) {
@@ -38,25 +38,42 @@ Future<bool> update_password(String idUser, String newPassword) async {
       
       userId = userModel.id;
     }
+    
+    if (userId == null) {
+      print('Failed to determine user ID');
+      return false;
+    }
 
     // Send request to API
     final url = Uri.parse("${AppConfig.baseUrl}/profile/update_password.php");
+    
+    // Create request body
+    final requestBody = {
+      'id_user': userId.toString(),
+      'password': newPassword,
+    };
+    
+    print('Sending password update request: $requestBody to $url');
+    
     final response = await http.post(
       url,
-      body: {
-        'id_user': userId.toString(),
-        'password': newPassword,
-      },
+      body: requestBody,
     );
 
     // Check response
+    print('Server response status: ${response.statusCode}');
+    print('Server response body: ${response.body}');
+    
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       
-      // Debug response
-      print('Password update response: ${response.body}');
-      
-      return data['success'] == true;
+      if (data['success'] == true) {
+        print('Password updated successfully on server');
+        return true;
+      } else {
+        print('Server returned error: ${data['message']}');
+        return false;
+      }
     } else {
       print('Error: Server responded with status code ${response.statusCode}');
       return false;

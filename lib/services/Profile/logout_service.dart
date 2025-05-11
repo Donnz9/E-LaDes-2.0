@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 class Logout {
   static Future<void> performLogout(BuildContext context) async {
-    final shouldLogout = await showDialog<bool>(
+    final bool? shouldLogout = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      barrierDismissible: false,
+      builder: (BuildContext context) => AlertDialog(
         title: const Text('Konfirmasi Logout'),
         content: const Text('Apakah Anda yakin ingin logout?'),
         actions: [
@@ -25,29 +26,60 @@ class Logout {
       ),
     );
 
+    // Proses logout jika user mengkonfirmasi
     if (shouldLogout == true) {
+      _showLoadingDialog(context);
+      
       try {
         await FirebaseAuth.instance.signOut();
-
-        Navigator.pushAndRemoveUntil(
-          context,
+        Navigator.of(context).pop();
+        
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const Login()),
           (route) => false,
-          
         );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('logout berhasil'),
-          ),
-        );
+        
+        _showSnackBar(context, 'Logout berhasil', isError: false);
       } catch (e) {
+        // Log error untuk debugging
         debugPrint("Logout error: $e");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal logout. Coba lagi.'),
-          ),
-        );
+        
+        // Tutup dialog loading
+        Navigator.of(context).pop();
+        
+        // Tampilkan notifikasi error
+        _showSnackBar(context, 'Gagal logout. Coba lagi.', isError: true);
       }
     }
+  }
+
+  static void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text("Memproses logout..."),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Menampilkan SnackBar dengan pesan tertentu
+  static void _showSnackBar(BuildContext context, String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 }

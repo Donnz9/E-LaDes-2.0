@@ -7,6 +7,7 @@ class UserModel {
   final String? email;
   final String? noHp;
   final String? profileImage;
+  final String? firebaseUid; // Tambahkan firebaseUid untuk referensi
 
   UserModel({
     required this.id,
@@ -14,6 +15,7 @@ class UserModel {
     this.email,
     this.noHp,
     this.profileImage,
+    this.firebaseUid,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -23,10 +25,11 @@ class UserModel {
       email: json['email'],
       noHp: json['no_hp'],
       profileImage: json['profile_image'],
+      firebaseUid: json['firebase_uid'],
     );
   }
 
-  static Future<UserModel> fromFirebaseUser(User user) async {
+  static Future<UserModel?> fromFirebaseUser(User user) async {
     UserModel? userData;
 
     if (user.email != null) {
@@ -36,15 +39,25 @@ class UserModel {
       // Login via nomor HP
       userData = await UserService.getUserByUid(user.uid);
     }
-    return userData ??
-        UserModel(
-          id: int.tryParse(user.uid.substring(0, 9)) ?? 0, // Better id handling
-          nama: user.displayName ?? 'Unknown',
-          email: user.email,
-          noHp: user.phoneNumber,
-          profileImage: user.photoURL,
-        );
+    
+    if (userData == null) {
+      return null;
+    }
+    
+    return userData;
   }
+  
+  static UserModel fromGoogleAccount(User user) {
+    return UserModel(
+      id: 0, // ID sementara, akan diganti setelah pendaftaran
+      nama: user.displayName ?? 'Unknown',
+      email: user.email,
+      noHp: user.phoneNumber,
+      profileImage: user.photoURL,
+      firebaseUid: user.uid,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id_user': id,
@@ -52,6 +65,7 @@ class UserModel {
       'email': email,
       'no_hp': noHp,
       'profile_image': profileImage,
+      'firebase_uid': firebaseUid,
     };
   }
 
@@ -61,7 +75,7 @@ class UserModel {
     String? email,
     String? noHp,
     String? profileImage,
-    // Parameter untuk properti lain
+    String? firebaseUid,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -69,7 +83,7 @@ class UserModel {
       email: email ?? this.email,
       noHp: noHp ?? this.noHp,
       profileImage: profileImage ?? this.profileImage,
-      // Properti lain
+      firebaseUid: firebaseUid ?? this.firebaseUid,
     );
   }
 }
