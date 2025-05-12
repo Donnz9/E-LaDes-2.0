@@ -1,6 +1,8 @@
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Register/Register.dart';
 import 'package:elades20/Pages/Screens/LupaPassword/ResetPassword.dart';
+import 'package:elades20/Pages/Widgets/form_widgets.dart';
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Pages/main_navigation.dart';
 import 'package:elades20/Services/Login/login_services.dart';
 import 'package:flutter/material.dart';
@@ -54,25 +56,25 @@ class _LoginState extends State<Login> {
     }
   }
 
-  // Show error message
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
+  // // Show error message
+  // void _showErrorMessage(String message) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(message),
+  //       backgroundColor: Colors.red,
+  //     ),
+  //   );
+  // }
 
-  // Show success message
-  void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
+  // // Show success message
+  // void _showSuccessMessage(String message) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(message),
+  //       backgroundColor: Colors.green,
+  //     ),
+  //   );
+  // }
 
   // Regular email/phone login
   Future<void> _handleRegularLogin() async {
@@ -83,7 +85,7 @@ class _LoginState extends State<Login> {
       String password = passwordController.text.trim();
 
       if (login.isEmpty || password.isEmpty) {
-        _showErrorMessage("Email/No HP dan password harus diisi");
+        Snackbar.show(context, "Email/No HP dan password harus diisi", isError: true);
         return;
       }
 
@@ -92,7 +94,7 @@ class _LoginState extends State<Login> {
       if (result['success']) {
         UserModel? user = result['user'];
         if (user != null) {
-          _showSuccessMessage("Login berhasil");
+          Snackbar.show(context, "Login berhasil");
 
           // Navigate to main page
           Navigator.pushReplacement(
@@ -102,13 +104,13 @@ class _LoginState extends State<Login> {
             ),
           );
         } else {
-          _showErrorMessage("Login gagal: Data pengguna tidak valid");
+          Snackbar.show(context, "Login gagal: Data pengguna tidak valid", isError: true);
         }
       } else {
-        _showErrorMessage(result['message'] ?? 'Login gagal');
+        Snackbar.show(context, result['message'] ?? 'Login gagal', isError: true);
       }
     } catch (e) {
-      _showErrorMessage("Error: $e");
+      Snackbar.show(context, "Error: $e", isError: true);
     } finally {
       setState(() => _isLoading = false);
     }
@@ -167,7 +169,7 @@ class _LoginState extends State<Login> {
         } else {
           // Pengguna sudah terdaftar, lanjutkan proses login
           await LoginService.saveGoogleUser(existingUser);
-          _showSuccessMessage("Login berhasil dengan akun Google");
+          Snackbar.show(context, "Login berhasil dengan akun Google");
 
           // Navigate to main page
           Navigator.pushReplacement(
@@ -178,10 +180,10 @@ class _LoginState extends State<Login> {
           );
         }
       } else {
-        _showErrorMessage('Login gagal dengan Google');
+        Snackbar.show(context, 'Login gagal dengan Google', isError: true);
       }
     } catch (e) {
-      _showErrorMessage("Error during Google sign-in: $e");
+      Snackbar.show(context, "Error during Google sign-in: $e", isError: true);
     } finally {
       setState(() => _isLoading = false);
     }
@@ -221,43 +223,38 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 30),
 
-              // Email/No HP Field
-              TextField(
+              // Email/No HP Field using FormWidgets
+              FormWidgets.buildTextField(
+                label: 'Email/No Hp',
                 controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: 'Email/No Hp',
-                  hintText: 'Masukkan Email/Nomor Hp',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  // prefixIcon: Icon(Icons.email),
-                ),
               ),
               const SizedBox(height: 15),
 
-              // Password Field
-              TextField(
-                controller: passwordController,
-                obscureText: _obscureText,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Masukkan Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+              // Custom Password Field 
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  FormWidgets.buildTextField(
+                    label: 'Password',
+                    controller: passwordController,
+                    obscureText: _obscureText,
+                    isPassword: true,
                   ),
-                  // prefixIcon: Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                  Positioned(
+                    right: 10,
+                    child: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: const Color.fromARGB(255, 88, 88, 88),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
                   ),
-                ),
+                ],
               ),
 
               // Lupa Password
@@ -296,7 +293,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   child: _isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : const Text(
                           'LOGIN',
                           style: TextStyle(

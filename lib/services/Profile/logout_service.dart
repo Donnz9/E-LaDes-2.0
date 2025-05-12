@@ -1,4 +1,5 @@
 import 'package:elades20/Pages/Screens/Login/Login.dart';
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,7 @@ class Logout {
           (route) => false,
         );
         
-        _showSnackBar(context, 'Logout berhasil', isError: false);
+        Snackbar.show(context, 'Logout berhasil', isError: false);
       } catch (e) {
         // Log error untuk debugging
         debugPrint("Logout error: $e");
@@ -48,7 +49,7 @@ class Logout {
         Navigator.of(context).pop();
         
         // Tampilkan notifikasi error
-        _showSnackBar(context, 'Gagal logout. Coba lagi.', isError: true);
+        Snackbar.show(context, 'Gagal logout. Coba lagi.', isError: true);
       }
     }
   }
@@ -68,18 +69,6 @@ class Logout {
           ),
         );
       },
-    );
-  }
-
-  /// Menampilkan SnackBar dengan pesan tertentu
-  static void _showSnackBar(BuildContext context, String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
     );
   }
 }

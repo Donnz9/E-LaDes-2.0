@@ -1,3 +1,4 @@
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/Profile/gantipassword_service.dart';
 import 'package:elades20/Models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -226,12 +227,12 @@ class _GantiPasswordState extends State<GantiPassword> {
 
     // Validate inputs
     if (newPassword.isEmpty || confirmPassword.isEmpty) {
-      _showMessage('Password tidak boleh kosong');
+      Snackbar.show(context, 'Password tidak boleh kosong', isError: true);
       return;
     }
 
     if (newPassword != confirmPassword) {
-      _showMessage('Password tidak cocok');
+      Snackbar.show(context, 'Password tidak cocok', isError: true);
       return;
     }
 
@@ -250,7 +251,7 @@ class _GantiPasswordState extends State<GantiPassword> {
         // Fallback to Firebase user
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
-          _showMessage('User tidak ditemukan');
+          Snackbar.show(context, 'User tidak ditemukan', isError: true);
           setState(() {
             _isLoading = false;
           });
@@ -263,7 +264,7 @@ class _GantiPasswordState extends State<GantiPassword> {
       final success = await update_password(userId, newPassword);
       
       if (!success) {
-        _showMessage('Gagal update password di server');
+        Snackbar.show(context, 'Gagal update password di server', isError: true);
         return;
       }
 
@@ -274,21 +275,15 @@ class _GantiPasswordState extends State<GantiPassword> {
         await firebaseUser.updatePassword(newPassword);
       }
 
-      _showMessage('Password berhasil diperbarui');
+      Snackbar.show(context, 'Password berhasil diperbarui');
       Navigator.pop(context);
     } catch (e) {
-      _showMessage('Terjadi kesalahan: ${e.toString()}');
+      Snackbar.show(context, 'Terjadi kesalahan: ${e.toString()}', isError: true);
     } finally {
       // Stop loading
       setState(() {
         _isLoading = false;
       });
     }
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
   }
 }

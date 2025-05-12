@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/Pengajuan/pengajuan_service.dart';
-import 'package:elades20/Services/permission_services.dart';
 import 'package:flutter/material.dart';
-import 'package:elades20/Services/Pengajuan/media_picker_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SuratPengantarKehilanganBarang extends StatefulWidget {
@@ -56,14 +53,9 @@ class _SuratPengantarKehilanganBarangState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
-      // appBar: AppBar(
-      //   backgroundColor: const Color(0xFF4B9560),
-      //   title: const Text('Surat Kehilangan Barang'),
-      //   foregroundColor: Colors.white,
-      // ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -245,32 +237,16 @@ class _SuratPengantarKehilanganBarangState
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Pengajuan berhasil dikirim!"),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
+                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
                       Navigator.pop(context);
                       widget.onNavigate(0);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Gagal: ${response['message']}"),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+                      Snackbar.show(context, "Gagal: ${response['message']}", isError: true);
                     }
                   } catch (e) {
                     // Close loading dialog
                     Navigator.pop(context);
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Error: $e"),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    Snackbar.show(context, "Error: $e", isError: true);
                   }
                 },
                 style: ElevatedButton.styleFrom(

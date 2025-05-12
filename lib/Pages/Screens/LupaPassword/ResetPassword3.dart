@@ -1,4 +1,7 @@
 import 'package:elades20/Pages/Screens/Login/Login.dart';
+import 'package:elades20/Pages/Screens/LupaPassword/ResetPassword.dart';
+import 'package:elades20/Pages/Widgets/form_widgets.dart';
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/LupaPassword/GantiPassword_Services.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +18,7 @@ class _ResestPassword3State extends State<ResestPassword3> {
   final TextEditingController konfirmasipasswordController =
       TextEditingController();
   bool _obscureText = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,64 +30,94 @@ class _ResestPassword3State extends State<ResestPassword3> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/logo.png',
-                width: 200,
-                height: 200,
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Color(0xFF4B9560)),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Resetpassword()),
+                      );
+                    },
+                  ),
+                  const Spacer(),
+                ],
               ),
+              const SizedBox(height: 50),
+              Image.asset(
+                'assets/images/LogoApp.png',
+                width: 100,
+                height: 100,
+              ),
+              const SizedBox(height: 30),
               const Text(
-                'DAFTAR AKUN',
+                'RESET PASSWORD',
                 style: TextStyle(
                   fontSize: 35,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF6A6A6A),
                 ),
               ),
-              const SizedBox(height: 15),
-              // Password Field
-              TextField(
-                controller: passwordController,
-                obscureText: _obscureText,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Password Minimal 8 Karakter',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  ),
+              const Text(
+                'Silahkan Periksa Email/WhatsApp\nUntuk Memasukkan Kode OTP',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 15),
-              // konfifrmasiPassword Field
-              TextField(
-                controller: konfirmasipasswordController,
-                obscureText: _obscureText,
-                decoration: InputDecoration(
-                  labelText: 'Konfirmasi Password',
-                  hintText: 'Masukkan Password Sekali Lagi',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+              const SizedBox(height: 20),
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  FormWidgets.buildTextField(
+                    label: 'Password',
+                    controller: passwordController,
+                    obscureText: _obscureText,
+                    isPassword: true,
                   ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                  Positioned(
+                    right: 10,
+                    child: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: const Color.fromARGB(255, 88, 88, 88),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
                   ),
-                ),
+                ],
+              ),
+              const SizedBox(height: 15),              
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  FormWidgets.buildTextField(
+                    label: 'Konfirmasi Password',
+                    controller: konfirmasipasswordController,
+                    obscureText: _obscureText,
+                    isPassword: true,
+                  ),
+                  Positioned(
+                    right: 10,
+                    child: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: const Color.fromARGB(255, 88, 88, 88),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 25),
               // Lanjut Button
@@ -91,7 +125,7 @@ class _ResestPassword3State extends State<ResestPassword3> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _ubahPassword,
+                  onPressed:  _isLoading ? null : _ubahPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7A9E7A),
                     shape: RoundedRectangleBorder(
@@ -116,21 +150,26 @@ class _ResestPassword3State extends State<ResestPassword3> {
   }
 
   Future<void> _ubahPassword() async {
+    setState(() => _isLoading = true);
+
     String password = passwordController.text.trim();
     String konfirmasiPassword = konfirmasipasswordController.text.trim();
 
     if (password.isEmpty || konfirmasiPassword.isEmpty) {
-      _showSnackBar("Password dan Konfirmasi wajib diisi");
+      Snackbar.show(context, "Password dan Konfirmasi wajib diisi", isError: true);
+      setState(() => _isLoading = false);
       return;
     }
 
     if (password != konfirmasiPassword) {
-      _showSnackBar("Password dan Konfirmasi tidak sama");
+      Snackbar.show(context, "Password dan Konfirmasi tidak sama", isError: true);
+      setState(() => _isLoading = false);
       return;
     }
 
     if (password.length < 8) {
-      _showSnackBar("Password minimal 8 karakter");
+      Snackbar.show(context, "Password minimal 8 karakter", isError: true);
+      setState(() => _isLoading = false);
       return;
     }
 
@@ -139,23 +178,19 @@ class _ResestPassword3State extends State<ResestPassword3> {
           await UbahPasswordService.ubahPassword(widget.emailOrPhone, password);
 
       if (response['success']) {
-        _showSnackBar("Password berhasil diubah");
+        Snackbar.show(context, "Password berhasil diubah");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const Login()),
         );
       } else {
-        _showSnackBar("Gagal mengubah password: ${response['message']}");
+        Snackbar.show(context, "Gagal mengubah password: ${response['message']}", isError: true);
       }
     } catch (e) {
       print('ERROR ubah password : $e');
-      _showSnackBar("Terjadi kesalahan: $e");
+      Snackbar.show(context, "Terjadi kesalahan: $e", isError: true);
+    } finally {
+      setState(() => _isLoading = false);
     }
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
   }
 }

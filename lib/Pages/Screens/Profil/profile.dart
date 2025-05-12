@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Profil/ganti_password.dart';
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/Profile/logout_service.dart';
 import 'package:elades20/Services/Profile/profile_update_service.dart';
 import 'package:elades20/Services/config.dart';
@@ -64,12 +65,7 @@ class _ProfileState extends State<Profile> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error memilih gambar: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      Snackbar.show(context, 'Error memilih gambar: ${e.toString()}', isError: true);
     }
   }
 
@@ -104,22 +100,12 @@ class _ProfileState extends State<Profile> {
   Future<void> _saveProfile() async {
     // Validasi input
     if (nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nama tidak boleh kosong'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      Snackbar.show(context, 'Nama tidak boleh kosong', isError: true);
       return;
     }
 
     if (emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email/No HP tidak boleh kosong'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      Snackbar.show(context, 'Email/No HP tidak boleh kosong', isError: true);
       return;
     }
 
@@ -154,13 +140,7 @@ class _ProfileState extends State<Profile> {
         widget.onProfileUpdated(updatedUser);
       }
     } catch (e) {
-      // Tampilkan pesan error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengupdate profil: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      Snackbar.show(context, 'Gagal mengupdate profil: ${e.toString()}', isError: true);
     } finally {
       // Hentikan loading
       setState(() {

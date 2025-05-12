@@ -1,8 +1,10 @@
 import 'package:elades20/Pages/Screens/Login/Login.dart';
+import 'package:elades20/Pages/Screens/Register/Register.dart';
+import 'package:elades20/Pages/Widgets/form_widgets.dart';
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/Register/firebase_auth.dart';
 import 'package:elades20/Services/Register/otp_services.dart';
 import 'package:elades20/Services/Register/register_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 bool isEmail(String input) {
@@ -31,6 +33,7 @@ class Register2 extends StatefulWidget {
 
 class _Register2State extends State<Register2> {
   final TextEditingController kodeOtpController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +45,29 @@ class _Register2State extends State<Register2> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/logo.png',
-                width: 200,
-                height: 200,
+              Row(
+                children: [
+                  IconButton(
+                    icon:
+                        const Icon(Icons.arrow_back, color: Color(0xFF4B9560)),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Register()),
+                      );
+                    },
+                  ),
+                  const Spacer(),
+                ],
               ),
+              const SizedBox(height: 30),
+              Image.asset(
+                'assets/images/LogoApp.png',
+                width: 100,
+                height: 100,
+              ),
+              const SizedBox(height: 30),
               const Text(
                 'DAFTAR AKUN',
                 style: TextStyle(
@@ -65,32 +86,34 @@ class _Register2State extends State<Register2> {
               ),
               const SizedBox(height: 20),
               // Email/No HP Field
-              TextField(
+              FormWidgets.buildTextField(
+                label: 'Kode OTP',
                 controller: kodeOtpController,
-                decoration: InputDecoration(
-                  labelText: 'Kode OTP',
-                  hintText: 'Masukkan Kode OTP',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
               ),
               Align(
                 alignment: Alignment.topLeft,
                 child: TextButton(
-                  onPressed: () async {
-                    final otpResponse = await OtpServices.sendOtp(widget.email);
-                    if (otpResponse.success) {
-                      print("OTP dikirim: ${otpResponse.message}");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Kode OTP telah dikirim ulang')),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Gagal mengirim ulang OTP')),
-                      );
-                    }
-                  },
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          setState(() => _isLoading = true);
+                          try {
+                            final otpResponse =
+                                await OtpServices.sendOtp(widget.email);
+                            if (otpResponse.success) {
+                              print("OTP dikirim: ${otpResponse.message}");
+                              Snackbar.show(context, 
+                                  'Kode OTP telah dikirim ulang');
+                            } else {
+                              Snackbar.show(context, 'Gagal mengirim ulang OTP', isError: true);
+                            }
+                          } catch (e) {
+                            Snackbar.show(context, 
+                                'Terjadi kesalahan saat mengirim OTP', isError: true);
+                          } finally {
+                            setState(() => _isLoading = false);
+                          }
+                        },
                   child: const Text(
                     'Kirim Kode OTP Lagi',
                     style: TextStyle(
@@ -107,78 +130,92 @@ class _Register2State extends State<Register2> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    // Cek apakah kode OTP kosong
-                    if (kodeOtpController.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Kode OTP harus diisi')),
-                      );
-                      return; // Menghentikan proses jika OTP kosong
-                    }
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          // Cek apakah kode OTP kosong
+                          if (kodeOtpController.text.trim().isEmpty) {
+                            Snackbar.show(context, 'Kode OTP harus diisi', isError: true);
+                            return; // Menghentikan proses jika OTP kosong
+                          }
 
-                    String email = '';
-                    String noHp = '';
+                          setState(() => _isLoading = true);
 
-                    if (isEmail(widget.email)) {
-                      email = widget.email;
-                    } else {
-                      noHp = widget.email;
-                    }
+                          try {
+                            String email = '';
+                            String noHp = '';
 
-                    final result = await RegisterService.registerWithOtp(
-                      email: email,
-                      noHp: noHp,
-                      nama: widget.nama,
-                      password: widget.password,
-                      kodeOtp: kodeOtpController.text,
-                    );
+                            if (isEmail(widget.email)) {
+                              email = widget.email;
+                            } else {
+                              noHp = widget.email;
+                            }
 
-                    // Jika sukses
-                    bool firebaseSuccess = true;
-                    if (result.success) {
-                      if (isEmail(widget.email)) {
-                        try {
-                          firebaseSuccess = await registerWithFirebase(widget.email, widget.password);
-                          print("Akun terdaftar di Firebase Auth");
-                        } catch (e) {
-                          print("Firebase Auth Error: $e");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(
-                                    'Gagal register ke Firebase: $e')),
-                          );
-                          return;
-                        }
-                      }
-                      if (!firebaseSuccess) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Akun berhasil dibuat!')),
-                      );
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Login()),
-                      );
-                    } else {
-                      // Jika gagal
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Gagal: ${result.message}')),
-                      );
-                    }
-                  },
+                            final result =
+                                await RegisterService.registerWithOtp(
+                              email: email,
+                              noHp: noHp,
+                              nama: widget.nama,
+                              password: widget.password,
+                              kodeOtp: kodeOtpController.text,
+                            );
+
+                            // Jika sukses
+                            bool firebaseSuccess = true;
+                            if (result.success) {
+                              if (isEmail(widget.email)) {
+                                try {
+                                  firebaseSuccess = await registerWithFirebase(
+                                      widget.email, widget.password);
+                                  Snackbar.show(context, 'Akun berhasil dibuat!');
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const Login()),
+                                  );
+                                  print("Akun terdaftar di Firebase Auth");
+                                  
+                                } catch (e) {
+                                  print("Firebase Auth Error: $e");
+                                  Snackbar.show(context, 
+                                      'Gagal register ke Firebase: $e', isError: true);
+                                  return;
+                                }
+                              }
+                              if (!firebaseSuccess) return;
+
+                              Snackbar.show(context, 'Akun berhasil dibuat!');
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Login()),
+                              );
+                            } else {
+                              // Jika gagal
+                              Snackbar.show(context, 'Gagal: ${result.message}', isError: true);
+                            }
+                          } catch (e) {
+                            Snackbar.show(context, 'Terjadi kesalahan: $e', isError: true);
+                          } finally {
+                            setState(() => _isLoading = false);
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF7A9E7A),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'VERIFIKASI KODE',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'VERIFIKASI KODE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ],

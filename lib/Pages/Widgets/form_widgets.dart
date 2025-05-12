@@ -3,21 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:elades20/Services/Pengajuan/media_picker_service.dart';
 
 class FormWidgets {
-  static Widget buildTextField(
-      {required String label, required TextEditingController? controller}) {
+  static Widget buildTextField({
+    required String label,
+    required TextEditingController? controller,
+    bool obscureText = false,
+    bool isPassword = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
         controller: controller,
-        cursorColor: const Color(0xFF4B9560),
+        obscureText: isPassword ? obscureText : false,
+        keyboardType: isPassword ? TextInputType.visiblePassword : TextInputType.text,
+        cursorColor: const Color.fromARGB(255, 46, 46, 46),
         decoration: InputDecoration(
           labelText: label,
           floatingLabelStyle: const TextStyle(color: Color(0xFF4B9560)),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xFF4B9560)),
+            borderRadius: BorderRadius.circular(8),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
           ),
           border: const OutlineInputBorder(),
         ),

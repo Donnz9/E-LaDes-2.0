@@ -1,7 +1,5 @@
 import 'package:elades20/Models/dashboard/dashboard_model.dart';
 import 'package:elades20/Models/user_model.dart';
-import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
-import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
 import 'package:elades20/Pages/Widgets/dashboard/kabar_desa_card.dart';
 import 'package:elades20/Pages/Widgets/dashboard/layanan_desa.dart';
 import 'package:elades20/Pages/Widgets/dashboard/status_pengajuan_surat.dart';
