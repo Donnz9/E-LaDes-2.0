@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Berita/berita.dart';
 import 'package:elades20/Pages/Screens/Dashboard/dashboard.dart';
@@ -29,7 +28,7 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 3;
   late UserModel currentUser;
-  File? _imageFile; 
+  File? _imageFile;
 
   @override
   void initState() {
@@ -46,16 +45,23 @@ class _MainNavigationState extends State<MainNavigation> {
     setState(() {
       currentUser = updatedUser;
     });
-    print("User model diperbarui: ${updatedUser.nama}, ${updatedUser.email ?? updatedUser.noHp}");
+    print(
+        "User model diperbarui: ${updatedUser.nama}, ${updatedUser.email ?? updatedUser.noHp}");
   }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
-      Pengajuan(onNavigate: _onItemTapped, user: currentUser,),
+      Pengajuan(
+        onNavigate: _onItemTapped,
+        user: currentUser,
+      ),
       const Riwayat(),
       const Pengaduan(),
-      Dashboard(onNavigate: _onItemTapped, user: currentUser,),
+      Dashboard(
+        onNavigate: _onItemTapped,
+        user: currentUser,
+      ),
       const Berita(),
       const Notifikasi(),
       Profile(
@@ -63,9 +69,11 @@ class _MainNavigationState extends State<MainNavigation> {
         onProfileUpdated: _updateUserModel,
       ),
       SuratPengantarSkck(user: currentUser, onNavigate: _onItemTapped),
-      SuratPengantarKehilanganBarang(user: currentUser, onNavigate: _onItemTapped),
+      SuratPengantarKehilanganBarang(
+          user: currentUser, onNavigate: _onItemTapped),
       SuratKeteranganTidakMampu(user: currentUser, onNavigate: _onItemTapped),
-      SuratKeteranganPenghasilanOrangTua(user: currentUser, onNavigate: _onItemTapped),
+      SuratKeteranganPenghasilanOrangTua(
+          user: currentUser, onNavigate: _onItemTapped),
       SuratIzinTidakMasukKerja(user: currentUser, onNavigate: _onItemTapped),
       SuratIzinKeramaian(user: currentUser, onNavigate: _onItemTapped),
       //nek pengin nambahne tambahne ng ngisore ae, mergo kudu urut index
@@ -96,48 +104,11 @@ class _MainNavigationState extends State<MainNavigation> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10,
-        elevation: 0,
-        child: SizedBox(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                  child: NavItem(
-                      icon: Icons.file_copy,
-                      label: 'Pengajuan',
-                      index: 0,
-                      selectedIndex: _selectedIndex,
-                      onTap: _onItemTapped)),
-              Expanded(
-                  child: NavItem(
-                      icon: Icons.history,
-                      label: 'Riwayat',
-                      index: 1,
-                      selectedIndex: _selectedIndex,
-                      onTap: _onItemTapped)),
-              const SizedBox(width: 40),
-              Expanded(
-                  child: NavItem(
-                      icon: Icons.report,
-                      label: 'Pengaduan',
-                      index: 2,
-                      selectedIndex: _selectedIndex,
-                      onTap: _onItemTapped)),
-              Expanded(
-                  child: NavItem(
-                      icon: Icons.article,
-                      label: 'Berita',
-                      index: 4,
-                      selectedIndex: _selectedIndex,
-                      onTap: _onItemTapped)),
-            ],
-          ),
-        ),
+      bottomNavigationBar: ShadowedBottomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
+        shadowColor: Colors.black26, // Sesuaikan warna bayangan
+        shadowElevation: 8.0, // Sesuaikan ketebalan bayangan
       ),
     );
   }

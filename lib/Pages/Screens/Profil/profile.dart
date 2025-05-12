@@ -382,7 +382,7 @@ class _ProfileState extends State<Profile> {
                     Logout.performLogout(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: const Color.fromARGB(255, 193, 13, 0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

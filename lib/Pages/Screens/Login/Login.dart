@@ -29,52 +29,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    // Menghapus riwayat Firebase dan Google Sign-In saat halaman Login dimuat
-    _clearFirebaseHistory();
   }
-
-  // Method untuk menghapus riwayat Firebase dan memaksa pemilihan akun Google
-  Future<void> _clearFirebaseHistory() async {
-    try {
-      // Sign out dari Firebase Auth jika ada sesi yang aktif
-      if (_auth.currentUser != null) {
-        await _auth.signOut();
-      }
-      
-      // Sign out dari Google Sign In
-      final isSignedIn = await _googleSignIn.isSignedIn();
-      if (isSignedIn) {
-        await _googleSignIn.signOut();
-      }
-      
-      // Disconnect dari Google untuk menghapus semua jejak
-      await _googleSignIn.disconnect();
-      
-      debugPrint("Berhasil menghapus riwayat Firebase dan Google Sign-In");
-    } catch (e) {
-      debugPrint("Error saat menghapus riwayat Firebase: $e");
-    }
-  }
-
-  // // Show error message
-  // void _showErrorMessage(String message) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text(message),
-  //       backgroundColor: Colors.red,
-  //     ),
-  //   );
-  // }
-
-  // // Show success message
-  // void _showSuccessMessage(String message) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text(message),
-  //       backgroundColor: Colors.green,
-  //     ),
-  //   );
-  // }
 
   // Regular email/phone login
   Future<void> _handleRegularLogin() async {

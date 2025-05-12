@@ -29,50 +29,79 @@ class TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageUrl = getFormattedProfileImageUrl();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: onProfileTap,
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor: const Color(0xFF7A9E7A),
-                  child: ClipOval(
-                    child: imageUrl != null
-                        ? FadeInImage.assetNetwork(
-                            placeholder: 'assets/images/placeholder_profil.png',
-                            image: imageUrl,
-                            fit: BoxFit.cover,
-                            width: 40,
-                            height: 40,
-                            imageErrorBuilder: (context, error, stackTrace) {
-                              return const Icon(Icons.person, color: Colors.white);
-                            },
-                          )
-                        : const Icon(Icons.person, color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Hai!", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                  Text(user.nama, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ],
+    return Column(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4.0,
+                offset: Offset(0, 2), // Shadow slightly below the container
+                spreadRadius: 0,
               ),
             ],
           ),
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: onNotifTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: onProfileTap,
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: const Color(0xFF7A9E7A),
+                        child: ClipOval(
+                          child: imageUrl != null
+                              ? FadeInImage.assetNetwork(
+                                  placeholder: 'assets/images/placeholder_profil.png',
+                                  image: imageUrl,
+                                  fit: BoxFit.cover,
+                                  width: 40,
+                                  height: 40,
+                                  imageErrorBuilder: (context, error, stackTrace) {
+                                    return const Icon(Icons.person, color: Colors.white);
+                                  },
+                                )
+                              : const Icon(Icons.person, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Hai!", 
+                          style: TextStyle(
+                            fontSize: 14, 
+                            fontWeight: FontWeight.w400
+                          )
+                        ),
+                        Text(
+                          user.nama, 
+                          style: const TextStyle(
+                            fontSize: 16, 
+                            fontWeight: FontWeight.bold
+                          )
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.notifications_none),
+                  onPressed: onNotifTap,
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

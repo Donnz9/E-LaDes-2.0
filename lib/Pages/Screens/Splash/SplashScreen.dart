@@ -1,5 +1,9 @@
+import 'package:elades20/Models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:elades20/Pages/Screens/Login/Login.dart';
+import 'package:elades20/Pages/main_navigation.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,13 +16,45 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Delay selama 3 detik lalu navigasi ke Login Page
-    Future.delayed(const Duration(seconds: 3), () {
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    // Delay untuk menampilkan splash screen
+    await Future.delayed(const Duration(seconds: 3));
+
+    try {
+      // Periksa apakah user sudah login di Firebase
+      final currentUser = FirebaseAuth.instance.currentUser;
+      
+      if (currentUser != null) {
+        // Jika sudah login di Firebase, coba ambil data dari database
+        // Import UserModel dan gunakan fromFirebaseUser
+        final user = await UserModel.fromFirebaseUser(currentUser);
+        
+        if (user != null) {
+          // Navigasi ke halaman utama dengan data user
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainNavigation(user: user)),
+          );
+          return;
+        }
+      }
+      
+      // Jika tidak ada user atau data tidak valid, arahkan ke login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const Login()),
       );
-    });
+    } catch (e) {
+      debugPrint("Error saat check login: $e");
+      // Jika terjadi error, arahkan ke halaman login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    }
   }
 
   @override
