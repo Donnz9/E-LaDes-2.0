@@ -180,7 +180,58 @@ class SKTMService {
 }
 
 class PenghasilanService {
-  
+  static Future<Map<String, dynamic>> submitForm({
+    //bapak
+    required String namaOrtu,
+    required String tempatLahirOrtu,
+    required String tanggalLahirOrtu,
+    required String pekerjaanOrtu,
+    required String alamatOrtu,
+
+    //anak
+    required String namaAnak,
+    required String tempatLahirAnak,
+    required String tanggalLahirAnak,
+    required String alamatAnak,
+    required String keperluan,
+    required List<String> filePaths, // boleh null
+    required String username,
+  }) async {
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_penghasilan.php");
+    var request = http.MultipartRequest("POST", uri);
+
+    request.fields['kode_surat'] = "prnghasilan orang tua";
+    //bpk
+    request.fields['nama_ortu'] = namaOrtu;
+    request.fields['tempat_tanggal_lahir_ortu'] = tempatLahirOrtu + ', ' + tanggalLahirOrtu;
+    request.fields['pekerjaan_ortu'] = pekerjaanOrtu;
+    request.fields['alamat_ortu'] = alamatOrtu;
+
+    //anak
+    request.fields['nama_anak'] = namaAnak;
+    request.fields['tempat_tanggal_lahir_anak'] = tempatLahirAnak + ', ' + tanggalLahirAnak;
+    request.fields['alamat_anak'] = alamatAnak;
+    request.fields['keperluan'] = keperluan;
+    request.fields['username'] = username;
+
+    if (filePaths.isNotEmpty) {
+      for (int i = 0; i < filePaths.length; i++) {
+        if (filePaths[i].isNotEmpty) {
+          var file = await http.MultipartFile.fromPath(
+            'file[]', // Changed to array notation for PHP
+            filePaths[i],
+            contentType: MediaType('application', 'octet-stream'),
+          );
+          request.files.add(file);
+        }
+      }
+    }
+
+    var response = await request.send();
+    var respStr = await response.stream.bytesToString();
+    print("Response: $respStr");
+    return json.decode(respStr);
+  }
 }
 
 //izin
