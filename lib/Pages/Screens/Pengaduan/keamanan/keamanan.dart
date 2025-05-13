@@ -1,9 +1,8 @@
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
-import 'package:elades20/Services/Pengajuan/pengajuan_service.dart';
+import 'package:elades20/Services/Pengaduan/pengaduan_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PengaduanKeamanan extends StatefulWidget {
@@ -37,11 +36,12 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
 
   final TextEditingController _namaController = TextEditingController();
   final TextEditingController _nikController = TextEditingController();
-  final TextEditingController _alamatController = TextEditingController();
-  final TextEditingController _kegiatanController = TextEditingController();
+  final TextEditingController _jenisKasusController = TextEditingController();
+  final TextEditingController _lokasiController =
+      TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
   final TextEditingController _waktuController = TextEditingController();
-  final TextEditingController _tempatController = TextEditingController();
+  final TextEditingController _deskripsiController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
                   ),
                   const SizedBox(width: 8),
                   const Text(
-                    "Surat Izin Keramaian",
+                    "Pengaduan Keamanan",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat izin keramaian sebagai syarat administratif untuk menyelenggarakan acara yang melibatkan orang banyak, seperti hajatan, pertunjukan, atau kegiatan masyarakat lainnya, dengan persetujuan dari pihak desa.",
+                  "Ajukan laporan pengaduan mengenai gangguan keamanan atau ketertiban masyarakat, seperti pencurian, perkelahian, atau aktivitas mencurigakan, untuk ditindaklanjuti oleh pihak desa dan aparat keamanan.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -87,7 +87,7 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengajuan",
+                "Tambah Pengaduan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -119,31 +119,35 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
               const SizedBox(height: 16),
               FormWidgets.buildTextField(
                   label: "Nama Lengkap", controller: _namaController),
-              FormWidgets.buildTextField(
-                  label: "Alamat", controller: _alamatController),
               FormWidgets.buildNikField(
                   label: "NIK", controller: _nikController),
               FormWidgets.buildTextField(
-                  label: "Kegiatan", controller: _kegiatanController),
-              FormWidgets.buildDateField(
-                  label: "Tanggal Kegiatan",
-                  controller: _tanggalController,
-                  context: context),
-              FormWidgets.buildTimeField(
-                  label: "Waktu", controller: _waktuController, context: context),
+                  label: "Jenis Kasus", controller: _jenisKasusController),
               FormWidgets.buildTextField(
-                  label: "Tempat", controller: _tempatController),
+                  label: "Lokasi Lengkap Kejadian",
+                  controller: _lokasiController),
+              FormWidgets.buildDateField(
+                  label: "Tanggal Kejadian",
+                  controller: _tanggalController, context: context),
+              FormWidgets.buildTimeField(
+                  label: "Waktu Kejadian",
+                  controller: _waktuController,
+                  context: context),
+              FormWidgets.buildTextField(
+                  label: "Deskripsi",
+                  controller: _deskripsiController),
 
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (_namaController.text.isEmpty ||
+                  if (_mediaPaths.isEmpty ||
+                      _namaController.text.isEmpty ||
                       _nikController.text.isEmpty ||
-                      _kegiatanController.text.isEmpty ||
+                      _jenisKasusController.text.isEmpty ||
+                      _lokasiController.text.isEmpty ||
                       _tanggalController.text.isEmpty ||
                       _waktuController.text.isEmpty ||
-                      _tempatController.text.isEmpty ||
-                      _alamatController.text.isEmpty) {
+                      _deskripsiController.text.isEmpty) {
                     Snackbar.show(context, "Semua data wajib diisi!",
                         isError: true);
                     return;
@@ -164,8 +168,9 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
                             )),
                         TextButton(
                             onPressed: () => Navigator.of(context).pop(true),
-                            child: const Text("Sudah",
-                                style: TextStyle(color: Color(0xFF4B9560)),
+                            child: const Text(
+                              "Sudah",
+                              style: TextStyle(color: Color(0xFF4B9560)),
                             )),
                       ],
                     ),
@@ -186,14 +191,14 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
 
                   try {
                     // Jika user sudah
-                    final response = await KeramaianService.submitForm(
+                    final response = await KeamananService.submitForm(
                       nama: _namaController.text,
-                      alamat: _alamatController.text,
                       nik: _nikController.text,
-                      kegiatan: _kegiatanController.text,
+                      jenis_kasus: _jenisKasusController.text,
+                      lokasi_kejadian: _lokasiController.text,
                       tanggal: _tanggalController.text,
                       waktu: _waktuController.text,
-                      tempat: _tempatController.text,
+                      deskripsi: _deskripsiController.text,
                       filePaths: _mediaPaths, // Pass all media paths
                       username: widget.user.nama,
                     );
@@ -201,9 +206,9 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Snackbar.show(context, "Pengaduan berhasil dikirim!\nTerima kasih atas laporanya");
                       Navigator.pop(context);
-                      widget.onNavigate(0);
+                      widget.onNavigate(2);
                     } else {
                       Snackbar.show(context, "Gagal: ${response['message']}",
                           isError: true);
@@ -222,7 +227,7 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Permohonan",
+                  "Ajukan Pengaduan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
