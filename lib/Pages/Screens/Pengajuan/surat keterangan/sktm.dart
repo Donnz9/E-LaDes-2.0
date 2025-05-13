@@ -84,7 +84,7 @@ class _SuratKeteranganTidakMampuState extends State<SuratKeteranganTidakMampu> {
                   ),
                   const SizedBox(width: 8),
                   const Text(
-                    "Surat Pengantar SKCK",
+                    "Surat Keterangan SKTM",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -97,7 +97,7 @@ class _SuratKeteranganTidakMampuState extends State<SuratKeteranganTidakMampu> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat pengantar SKCK untuk keperluan administrasi pembuatan SKCK di kantor kepolisian.",
+                  "Ajukan permohonan surat keterangan tidak mampu (SKTM) untuk keperluan administrasi yang membutuhkan bukti kondisi ekonomi keluarga, seperti pengajuan beasiswa, bantuan sosial, atau keringanan biaya pendidikan.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -215,28 +215,28 @@ class _SuratKeteranganTidakMampuState extends State<SuratKeteranganTidakMampu> {
               ElevatedButton(
                 onPressed: () async {
                   if (
-                    //bpk
-                    _namaBpkController.text.isEmpty ||
-                    _tanggalLahirBpkController.text.isEmpty ||
-                    _tempatLahirBpkController.text.isEmpty ||
-                    _pekerjaanBpkController.text.isEmpty ||
-                    _alamatBpkController.text.isEmpty ||
+                      //bpk
+                      _namaBpkController.text.isEmpty ||
+                          _tanggalLahirBpkController.text.isEmpty ||
+                          _tempatLahirBpkController.text.isEmpty ||
+                          _pekerjaanBpkController.text.isEmpty ||
+                          _alamatBpkController.text.isEmpty ||
 
-                    //ibu
-                    _namaIbuController.text.isEmpty ||
-                    _tanggalLahirIbuController.text.isEmpty ||
-                    _tempatLahirIbuController.text.isEmpty ||
-                    _pekerjaanIbuController.text.isEmpty ||
-                    _alamatIbuController.text.isEmpty ||
+                          //ibu
+                          _namaIbuController.text.isEmpty ||
+                          _tanggalLahirIbuController.text.isEmpty ||
+                          _tempatLahirIbuController.text.isEmpty ||
+                          _pekerjaanIbuController.text.isEmpty ||
+                          _alamatIbuController.text.isEmpty ||
 
-                    //anak
-                      _namaController.text.isEmpty ||
-                      _nikController.text.isEmpty ||
-                      _tempatLahirController.text.isEmpty ||
-                      _tanggalLahirController.text.isEmpty ||
-                      _selectedGender == null ||
-                      _keperluanController.text.isEmpty ||
-                      _alamatController.text.isEmpty) {
+                          //anak
+                          _namaController.text.isEmpty ||
+                          _nikController.text.isEmpty ||
+                          _tempatLahirController.text.isEmpty ||
+                          _tanggalLahirController.text.isEmpty ||
+                          _selectedGender == null ||
+                          _keperluanController.text.isEmpty ||
+                          _alamatController.text.isEmpty) {
                     Snackbar.show(context, "Semua data wajib diisi!",
                         isError: true);
                     return;
