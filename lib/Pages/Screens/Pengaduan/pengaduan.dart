@@ -1,18 +1,23 @@
+import 'package:elades20/Pages/Screens/Pengaduan/infrastruktur/infrastruktur.dart';
+import 'package:elades20/Pages/Screens/Pengaduan/keamanan/keamanan.dart';
+import 'package:elades20/Pages/Screens/Pengaduan/saran/saran.dart';
 import 'package:flutter/material.dart';
 
 class Pengaduan extends StatelessWidget {
-  const Pengaduan({super.key});
+  final void Function(int) onNavigate;
+  final dynamic user;
+  const Pengaduan({super.key, required this.onNavigate, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFFF5F6F8),
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F6F8),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Center(
+              const Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -36,7 +41,7 @@ class Pengaduan extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               Expanded(
                 child: Center(
                   child: Wrap(
@@ -47,14 +52,26 @@ class Pengaduan extends StatelessWidget {
                       KategoriPengaduan(
                         icon: Icons.engineering,
                         label: "Infrastruktur",
+                        onTap: PengaduanInfrastruktur(
+                          user: user,
+                          onNavigate: onNavigate,
+                        ),
                       ),
                       KategoriPengaduan(
                         icon: Icons.shield_outlined,
                         label: "Keamanan",
+                        onTap: PengaduanKeamanan(
+                          user: user,
+                          onNavigate: onNavigate,
+                        ),
                       ),
                       KategoriPengaduan(
                         icon: Icons.campaign,
                         label: "Saran",
+                        onTap: PengaduanSaran(
+                          user: user,
+                          onNavigate: onNavigate,
+                        ),
                       ),
                     ],
                   ),
@@ -71,11 +88,13 @@ class Pengaduan extends StatelessWidget {
 class KategoriPengaduan extends StatelessWidget {
   final IconData icon;
   final String label;
+  final Widget onTap;
 
   const KategoriPengaduan({
     super.key,
     required this.icon,
     required this.label,
+    required this.onTap,
   });
 
   @override
@@ -86,13 +105,16 @@ class KategoriPengaduan extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          // Aksi ketika kategori diklik
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => onTap),
+          );
         },
         child: Container(
           width: 120,
           height: 120,
           decoration: BoxDecoration(
-            color: const Color(0xFF4B9560),
+            color: Colors.green.shade300,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(

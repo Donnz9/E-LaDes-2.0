@@ -3,7 +3,10 @@ import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Berita/berita.dart';
 import 'package:elades20/Pages/Screens/Dashboard/dashboard.dart';
 import 'package:elades20/Pages/Screens/Notifikasi/notifikasi.dart';
+import 'package:elades20/Pages/Screens/Pengaduan/infrastruktur/infrastruktur.dart';
+import 'package:elades20/Pages/Screens/Pengaduan/keamanan/keamanan.dart';
 import 'package:elades20/Pages/Screens/Pengaduan/pengaduan.dart';
+import 'package:elades20/Pages/Screens/Pengaduan/saran/saran.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/pengajuan.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/surat%20izin/keramaian.dart';
 import 'package:elades20/Pages/Screens/Pengajuan/surat%20izin/tidak_masuk_kerja.dart';
@@ -57,7 +60,10 @@ class _MainNavigationState extends State<MainNavigation> {
         user: currentUser,
       ),
       const Riwayat(),
-      const Pengaduan(),
+      Pengaduan(
+        onNavigate: _onItemTapped,
+        user: currentUser,
+      ),
       Dashboard(
         onNavigate: _onItemTapped,
         user: currentUser,
@@ -76,6 +82,9 @@ class _MainNavigationState extends State<MainNavigation> {
           user: currentUser, onNavigate: _onItemTapped),
       SuratIzinTidakMasukKerja(user: currentUser, onNavigate: _onItemTapped),
       SuratIzinKeramaian(user: currentUser, onNavigate: _onItemTapped),
+      PengaduanInfrastruktur(user: currentUser, onNavigate: _onItemTapped),
+      PengaduanKeamanan(user: currentUser, onNavigate: _onItemTapped),
+      PengaduanSaran(user: currentUser, onNavigate: _onItemTapped),
       //nek pengin nambahne tambahne ng ngisore ae, mergo kudu urut index
     ];
 
