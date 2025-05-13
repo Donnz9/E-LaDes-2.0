@@ -95,55 +95,28 @@ class KeamananService {
 
 class SaranService {
   static Future<Map<String, dynamic>> submitForm({
-    //bapak
-    required String namaBpk,
-    required String tempatLahirBpk,
-    required String tanggalLahirBpk,
-    required String pekerjaanBpk,
-    required String alamatBpk,
-
-    //ibu
-    required String namaIbu,
-    required String tempatLahirIbu,
-    required String tanggalLahirIbu,
-    required String pekerjaanIbu,
-    required String alamatIbu,
-
-    //anak
-    required String nama,
-    required String nik,
-    required String tempatLahir,
-    required String tanggalLahir,
-    required String jenisKelamin,
+    required String? nama,
     required String alamat,
-    required String keperluan,
+    required String topik,
+    required String judul_saran,
+    required String deskripsi,
+    required String tanggal,
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_sktm.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengaduan/pengaduan_saran.php");
     var request = http.MultipartRequest("POST", uri);
 
-    request.fields['kode_surat'] = "sktm";
-    //bpk
-    request.fields['nama_bapak'] = namaBpk;
-    request.fields['tempat_tanggal_lahir_bapak'] = tempatLahirBpk + ', ' + tanggalLahirBpk;
-    request.fields['pekerjaan_bapak'] = pekerjaanBpk;
-    request.fields['alamat_bapak'] = alamatBpk;
-
-    //ibu
-    request.fields['nama_ibu'] = namaIbu;
-    request.fields['tempat_tanggal_lahir_ibu'] = tempatLahirIbu + ', ' + tanggalLahirIbu;
-    request.fields['pekerjaan_ibu'] = pekerjaanIbu;
-    request.fields['alamat_ibu'] = alamatIbu;
-
-    //anak
-    request.fields['nama'] = nama;
-    request.fields['nik'] = nik;
-    request.fields['tempat_tanggal_lahir_anak'] = tempatLahir + ', ' + tanggalLahir;
-    request.fields['jenis_kelamin_anak'] = jenisKelamin;
+    request.fields['kode_pengaduan'] = "saran";
+    if (nama != null && nama.isNotEmpty) {
+      request.fields['nama'] = nama;
+      request.fields['username'] = username; // Hanya tambahkan username jika nama tidak null
+    }
     request.fields['alamat'] = alamat;
-    request.fields['keperluan'] = keperluan;
-    request.fields['username'] = username;
+    request.fields['topik'] = topik;
+    request.fields['judul_saran'] = judul_saran;
+    request.fields['deskripsi'] = deskripsi;
+    request.fields['tanggal'] = tanggal;
 
     if (filePaths.isNotEmpty) {
       for (int i = 0; i < filePaths.length; i++) {

@@ -206,7 +206,7 @@ class _PengaduanInfrastrukturState extends State<PengaduanInfrastruktur> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengaduan berhasil dikirim!");
+                      Snackbar.show(context, "Pengaduan berhasil dikirim!\nTerima kasih atas laporanya");
                       Navigator.pop(context);
                       widget.onNavigate(2);
                     } else {

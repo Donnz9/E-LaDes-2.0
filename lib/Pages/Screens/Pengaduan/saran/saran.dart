@@ -1,9 +1,8 @@
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
-import 'package:elades20/Services/Pengajuan/pengajuan_service.dart';
+import 'package:elades20/Services/Pengaduan/pengaduan_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PengaduanSaran extends StatefulWidget {
@@ -36,12 +35,12 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
   }
 
   final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _nikController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
-  final TextEditingController _kegiatanController = TextEditingController();
+  final TextEditingController _topikController =
+      TextEditingController();
+  final TextEditingController _judulSaranController = TextEditingController();
+  final TextEditingController _deskripsiController = TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
-  final TextEditingController _waktuController = TextEditingController();
-  final TextEditingController _tempatController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,7 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
                   ),
                   const SizedBox(width: 8),
                   const Text(
-                    "Surat Izin Keramaian",
+                    "Pengaduan Saran",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -77,7 +76,7 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat izin keramaian sebagai syarat administratif untuk menyelenggarakan acara yang melibatkan orang banyak, seperti hajatan, pertunjukan, atau kegiatan masyarakat lainnya, dengan persetujuan dari pihak desa.",
+                  "Ajukan saran atau kritik sebagai bentuk partisipasi warga dalam pembangunan dan pelayanan desa, seperti usulan program, penilaian layanan, atau ide peningkatan fasilitas umum.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -87,7 +86,7 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengajuan",
+                "Tambah Pengaduan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -118,32 +117,29 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
                   (paths) => setState(() => _mediaPaths = paths)),
               const SizedBox(height: 16),
               FormWidgets.buildTextField(
-                  label: "Nama Lengkap", controller: _namaController),
+                  label: "Nama Lengkap (opsioanl)", controller: _namaController),
               FormWidgets.buildTextField(
-                  label: "Alamat", controller: _alamatController),
-              FormWidgets.buildNikField(
-                  label: "NIK", controller: _nikController),
+                  label: "Alamat (opsioanl)", controller: _alamatController),
               FormWidgets.buildTextField(
-                  label: "Kegiatan", controller: _kegiatanController),
+                  label: "Topik",
+                  controller: _topikController),
+              FormWidgets.buildTextField(
+                  label: "Judul Saran",
+                  controller: _judulSaranController),
+              FormWidgets.buildTextField(
+                  label: "Deskripsi",
+                  controller: _deskripsiController),
               FormWidgets.buildDateField(
-                  label: "Tanggal Kegiatan",
-                  controller: _tanggalController,
-                  context: context),
-              FormWidgets.buildTimeField(
-                  label: "Waktu", controller: _waktuController, context: context),
-              FormWidgets.buildTextField(
-                  label: "Tempat", controller: _tempatController),
+                  label: "Tanggal",
+                  controller: _tanggalController, context: context),
 
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (_namaController.text.isEmpty ||
-                      _nikController.text.isEmpty ||
-                      _kegiatanController.text.isEmpty ||
-                      _tanggalController.text.isEmpty ||
-                      _waktuController.text.isEmpty ||
-                      _tempatController.text.isEmpty ||
-                      _alamatController.text.isEmpty) {
+                  if (_topikController.text.isEmpty ||
+                      _judulSaranController.text.isEmpty ||
+                      _deskripsiController.text.isEmpty ||
+                      _tanggalController.text.isEmpty) {
                     Snackbar.show(context, "Semua data wajib diisi!",
                         isError: true);
                     return;
@@ -164,8 +160,9 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
                             )),
                         TextButton(
                             onPressed: () => Navigator.of(context).pop(true),
-                            child: const Text("Sudah",
-                                style: TextStyle(color: Color(0xFF4B9560)),
+                            child: const Text(
+                              "Sudah",
+                              style: TextStyle(color: Color(0xFF4B9560)),
                             )),
                       ],
                     ),
@@ -186,14 +183,13 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
 
                   try {
                     // Jika user sudah
-                    final response = await KeramaianService.submitForm(
+                    final response = await SaranService.submitForm(
                       nama: _namaController.text,
                       alamat: _alamatController.text,
-                      nik: _nikController.text,
-                      kegiatan: _kegiatanController.text,
+                      topik: _topikController.text,
+                      judul_saran: _judulSaranController.text,
+                      deskripsi: _deskripsiController.text,
                       tanggal: _tanggalController.text,
-                      waktu: _waktuController.text,
-                      tempat: _tempatController.text,
                       filePaths: _mediaPaths, // Pass all media paths
                       username: widget.user.nama,
                     );
@@ -201,9 +197,9 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Snackbar.show(context, "Pengaduan berhasil dikirim!\nTerima kasih atas sarannya");
                       Navigator.pop(context);
-                      widget.onNavigate(0);
+                      widget.onNavigate(2);
                     } else {
                       Snackbar.show(context, "Gagal: ${response['message']}",
                           isError: true);
@@ -222,7 +218,7 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Permohonan",
+                  "Ajukan Pengaduan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
