@@ -50,9 +50,11 @@ class FormWidgets {
           suffixIcon: const Icon(Icons.calendar_today),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xFF4B9560)),
+            borderRadius: BorderRadius.circular(8),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -68,7 +70,7 @@ class FormWidgets {
           );
           if (pickedDate != null) {
             String formattedDate =
-                "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+                "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
             controller.text = formattedDate;
           }
         },

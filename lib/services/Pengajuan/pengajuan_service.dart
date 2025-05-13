@@ -200,7 +200,7 @@ class PenghasilanService {
     var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_penghasilan.php");
     var request = http.MultipartRequest("POST", uri);
 
-    request.fields['kode_surat'] = "prnghasilan orang tua";
+    request.fields['kode_surat'] = "penghasilan orang tua";
     //bpk
     request.fields['nama_ortu'] = namaOrtu;
     request.fields['tempat_tanggal_lahir_ortu'] = tempatLahirOrtu + ', ' + tanggalLahirOrtu;
@@ -236,7 +236,52 @@ class PenghasilanService {
 
 //izin
 class TidakMasukKerjaService {
-  
+  static Future<Map<String, dynamic>> submitForm({
+    required String nama,
+    required String tempatLahir,
+    required String tanggalLahir,
+    required String alamat,
+    required String tanggalAwalIzin,
+    required String tanggalAkhirIzin,
+    required String alasan,
+    required String instansi,
+    required List<String> filePaths, // boleh null
+    required String username,
+  }) async {
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_TidakMasukKerja.php");
+    var request = http.MultipartRequest("POST", uri);
+
+    String tanggalIzin = tanggalAkhirIzin.isEmpty 
+        ? tanggalAwalIzin 
+        : tanggalAwalIzin + ' - ' + tanggalAkhirIzin;
+
+    request.fields['kode_surat'] = "tidak masuk kerja";
+    request.fields['nama'] = nama;
+    request.fields['tempat_tanggal_lahir'] = tempatLahir + ', ' + tanggalLahir;
+    request.fields['alamat'] = alamat;
+    request.fields['tanggal_izin'] = tanggalIzin;
+    request.fields['alasan'] = alasan;
+    request.fields['instansi'] = instansi;
+    request.fields['username'] = username;
+
+    if (filePaths.isNotEmpty) {
+      for (int i = 0; i < filePaths.length; i++) {
+        if (filePaths[i].isNotEmpty) {
+          var file = await http.MultipartFile.fromPath(
+            'file[]', // Changed to array notation for PHP
+            filePaths[i],
+            contentType: MediaType('application', 'octet-stream'),
+          );
+          request.files.add(file);
+        }
+      }
+    }
+
+    var response = await request.send();
+    var respStr = await response.stream.bytesToString();
+    print("Response: $respStr");
+    return json.decode(respStr);
+  }
 }
 
 class KeramaianService {
