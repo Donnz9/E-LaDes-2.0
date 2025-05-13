@@ -5,7 +5,54 @@ import 'package:http_parser/http_parser.dart';
 
 //pengantar
 class SKCKService {
+  static Future<Map<String, dynamic>> submitForm({
+    required String nama,
+    required String nik,
+    required String tempatLahir,
+    required String tanggalLahir,
+    required String kebangsaan,
+    required String agama,
+    required String jenisKelamin,
+    required String statusPerkawinan,
+    required String pekerjaan,
+    required String alamat,
+    required List<String> filePaths, // boleh null
+    required String username,
+  }) async {
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_skck.php");
+    var request = http.MultipartRequest("POST", uri);
 
+    request.fields['kode_surat'] = "skck";
+    request.fields['nama'] = nama;
+    request.fields['nik'] = nik;
+    request.fields['tempat_lahir'] = tempatLahir;
+    request.fields['tanggal_lahir'] = tanggalLahir;
+    request.fields['kebangsaan'] = kebangsaan;
+    request.fields['agama'] = agama;
+    request.fields['jenis_kelamin'] = jenisKelamin;
+    request.fields['status_perkawinan'] = statusPerkawinan;
+    request.fields['pekerjaan'] = pekerjaan;
+    request.fields['alamat'] = alamat;
+    request.fields['username'] = username;
+
+    if (filePaths.isNotEmpty) {
+      for (int i = 0; i < filePaths.length; i++) {
+        if (filePaths[i].isNotEmpty) {
+          var file = await http.MultipartFile.fromPath(
+            'file[]', // Changed to array notation for PHP
+            filePaths[i],
+            contentType: MediaType('application', 'octet-stream'),
+          );
+          request.files.add(file);
+        }
+      }
+    }
+
+    var response = await request.send();
+    var respStr = await response.stream.bytesToString();
+    print("Response: $respStr");
+    return json.decode(respStr);
+  }
 }
 
 class KehilanganBarangService {

@@ -70,9 +70,9 @@ class _SuratPengantarKehilanganBarangState
                   ),
                   const SizedBox(width: 8),
                   const Text(
-                    "Surat Kehilangan Barang",
+                    "Surat Pengantar Kehilangan Barang",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF4B9560),
                     ),
@@ -83,7 +83,7 @@ class _SuratPengantarKehilanganBarangState
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat kehilangan barang untuk keperluan administrasi pelaporan kehilangan di kepolisian.",
+                  "Ajukan permohonan surat pengantar kehilangan barang untuk keperluan administrasi pelaporan kehilangan di kepolisian.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -176,12 +176,8 @@ class _SuratPengantarKehilanganBarangState
                       _barangHilangController.text.isEmpty ||
                       _tanggalHilangController.text.isEmpty ||
                       _tempatKehilanganController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Semua data wajib diisi!"),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    Snackbar.show(context, "Semua data wajib diisi!",
+                        isError: true);
                     return;
                   }
 
@@ -194,12 +190,17 @@ class _SuratPengantarKehilanganBarangState
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text("Belum"),
+                          child: const Text(
+                            "Belum",
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                         TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text("Sudah"),
-                        ),
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text(
+                              "Sudah",
+                              style: TextStyle(color: Color(0xFF4B9560)),
+                            )),
                       ],
                     ),
                   );
@@ -241,7 +242,8 @@ class _SuratPengantarKehilanganBarangState
                       Navigator.pop(context);
                       widget.onNavigate(0);
                     } else {
-                      Snackbar.show(context, "Gagal: ${response['message']}", isError: true);
+                      Snackbar.show(context, "Gagal: ${response['message']}",
+                          isError: true);
                     }
                   } catch (e) {
                     // Close loading dialog

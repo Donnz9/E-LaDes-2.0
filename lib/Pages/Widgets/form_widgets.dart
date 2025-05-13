@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:elades20/Services/Pengajuan/media_picker_service.dart';
+import 'package:flutter/services.dart';
 
 class FormWidgets {
   static Widget buildTextField({
@@ -14,7 +15,8 @@ class FormWidgets {
       child: TextField(
         controller: controller,
         obscureText: isPassword ? obscureText : false,
-        keyboardType: isPassword ? TextInputType.visiblePassword : TextInputType.text,
+        keyboardType:
+            isPassword ? TextInputType.visiblePassword : TextInputType.text,
         cursorColor: const Color.fromARGB(255, 46, 46, 46),
         decoration: InputDecoration(
           labelText: label,
@@ -212,6 +214,54 @@ class FormWidgets {
           borderRadius: BorderRadius.circular(8),
         ),
         child: const Icon(Icons.add, size: 30, color: Colors.black54),
+      ),
+    );
+  }
+
+  // Add this method to your FormWidgets class
+  static Widget buildNikField({
+    required String label,
+    required TextEditingController controller,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.number, // Numeric keyboard
+        maxLength: 16, // Limit to 16 characters
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly, // Only allow digits
+        ],
+        validator: (value) {
+          if (value == null || value.isEmpty || value.length < 16) {
+            return 'NIK harus 16 digit';
+          }
+          return null;
+        },
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        cursorColor: const Color.fromARGB(255, 46, 46, 46),
+        decoration: InputDecoration(
+          labelText: label,
+          counterText: "", // Hide the character counter
+          floatingLabelStyle: const TextStyle(color: Color(0xFF4B9560)),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Color(0xFF4B9560)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Color(0xFFC10D00)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Color(0xFFC10D00)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          errorStyle: const TextStyle(color: Color(0xFFC10D00)),
+        ),
       ),
     );
   }
