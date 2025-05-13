@@ -285,5 +285,46 @@ class TidakMasukKerjaService {
 }
 
 class KeramaianService {
-  
+  static Future<Map<String, dynamic>> submitForm({
+    required String nama,
+    required String alamat,
+    required String nik,
+    required String kegiatan,
+    required String tanggal,
+    required String waktu,
+    required String tempat,
+    required List<String> filePaths, // boleh null
+    required String username,
+  }) async {
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_keramaian.php");
+    var request = http.MultipartRequest("POST", uri);
+
+    request.fields['kode_surat'] = "keramaian";
+    request.fields['nama'] = nama;
+    request.fields['alamat'] = alamat;
+    request.fields['nik'] = nik;
+    request.fields['kegiatan'] = kegiatan;
+    request.fields['tanggal'] = tanggal;
+    request.fields['waktu'] = waktu;
+    request.fields['tempat'] = tempat;
+    request.fields['username'] = username;
+
+    if (filePaths.isNotEmpty) {
+      for (int i = 0; i < filePaths.length; i++) {
+        if (filePaths[i].isNotEmpty) {
+          var file = await http.MultipartFile.fromPath(
+            'file[]', // Changed to array notation for PHP
+            filePaths[i],
+            contentType: MediaType('application', 'octet-stream'),
+          );
+          request.files.add(file);
+        }
+      }
+    }
+
+    var response = await request.send();
+    var respStr = await response.stream.bytesToString();
+    print("Response: $respStr");
+    return json.decode(respStr);
+  }
 }

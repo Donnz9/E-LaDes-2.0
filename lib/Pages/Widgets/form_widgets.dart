@@ -78,6 +78,62 @@ class FormWidgets {
     );
   }
 
+  static Widget buildTimeField(
+      {required String label,
+      required TextEditingController controller,
+      required BuildContext context}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextField(
+        controller: controller,
+        cursorColor: const Color(0xFF4B9560),
+        decoration: InputDecoration(
+          labelText: label,
+          floatingLabelStyle: const TextStyle(color: Color(0xFF4B9560)),
+          suffixIcon: const Icon(Icons.access_time),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF4B9560)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        readOnly: true,
+        onTap: () async {
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+            builder: (BuildContext context, Widget? child) {
+              return Theme(
+                data: ThemeData.light().copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: Color(0xFF4B9560),
+                    onPrimary: Colors.white,
+                    surface: Colors.white,
+                    onSurface: Colors.black,
+                  ),
+                ),
+                child: child!,
+              );
+            },
+          );
+
+          if (pickedTime != null) {
+            // Format waktu dalam format 24 jam (HH:MM)
+            String formattedTime =
+                "${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
+            controller.text = formattedTime;
+          }
+        },
+      ),
+    );
+  }
+
   static Widget buildDropdownField({
     required String label,
     required String? selectedValue,
