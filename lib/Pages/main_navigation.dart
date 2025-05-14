@@ -57,7 +57,10 @@ class _MainNavigationState extends State<MainNavigation> {
         onNavigate: _onItemTapped,
         user: currentUser,
       ),
-      const Riwayat(),
+      Riwayat(
+        onNavigate: _onItemTapped,
+        user: currentUser,
+      ),
       Pengaduan(
         onNavigate: _onItemTapped,
         user: currentUser,
