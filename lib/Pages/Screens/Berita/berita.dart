@@ -55,77 +55,97 @@ class _BeritaState extends State<Berita> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8), // Background abu-abu muda
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Kabar Desa',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF4B9560),
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Informasi resmi seputar kegiatan dan pengumuman dari Pemerintah Desa',
-                      textAlign:
-                          TextAlign.center, // <-- biar teksnya rata tengah
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF77A88B),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: isLoadingKabarDesa
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFF4B9560),
+        child: Column(
+          children: [
+            // Header tetap (fixed header)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Kabar Desa',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF4B9560),
+                          ),
                         ),
-                      )
-                    : kabarDesaList.isEmpty
-                        ? Center(
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.green.shade100,
-                                borderRadius: BorderRadius.circular(8),
+                        SizedBox(height: 4),
+                        Text(
+                          'Informasi resmi seputar kegiatan dan pengumuman dari Pemerintah Desa',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF77A88B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ),
+            
+            // Konten yang dapat di-scroll tanpa pembatas
+            Expanded(
+              child: isLoadingKabarDesa
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0xFF4B9560),
+                    ),
+                  )
+                : kabarDesaList.isEmpty
+                  ? Center(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          "Belum ada kabar desa terbaru",
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: fetchKabarDesa,
+                      color: const Color(0xFF4B9560),
+                      child: CustomScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        slivers: [
+                          SliverPadding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  return KabarDesaCard(
+                                    kabarDesa: kabarDesaList[index],
+                                  );
+                                },
+                                childCount: kabarDesaList.length,
                               ),
-                              child: const Text(
-                                "Belum ada kabar desa terbaru",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                        : RefreshIndicator(
-                            onRefresh: fetchKabarDesa,
-                            color: const Color(0xFF4B9560),
-                            child: ListView.builder(
-                              itemCount: kabarDesaList.length,
-                              itemBuilder: (context, index) {
-                                return KabarDesaCard(
-                                  kabarDesa: kabarDesaList[index],
-                                );
-                              },
                             ),
                           ),
-              ),
-            ],
-          ),
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 20),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+          ],
         ),
       ),
     );

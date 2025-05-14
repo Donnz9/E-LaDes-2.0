@@ -16,167 +16,173 @@ class Pengajuan extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8), // Background abu-abu muda
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Layanan Pengajuan Surat',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF4B9560),
-                      ),
+        child: Column(
+          children: [
+            // Header tetap (fixed header)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Layanan Pengajuan Surat',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF4B9560),
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Pilih surat yang ingin\nkamu ajukan',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF77A88B),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Pilih surat yang ingin\nkamu ajukan',
-                      textAlign:
-                          TextAlign.center, // <-- biar teksnya rata tengah
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF77A88B),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 5),
+                ],
               ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView(
-                  children: [
-                    SuratKategori(
-                      title: "Surat Pengantar",
-                      items: [
-                        SuratItem(
-                          icon: Icons.shield,
-                          text: "Surat Pengantar SKCK",
-                          // onTap: () => onNavigate(7),
-                          onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SuratPengantarSkck(
-                                    user: user,
-                                    onNavigate: onNavigate,
+            ),
+            
+            // Konten yang dapat di-scroll, tanpa pembatas
+            Expanded(
+              child: CustomScrollView(
+                // Pengaturan physics untuk menghilangkan efek pembatas
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        SuratKategori(
+                          title: "Surat Pengantar",
+                          items: [
+                            SuratItem(
+                              icon: Icons.shield,
+                              text: "Surat Pengantar SKCK",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SuratPengantarSkck(
+                                      user: user,
+                                      onNavigate: onNavigate,
+                                    ),
                                   ),
-                                ),
-                              );
-                            }
+                                );
+                              }
+                            ),
+                            SuratItem(
+                              icon: Icons.search,
+                              text: "Surat Pengantar Kehilangan Barang",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SuratPengantarKehilanganBarang(
+                                      user: user,
+                                      onNavigate: onNavigate,
+                                    ),
+                                  ),
+                                );
+                              }),
+                          ],
                         ),
-                        SuratItem(
-                            icon: Icons.search,
-                            text: "Surat Pengantar Kehilangan Barang",
-                            // onTap: () => onNavigate(8),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SuratPengantarKehilanganBarang(
-                                    user: user,
-                                    onNavigate: onNavigate,
+                        SuratKategori(
+                          title: "Surat Keterangan",
+                          items: [
+                            SuratItem(
+                              icon: Icons.attach_money,
+                              text: "Surat Keterangan Tidak Mampu (SKTM)",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SuratKeteranganTidakMampu(
+                                      user: user,
+                                      onNavigate: onNavigate,
+                                    ),
                                   ),
-                                ),
-                              );
-                            }),
-                      ],
+                                );
+                              }
+                            ),
+                            SuratItem(
+                              icon: Icons.family_restroom,
+                              text: "Surat Keterangan Penghasilan Orang Tua",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SuratKeteranganPenghasilanOrangTua(
+                                      user: user,
+                                      onNavigate: onNavigate,
+                                    ),
+                                  ),
+                                );
+                              }
+                            ),
+                          ],
+                        ),
+                        SuratKategori(
+                          title: "Surat Izin",
+                          items: [
+                            SuratItem(
+                              icon: Icons.work_off,
+                              text: "Surat Izin Tidak Masuk Kerja",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SuratIzinTidakMasukKerja(
+                                      user: user,
+                                      onNavigate: onNavigate,
+                                    ),
+                                  ),
+                                );
+                              }
+                            ),
+                            SuratItem(
+                              icon: Icons.celebration,
+                              text: "Surat Izin Keramaian",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SuratIzinKeramaian(
+                                      user: user,
+                                      onNavigate: onNavigate,
+                                    ),
+                                  ),
+                                );
+                              }
+                            ),
+                          ],
+                        ),
+                        // Tambahkan padding di bagian bawah agar scroll terlihat lebih baik
+                        const SizedBox(height: 20),
+                      ]),
                     ),
-                    SuratKategori(
-                      title: "Surat Keterangan",
-                      items: [
-                        SuratItem(
-                          icon: Icons.attach_money,
-                          text: "Surat Keterangan Tidak Mampu (SKTM)",
-                          // onTap: () => onNavigate(9),
-                          onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SuratKeteranganTidakMampu(
-                                    user: user,
-                                    onNavigate: onNavigate,
-                                  ),
-                                ),
-                              );
-                            }
-                        ),
-                        SuratItem(
-                          icon: Icons.family_restroom,
-                          text: "Surat Keterangan Penghasilan Orang Tua",
-                          // onTap: () => onNavigate(10),
-                          onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SuratKeteranganPenghasilanOrangTua(
-                                    user: user,
-                                    onNavigate: onNavigate,
-                                  ),
-                                ),
-                              );
-                            }
-                        ),
-                      ],
-                    ),
-                    SuratKategori(
-                      title: "Surat Izin",
-                      items: [
-                        SuratItem(
-                          icon: Icons.work_off,
-                          text: "Surat Izin Tidak Masuk Kerja",
-                          // onTap: () => onNavigate(11),
-                          onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SuratIzinTidakMasukKerja(
-                                    user: user,
-                                    onNavigate: onNavigate,
-                                  ),
-                                ),
-                              );
-                            }
-                        ),
-                        SuratItem(
-                          icon: Icons.celebration,
-                          text: "Surat Izin Keramaian",
-                          // onTap: () => onNavigate(12),
-                          onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SuratIzinKeramaian(
-                                    user: user,
-                                    onNavigate: onNavigate,
-                                  ),
-                                ),
-                              );
-                            }
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+// SuratKategori dan SuratItem tetap sama
 class SuratKategori extends StatelessWidget {
   final String title;
   final List<SuratItem> items;
@@ -232,8 +238,7 @@ class SuratItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // Membuat item bisa ditekan
-      onTap: onTap, // Menambahkan fungsi saat item ditekan
+      onTap: onTap,
       child: Row(
         children: [
           Container(

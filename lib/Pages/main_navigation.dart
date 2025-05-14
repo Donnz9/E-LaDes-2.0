@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Berita/berita.dart';
 import 'package:elades20/Pages/Screens/Dashboard/dashboard.dart';
@@ -31,7 +30,6 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 3;
   late UserModel currentUser;
-  File? _imageFile;
 
   @override
   void initState() {
