@@ -19,7 +19,7 @@ class SKCKService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_skck.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan_skck");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_surat'] = "skck";
@@ -39,7 +39,7 @@ class SKCKService {
       for (int i = 0; i < filePaths.length; i++) {
         if (filePaths[i].isNotEmpty) {
           var file = await http.MultipartFile.fromPath(
-            'file[]', // Changed to array notation for PHP
+            'file[]', // Changed to array notation for
             filePaths[i],
             contentType: MediaType('application', 'octet-stream'),
           );
@@ -70,7 +70,7 @@ class KehilanganBarangService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_kehilangan.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan_kehilangan");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_surat'] = "kehilangan barang";
@@ -90,7 +90,7 @@ class KehilanganBarangService {
       for (int i = 0; i < filePaths.length; i++) {
         if (filePaths[i].isNotEmpty) {
           var file = await http.MultipartFile.fromPath(
-            'file[]', // Changed to array notation for PHP
+            'file[]', // Changed to array notation for
             filePaths[i],
             contentType: MediaType('application', 'octet-stream'),
           );
@@ -134,7 +134,7 @@ class SKTMService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_sktm.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan_sktm");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_surat'] = "sktm";
@@ -163,7 +163,7 @@ class SKTMService {
       for (int i = 0; i < filePaths.length; i++) {
         if (filePaths[i].isNotEmpty) {
           var file = await http.MultipartFile.fromPath(
-            'file[]', // Changed to array notation for PHP
+            'file[]', // Changed to array notation for
             filePaths[i],
             contentType: MediaType('application', 'octet-stream'),
           );
@@ -197,7 +197,7 @@ class PenghasilanService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_penghasilan.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan_penghasilan");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_surat'] = "penghasilan orang tua";
@@ -218,7 +218,7 @@ class PenghasilanService {
       for (int i = 0; i < filePaths.length; i++) {
         if (filePaths[i].isNotEmpty) {
           var file = await http.MultipartFile.fromPath(
-            'file[]', // Changed to array notation for PHP
+            'file[]', // Changed to array notation for
             filePaths[i],
             contentType: MediaType('application', 'octet-stream'),
           );
@@ -248,7 +248,7 @@ class TidakMasukKerjaService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_TidakMasukKerja.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan_TidakMasukKerja");
     var request = http.MultipartRequest("POST", uri);
 
     String tanggalIzin = tanggalAkhirIzin.isEmpty 
@@ -268,7 +268,7 @@ class TidakMasukKerjaService {
       for (int i = 0; i < filePaths.length; i++) {
         if (filePaths[i].isNotEmpty) {
           var file = await http.MultipartFile.fromPath(
-            'file[]', // Changed to array notation for PHP
+            'file[]', // Changed to array notation for
             filePaths[i],
             contentType: MediaType('application', 'octet-stream'),
           );
@@ -296,7 +296,7 @@ class KeramaianService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan/pengajuan_keramaian.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengajuan_keramaian");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_surat'] = "keramaian";
@@ -313,7 +313,7 @@ class KeramaianService {
       for (int i = 0; i < filePaths.length; i++) {
         if (filePaths[i].isNotEmpty) {
           var file = await http.MultipartFile.fromPath(
-            'file[]', // Changed to array notation for PHP
+            'file[]', // Changed to array notation for
             filePaths[i],
             contentType: MediaType('application', 'octet-stream'),
           );

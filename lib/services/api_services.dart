@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static Future<List<dynamic>> fetchUsers() async {
-    final response = await http.get(Uri.parse("${AppConfig.baseUrl}/get_users.php"));
+    final response = await http.get(Uri.parse("${AppConfig.baseUrl}/users"));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {

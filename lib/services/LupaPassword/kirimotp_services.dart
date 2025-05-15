@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class KirimOtpService {
   static Future<OtpResponse> sendOtp(String emailOrPhone) async {
-    final url = Uri.parse("${AppConfig.baseUrl}/send_otp_reset.php");
+    final url = Uri.parse("${AppConfig.baseUrl}/send_otp_reset");
     final response = await http.post(url, body: {
       'email_or_phone': emailOrPhone,
     });
@@ -14,16 +14,15 @@ class KirimOtpService {
     return OtpResponse.fromJson(data);
   }
 
-  static Future<OtpResponse> verifikasiOtp(String emailOrPhone, String kodeOtp) async {
-  final url = Uri.parse("${AppConfig.baseUrl}/LupaPassword_verifikasi_otp.php");
-  final response = await http.post(url, body: {
-    'email_or_phone': emailOrPhone,
-    'kode_otp': kodeOtp,
-  });
+  static Future<OtpResponse> verifikasiOtp(
+      String emailOrPhone, String kodeOtp) async {
+    final url = Uri.parse("${AppConfig.baseUrl}/LupaPassword_verifikasi_otp");
+    final response = await http.post(url, body: {
+      'email_or_phone': emailOrPhone,
+      'kode_otp': kodeOtp,
+    });
 
-  final data = jsonDecode(response.body);
-  return OtpResponse.fromJson(data);
+    final data = jsonDecode(response.body);
+    return OtpResponse.fromJson(data);
+  }
 }
-
-}
-

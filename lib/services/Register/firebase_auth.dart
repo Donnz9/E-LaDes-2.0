@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
+//
 Future<bool> registerWithFirebase(String email, String password) async {
   try {
     // Mendaftarkan user dengan email dan password ke Firebase Authentication

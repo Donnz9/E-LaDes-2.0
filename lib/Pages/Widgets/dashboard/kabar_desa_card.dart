@@ -21,7 +21,7 @@ class KabarDesaCard extends StatelessWidget {
     if (kabarDesa.gambar.isNotEmpty) {
       // Make sure we have a valid URL with properly encoded path components
       String encodedFilename = Uri.encodeComponent(kabarDesa.gambar);
-      imageUrl = "${AppConfig.baseUrl}/dashboard/gambar_kabar_desa/$encodedFilename";
+      imageUrl = "${AppConfig.uploads}/uploads/gambar_kabar_desa/$encodedFilename";
       
       // Debug log the image URL
       print("KabarDesaCard: Loading image from URL: $imageUrl");

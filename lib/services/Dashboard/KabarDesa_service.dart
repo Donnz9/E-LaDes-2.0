@@ -6,9 +6,9 @@ import 'package:http/http.dart' as http;
 class KabarDesaService {
   Future<List<KabarDesaModel>> fetchKabarDesa() async {
     try {
-      print("Fetching kabar desa from: ${AppConfig.baseUrl}/dashboard/kabar_desa.php");
+      print("Fetching kabar desa from: ${AppConfig.baseUrl}/kabar_desa");
       final response = await http.get(
-        Uri.parse("${AppConfig.baseUrl}/dashboard/kabar_desa.php"),
+        Uri.parse("${AppConfig.baseUrl}/kabar_desa"),
       );
       
       if (response.statusCode == 200) {

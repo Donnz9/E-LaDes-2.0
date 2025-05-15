@@ -148,7 +148,7 @@ class ProfileUpdateService {
     try {
       // URL untuk API upload gambar
       final url =
-          Uri.parse("${AppConfig.baseUrl}/profile/upload_profile_image.php");
+          Uri.parse("${AppConfig.baseUrl}/upload_profile_image");
 
       // Buat request multipart untuk upload file
       var request = http.MultipartRequest('POST', url);
@@ -226,7 +226,7 @@ class ProfileUpdateService {
     String? profileImage,
   }) async {
     // Sesuaikan path URL ke API update profile
-    final url = Uri.parse("${AppConfig.baseUrl}/profile/update_profile.php");
+    final url = Uri.parse("${AppConfig.baseUrl}/update_profile");
 
     final Map<String, String> requestBody = {
       'id_user': userId,

@@ -19,7 +19,7 @@ class KabarDesaDetailDialog extends StatelessWidget {
     String imageUrl = "";
     if (kabarDesa.gambar.isNotEmpty) {
       String encodedFilename = Uri.encodeComponent(kabarDesa.gambar);
-      imageUrl = "${AppConfig.baseUrl}/dashboard/gambar_kabar_desa/$encodedFilename";
+      imageUrl = "${AppConfig.uploads}/uploads/gambar_kabar_desa/$encodedFilename";
     }
 
     return Dialog(

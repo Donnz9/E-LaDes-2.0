@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class ProfileService {
   static Future<Map<String, dynamic>> fetchUserProfile(String id) async {
-    final url = Uri.parse("${AppConfig.baseUrl}/login.php");
+    final url = Uri.parse("${AppConfig.baseUrl}/login");
     final response = await http.post(
       url,
       body: {'id_user': id}, // atau 'id_user': '1'

@@ -13,7 +13,7 @@ class StatusPengajuanService {
       
       // Create the request
       final response = await http.post(
-        Uri.parse("${AppConfig.baseUrl}/dashboard/status_pengajuan.php"),
+        Uri.parse("${AppConfig.baseUrl}/status_pengajuan"),
         body: {'username': username},
       ).timeout(
         const Duration(seconds: 10), // Add timeout to prevent hanging

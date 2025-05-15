@@ -9,7 +9,7 @@ class OtpServices {
   static Future<OtpResponse> sendOtp(String emailOrPhone) async {
     try {
       // Print debug information
-      final url = Uri.parse("${AppConfig.baseUrl}/send_otp.php");
+      final url = Uri.parse("${AppConfig.baseUrl}/send_otp");
       print("Sending OTP request to: $url");
       print("With data: {'email_or_phone': $emailOrPhone}");
 

@@ -45,7 +45,7 @@ Future<bool> update_password(String idUser, String newPassword) async {
     }
 
     // Send request to API
-    final url = Uri.parse("${AppConfig.baseUrl}/profile/update_password.php");
+    final url = Uri.parse("${AppConfig.baseUrl}/update_password");
     
     // Create request body
     final requestBody = {

@@ -15,7 +15,7 @@ class InfrastrukturService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengaduan/pengaduan_infrastruktur.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengaduan_infrastruktur");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_pengaduan'] = "infrastruktur";
@@ -60,7 +60,7 @@ class KeamananService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengaduan/pengaduan_keamanan.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengaduan_keamanan");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_pengaduan'] = "keamanan";
@@ -104,7 +104,7 @@ class SaranService {
     required List<String> filePaths, // boleh null
     required String username,
   }) async {
-    var uri = Uri.parse("${AppConfig.baseUrl}/pengaduan/pengaduan_saran.php");
+    var uri = Uri.parse("${AppConfig.baseUrl}/pengaduan_saran");
     var request = http.MultipartRequest("POST", uri);
 
     request.fields['kode_pengaduan'] = "saran";

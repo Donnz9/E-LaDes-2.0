@@ -7,7 +7,7 @@ class LoginService {
   static Future<Map<String, dynamic>> login(
       String login, String password) async {
     try {
-      final url = Uri.parse("${AppConfig.baseUrl}/login.php");
+      final url = Uri.parse("${AppConfig.baseUrl}/login");
       
       final response = await http.post(
         url,
@@ -60,7 +60,7 @@ class LoginService {
   // Add method for Google login to save user to database if needed
   static Future<Map<String, dynamic>> saveGoogleUser(UserModel user) async {
     try {
-      final url = Uri.parse("${AppConfig.baseUrl}/save_google_user.php");
+      final url = Uri.parse("${AppConfig.baseUrl}/save_google_user");
       
       final response = await http.post(
         url,

@@ -20,7 +20,7 @@ class TopBar extends StatelessWidget {
     }
     String filename = user.profileImage!.split('/').last;
     String encodedFilename = Uri.encodeComponent(filename);
-    String formattedUrl = "${AppConfig.baseUrl}/profile/foto_profile/$encodedFilename";
+    String formattedUrl = "${AppConfig.uploads}/uploads/foto_profile/$encodedFilename";
     debugPrint('TopBar profile image URL: $formattedUrl');
     return formattedUrl;
   }

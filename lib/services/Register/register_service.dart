@@ -12,7 +12,7 @@ class RegisterService {
     required String kodeOtp,
   }) async {
     final response = await http.post(
-      Uri.parse('${AppConfig.baseUrl}/register.php'),
+      Uri.parse('${AppConfig.baseUrl}/register'),
       body: {
         'email': email,
         'no_hp': noHp,

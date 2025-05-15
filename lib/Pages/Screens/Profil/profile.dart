@@ -160,7 +160,7 @@ class _ProfileState extends State<Profile> {
 
     // Gunakan baseUrl dan path yang benar
     String formattedUrl =
-        "${AppConfig.baseUrl}/profile/foto_profile/$encodedFilename";
+        "${AppConfig.uploads}/uploads/foto_profile/$encodedFilename";
     debugPrint('Forced profile image URL: $formattedUrl');
     return formattedUrl;
   }
