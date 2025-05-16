@@ -117,9 +117,9 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
                   (paths) => setState(() => _mediaPaths = paths)),
               const SizedBox(height: 16),
               FormWidgets.buildTextField(
-                  label: "Nama Lengkap (opsioanl)", controller: _namaController),
+                  label: "Nama Lengkap (opsional)", controller: _namaController),
               FormWidgets.buildTextField(
-                  label: "Alamat (opsioanl)", controller: _alamatController),
+                  label: "Alamat (opsional)", controller: _alamatController),
               FormWidgets.buildTextField(
                   label: "Topik",
                   controller: _topikController),

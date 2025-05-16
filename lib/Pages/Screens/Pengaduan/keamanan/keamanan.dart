@@ -116,6 +116,14 @@ class _PengaduanKeamananState extends State<PengaduanKeamanan> {
               // Menggunakan widget dari FormWidgets
               FormWidgets.buildMedia(context, _mediaPaths,
                   (paths) => setState(() => _mediaPaths = paths)),
+              const Text(
+                "Media wajib diisi",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+              ),
               const SizedBox(height: 16),
               FormWidgets.buildTextField(
                   label: "Nama Lengkap", controller: _namaController),

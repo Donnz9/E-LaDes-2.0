@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Screens/Profil/ganti_password.dart';
+import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/Profile/logout_service.dart';
 import 'package:elades20/Services/Profile/profile_update_service.dart';
@@ -65,7 +66,8 @@ class _ProfileState extends State<Profile> {
         });
       }
     } catch (e) {
-      Snackbar.show(context, 'Error memilih gambar: ${e.toString()}', isError: true);
+      Snackbar.show(context, 'Error memilih gambar: ${e.toString()}',
+          isError: true);
     }
   }
 
@@ -109,43 +111,78 @@ class _ProfileState extends State<Profile> {
       return;
     }
 
-    // Mulai loading
-    setState(() {
-      isLoading = true;
-    });
+    // Tampilkan dialog konfirmasi
+    final bool? shouldUpdate = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Konfirmasi Perubahan'),
+        content:
+            const Text('Apakah Anda yakin ingin menyimpan perubahan profil?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'Batal',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Simpan',
+              style: TextStyle(color: Color(0xFF4B9560)),
+            ),
+          ),
+        ],
+      ),
+    );
 
-    try {
-      final String newValue = emailController.text.trim();
-
-      // Update profile menggunakan service
-      final updatedUser = await ProfileUpdateService.updateProfile(
-        context: context,
-        user: currentUser,
-        newName: nameController.text.trim(),
-        newEmailOrPhone: newValue,
-        imageFile: _imageFile,
-      );
-
-      if (updatedUser != null) {
-        // Update local state
-        setState(() {
-          currentUser = updatedUser;
-          // Reset image file since we've uploaded it
-          _imageFile = null;
-          // Update profile image URL
-          profileImageUrl = updatedUser.profileImage;
-        });
-
-        // Update parent state melalui callback
-        widget.onProfileUpdated(updatedUser);
-      }
-    } catch (e) {
-      Snackbar.show(context, 'Gagal mengupdate profil: ${e.toString()}', isError: true);
-    } finally {
-      // Hentikan loading
+    // Lanjutkan proses update jika user mengkonfirmasi
+    if (shouldUpdate == true) {
+      // Mulai loading
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
+
+      try {
+        final String newValue = emailController.text.trim();
+
+        // Update profile menggunakan service
+        final updatedUser = await ProfileUpdateService.updateProfile(
+          context: context,
+          user: currentUser,
+          newName: nameController.text.trim(),
+          newEmailOrPhone: newValue,
+          imageFile: _imageFile,
+        );
+
+        if (updatedUser != null) {
+          // Update local state
+          setState(() {
+            currentUser = updatedUser;
+            // Reset image file since we've uploaded it
+            _imageFile = null;
+            // Update profile image URL
+            profileImageUrl = updatedUser.profileImage;
+          });
+
+          // Update parent state melalui callback
+          widget.onProfileUpdated(updatedUser);
+
+          // Tampilkan notifikasi sukses
+          // Snackbar.show(context, 'Profil berhasil diperbarui', isError: false);
+          Snackbar.show(context, "Profil berhasil diperbarui");
+        }
+      } catch (e) {
+        Snackbar.show(context, 'Gagal mengupdate profil: ${e.toString()}',
+            isError: true);
+      } finally {
+        // Hentikan loading
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -206,7 +243,8 @@ class _ProfileState extends State<Profile> {
                             )
                           : (formattedImageUrl != null
                               ? FadeInImage.assetNetwork(
-                                  placeholder: 'assets/images/placeholder_profil.png',
+                                  placeholder:
+                                      'assets/images/placeholder_profil.png',
                                   image: formattedImageUrl,
                                   fit: BoxFit.cover,
                                   width: 100,
@@ -264,58 +302,15 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               const SizedBox(height: 32),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Email/No HP',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 16,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
+         
+              FormWidgets.buildTextField(
+                  label: "Email/No HP", controller: emailController),
+              const SizedBox(height: 10),
+
+              FormWidgets.buildTextField(
+                  label: "Nama", controller: nameController),
               const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Nama',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 16,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
+              
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

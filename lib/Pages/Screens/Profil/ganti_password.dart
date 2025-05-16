@@ -1,3 +1,4 @@
+import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/Profile/gantipassword_service.dart';
 import 'package:elades20/Models/user_model.dart';
@@ -19,6 +20,7 @@ class _GantiPasswordState extends State<GantiPassword> {
   bool _obscureConfirm = true;
   bool _isLoading = false;
   late UserModel? currentUser;
+  String? profileImageUrl;
 
   final TextEditingController passwordBaruController = TextEditingController();
   final TextEditingController konfirmasiPasswordBaruController = TextEditingController();
@@ -27,6 +29,11 @@ class _GantiPasswordState extends State<GantiPassword> {
   void initState() {
     super.initState();
     currentUser = widget.user;
+    // Initialize profileImageUrl from currentUser
+    if (currentUser != null) {
+      profileImageUrl = currentUser!.profileImage;
+      debugPrint('GantiPassword - User profile image: $profileImageUrl');
+    }
   }
 
   @override
@@ -59,87 +66,70 @@ class _GantiPasswordState extends State<GantiPassword> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              const SizedBox(height: 24),
+              const SizedBox(height: 40),
+
               // Show profile image if available
               _buildProfileImage(),
               const SizedBox(height: 32),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Password Baru',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w500,
+
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  FormWidgets.buildTextField(
+                    label: 'Password Baru',
+                    controller: passwordBaruController,
+                    obscureText: _obscurePassword,
+                    isPassword: true,
                   ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: passwordBaruController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: 'Masukkan Password Baru',
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                  Positioned(
+                    right: 10,
+                    child: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        color: const Color.fromARGB(255, 88, 88, 88),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Konfirmasi Password Baru',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w500,
+              const SizedBox(height: 10),
+              
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  FormWidgets.buildTextField(
+                    label: 'Konfirmasi Password Baru',
+                    controller: konfirmasiPasswordBaruController,
+                    obscureText: _obscureConfirm,
+                    isPassword: true,
                   ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: konfirmasiPasswordBaruController,
-                obscureText: _obscureConfirm,
-                decoration: InputDecoration(
-                  hintText: 'Masukkan Konfirmasi Password Baru',
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureConfirm ? Icons.visibility_off : Icons.visibility,
+                  Positioned(
+                    right: 10,
+                    child: IconButton(
+                      icon: Icon(
+                        _obscureConfirm ? Icons.visibility_off : Icons.visibility,
+                        color: const Color.fromARGB(255, 88, 88, 88),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirm = !_obscureConfirm;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureConfirm = !_obscureConfirm;
-                      });
-                    },
                   ),
-                ),
+                ],
               ),
+
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _updatePassword,
+                  onPressed: _isLoading ? null : _showConfirmationDialog,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF4B9560),
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -177,6 +167,7 @@ class _GantiPasswordState extends State<GantiPassword> {
     // If we have a user with a profile image
     if (currentUser != null && currentUser!.profileImage != null && currentUser!.profileImage!.isNotEmpty) {
       String? formattedImageUrl = _getFormattedProfileImageUrl();
+      debugPrint('Formatted profile image URL for display: $formattedImageUrl');
       
       return CircleAvatar(
         radius: 50,
@@ -190,6 +181,7 @@ class _GantiPasswordState extends State<GantiPassword> {
                   width: 100,
                   height: 100,
                   imageErrorBuilder: (context, error, stackTrace) {
+                    debugPrint('Image loading error: $error for URL: $formattedImageUrl');
                     return const Icon(Icons.person, size: 50, color: Colors.white);
                   },
                 )
@@ -215,13 +207,15 @@ class _GantiPasswordState extends State<GantiPassword> {
     String filename = currentUser!.profileImage!.split('/').last;
     String encodedFilename = Uri.encodeComponent(filename);
 
-    // Gunakan baseUrl dari AppConfig
-    String formattedUrl =
-        "${AppConfig.baseUrl}/profile/foto_profile/$encodedFilename";
+    // Gunakan AppConfig.uploads seperti di Profile.dart
+    String formattedUrl = "${AppConfig.uploads}/uploads/foto_profile/$encodedFilename";
+    debugPrint('Ganti Password Formatted profile image URL: $formattedUrl');
     return formattedUrl;
   }
 
-  Future<void> _updatePassword() async {
+  // Menampilkan dialog konfirmasi sebelum mengubah password
+  Future<void> _showConfirmationDialog() async {
+    // Validate inputs first before showing dialog
     final newPassword = passwordBaruController.text.trim();
     final confirmPassword = konfirmasiPasswordBaruController.text.trim();
 
@@ -235,6 +229,41 @@ class _GantiPasswordState extends State<GantiPassword> {
       Snackbar.show(context, 'Password tidak cocok', isError: true);
       return;
     }
+
+    // Show confirmation dialog
+    final bool? shouldUpdate = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Konfirmasi Perubahan'),
+        content: const Text('Apakah Anda yakin ingin mengubah password?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'Batal',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Simpan',
+              style: TextStyle(color: Color(0xFF4B9560)),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // Continue with password update if user confirms
+    if (shouldUpdate == true) {
+      await _updatePassword();
+    }
+  }
+
+  Future<void> _updatePassword() async {
+    final newPassword = passwordBaruController.text.trim();
 
     // Start loading
     setState(() {

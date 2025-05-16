@@ -110,13 +110,15 @@ class SaranService {
     request.fields['kode_pengaduan'] = "saran";
     if (nama != null && nama.isNotEmpty) {
       request.fields['nama'] = nama;
-      request.fields['username'] = username; // Hanya tambahkan username jika nama tidak null
     }
-    request.fields['alamat'] = alamat;
+    if (alamat != null && alamat.isNotEmpty) {
+      request.fields['alamat'] = alamat;
+    }
     request.fields['topik'] = topik;
     request.fields['judul_saran'] = judul_saran;
     request.fields['deskripsi'] = deskripsi;
     request.fields['tanggal'] = tanggal;
+    request.fields['username'] = username;
 
     if (filePaths.isNotEmpty) {
       for (int i = 0; i < filePaths.length; i++) {

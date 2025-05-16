@@ -119,24 +119,8 @@ class ProfileUpdateService {
           }
         }
       }
-
-      // 4. Tampilkan pesan sukses utama
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Profil berhasil diperbarui'),
-          backgroundColor: Color(0xFF4B9560),
-        ),
-      );
-
       return updatedUser;
     } catch (e) {
-      // Tampilkan pesan error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal mengupdate profil: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
       return null;
     }
   }
@@ -147,8 +131,7 @@ class ProfileUpdateService {
   }) async {
     try {
       // URL untuk API upload gambar
-      final url =
-          Uri.parse("${AppConfig.baseUrl}/upload_profile_image");
+      final url = Uri.parse("${AppConfig.baseUrl}/upload_profile_image");
 
       // Buat request multipart untuk upload file
       var request = http.MultipartRequest('POST', url);
