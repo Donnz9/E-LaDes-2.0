@@ -5,7 +5,7 @@ class RiwayatItem extends StatelessWidget {
   final String noPengajuan;
   final String kodeSurat;
   final String nama;
-  final String nik;
+  // final String nik;
   final String tanggal;
   final String status;
   final bool isPengajuan;
@@ -16,7 +16,7 @@ class RiwayatItem extends StatelessWidget {
     required this.noPengajuan,
     required this.kodeSurat,
     required this.nama,
-    required this.nik,
+    // required this.nik,
     required this.tanggal,
     required this.status,
     required this.isPengajuan,
@@ -74,7 +74,7 @@ class RiwayatItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ID: $noPengajuan',
+                      '$kodeSurat',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -112,15 +112,6 @@ class RiwayatItem extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                if (isPengajuan)
-                  Text(
-                    '$kodeSurat',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 15,
-                    ),
-                  ),
-                const SizedBox(height: 4),
                 Text(
                   nama,
                   style: const TextStyle(

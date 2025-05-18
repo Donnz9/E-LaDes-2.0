@@ -272,7 +272,6 @@ class _RiwayatState extends State<Riwayat> {
                               noPengajuan: item['no_pengajuan'] ?? '-',
                               kodeSurat: item['kode_surat'] ?? '-',
                               nama: item['nama'] ?? 'Tidak ada nama',
-                              nik: item['nik'] ?? '-',
                               tanggal: RiwayatDetailHelper.formatDate(item['tanggal'] ?? ''),
                               status: item['status'] ?? 'Tidak diketahui',
                               isPengajuan: isPengajuan,
