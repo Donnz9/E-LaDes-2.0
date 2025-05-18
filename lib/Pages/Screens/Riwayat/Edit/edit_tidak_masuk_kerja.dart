@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditTidakMasukKerja extends StatefulWidget {
-  const EditTidakMasukKerja({
-    Key? key,
-  }) : super(key: key);
+  final Map<String, dynamic> data;
+  const EditTidakMasukKerja({super.key, required this.data});
 
   @override
   State<EditTidakMasukKerja> createState() =>

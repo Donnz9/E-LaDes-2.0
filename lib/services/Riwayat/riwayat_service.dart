@@ -12,7 +12,7 @@ class RiwayatService {
   }) async {
     setLoading(true);
     setErrorMessage('');
-    
+
     try {
       // Get the correct endpoint based on the current tab
       final endpoint = isPengajuan ? 'riwayat_pengajuan' : 'riwayat_pengaduan';
@@ -63,19 +63,65 @@ class RiwayatService {
         setErrorMessage('Server error: ${response.statusCode}');
         setLoading(false);
         return {
-            'success': false,
-            'data': [],
-            'message': 'Server error: ${response.statusCode}',
-          };
+          'success': false,
+          'data': [],
+          'message': 'Server error: ${response.statusCode}',
+        };
       }
     } catch (e) {
       setErrorMessage('Gagal memuat data: ${e.toString()}');
       setLoading(false);
       return {
+        'success': false,
+        'data': [],
+        'message': 'Gagal memuat data: ${e.toString()}',
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> getSuratDetail({
+    required String noPengajuan,
+    String? kodeSurat,
+  }) async {
+    try {
+      // final response = await http.post(
+      //   Uri.parse("${AppConfig.baseUrl}/get_pengajuan"),
+      //   headers: {'Content-Type': 'application/json'},
+      //   body: jsonEncode({
+      //     'no_pengajuan': noPengajuan,
+      //     'kode_surat': kodeSurat,
+      //   }),
+      // );
+      final url = Uri.parse("${AppConfig.baseUrl}/get_pengajuan");
+      print("URL yang dibentuk: $url");
+
+      final response = await http.post(
+        url,
+        body: {
+          'no_pengajuan': noPengajuan,
+          'kode_surat': kodeSurat,
+        },
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        if (responseData['status'] == 'success') {
+          return {'success': true, 'data': responseData['data']};
+        } else {
+          return {
             'success': false,
-            'data': [],
-            'message': 'Gagal memuat data: ${e.toString()}',
+            'message': responseData['message'] ?? 'Data tidak ditemukan'
           };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': 'Gagal memuat detail. Status code: ${response.statusCode}'
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Terjadi kesalahan: $e'};
     }
   }
 }
