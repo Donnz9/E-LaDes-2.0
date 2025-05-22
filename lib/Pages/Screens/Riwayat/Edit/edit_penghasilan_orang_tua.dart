@@ -1,11 +1,13 @@
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
+import 'package:elades20/Services/Riwayat/editPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditPenghasilanOrangTua extends StatefulWidget {
   final Map<String, dynamic> data;
-  const EditPenghasilanOrangTua({super.key, required this.data});
+  final Function(int)? onNavigate;
+  const EditPenghasilanOrangTua({super.key, required this.data, this.onNavigate,});
 
   @override
   State<EditPenghasilanOrangTua> createState() =>
@@ -245,41 +247,43 @@ class _EditPenghasilanOrangTuaState extends State<EditPenghasilanOrangTua> {
                     },
                   );
 
-                  // try {
-                  //   // Jika user sudah
-                  //   final response = await PenghasilanService.submitForm(
-                  //     //bpk
-                  //     namaOrtu: _namaOrtuController.text,
-                  //     tempatLahirOrtu: _tempatLahirOrtuController.text,
-                  //     tanggalLahirOrtu: _tanggalLahirOrtuController.text,
-                  //     pekerjaanOrtu: _pekerjaanOrtuController.text,
-                  //     alamatOrtu: _alamatOrtuController.text,
+                  try {
+                    // Jika user sudah
+                    final response = await editPenghasilanService.submitForm(
+                      //bpk
+                      namaOrtu: _namaOrtuController.text,
+                      tempatLahirOrtu: _tempatLahirOrtuController.text,
+                      tanggalLahirOrtu: _tanggalLahirOrtuController.text,
+                      pekerjaanOrtu: _pekerjaanOrtuController.text,
+                      alamatOrtu: _alamatOrtuController.text,
 
-                  //     //anak
-                  //     namaAnak: _namaAnakController.text,
-                  //     tempatLahirAnak: _tempatLahirAnakController.text,
-                  //     tanggalLahirAnak: _tanggalLahirAnakController.text,
-                  //     alamatAnak: _alamatAnakController.text,
-                  //     keperluan: _keperluanController.text,
-                  //     filePaths: _mediaPaths, // Pass all media paths
-                  //     username: widget.user.nama,
-                  //   );
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
+                      //anak
+                      namaAnak: _namaAnakController.text,
+                      tempatLahirAnak: _tempatLahirAnakController.text,
+                      tanggalLahirAnak: _tanggalLahirAnakController.text,
+                      alamatAnak: _alamatAnakController.text,
+                      keperluan: _keperluanController.text,
+                      filePaths: _mediaPaths, // Pass all media paths
+                      no_pengajuan: widget.data['no_pengajuan']?.toString() ?? '',
+                    );
+                    // Close loading dialog
+                    Navigator.pop(context);
 
-                  //   if (response['status'] == 'success') {
-                  //     Snackbar.show(context, "Pengajuan berhasil dikirim!");
-                  //     Navigator.pop(context);
-                  //     widget.onNavigate(0);
-                  //   } else {
-                  //     Snackbar.show(context, "Gagal: ${response['message']}",
-                  //         isError: true);
-                  //   }
-                  // } catch (e) {
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
-                  //   Snackbar.show(context, "Error: $e", isError: true);
-                  // }
+                    if (response['status'] == 'success') {
+                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Navigator.pop(context);
+                      if (widget.onNavigate != null) {
+                        widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
+                      }
+                    } else {
+                      Snackbar.show(context, "Gagal: ${response['message']}",
+                          isError: true);
+                    }
+                  } catch (e) {
+                    // Close loading dialog
+                    Navigator.pop(context);
+                    Snackbar.show(context, "Error: $e", isError: true);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4B9560),

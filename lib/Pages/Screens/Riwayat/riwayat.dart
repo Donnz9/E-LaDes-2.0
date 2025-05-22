@@ -17,12 +17,13 @@ class _RiwayatState extends State<Riwayat> {
   bool isPengajuan = true; // Default ke pengajuan
   bool isLoading = false;
   List<dynamic> riwayatData = [];
-  List<dynamic> filteredData = []; // Data yang sudah difilter berdasarkan status
+  List<dynamic> filteredData =
+      []; // Data yang sudah difilter berdasarkan status
   String errorMessage = '';
   String selectedStatus = 'Semua'; // Default filter status
 
   // Daftar pilihan status untuk dropdown
-  final List<String> statusOptions = ['Semua', 'Masuk', 'Selesai', 'Tolak'];
+  final List<String> statusOptions = ['Semua', 'Diproses', 'Selesai', 'Tolak'];
 
   @override
   void initState() {
@@ -44,7 +45,8 @@ class _RiwayatState extends State<Riwayat> {
         riwayatData = result['data'];
         _applyStatusFilter(); // Terapkan filter status
       });
-      print("Data berhasil dimuat dan diurutkan: ${result['data'].length} item");
+      print(
+          "Data berhasil dimuat dan diurutkan: ${result['data'].length} item");
     } else {
       setState(() {
         riwayatData = [];
@@ -181,7 +183,7 @@ class _RiwayatState extends State<Riwayat> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
-                          width: 110,
+                          width: 115,
                           height: 30,
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
@@ -269,18 +271,23 @@ class _RiwayatState extends State<Riwayat> {
                           itemBuilder: (context, index) {
                             final item = filteredData[index];
                             return RiwayatItem(
-                              noPengajuan: item['no_pengajuan'] ?? '-',
-                              kodeSurat: item['kode_surat'] ?? '-',
+                              noPengajuan: isPengajuan
+                                  ? item['no_pengajuan'] ?? '-'
+                                  : item['no_pengaduan'] ?? '-',
+                              kodeSurat: isPengajuan
+                                  ? item['kode_surat'] ?? '-'
+                                  : item['kode_pengaduan'] ?? '-',
                               nama: item['nama'] ?? 'Tidak ada nama',
-                              tanggal: RiwayatDetailHelper.formatDate(item['tanggal'] ?? ''),
+                              tanggal: RiwayatDetailHelper.formatDate(
+                                  item['tanggal'] ?? ''),
                               status: item['status'] ?? 'Tidak diketahui',
                               isPengajuan: isPengajuan,
-                              onTap: () => RiwayatDetailHelper.viewDetail(context, item, isPengajuan),
+                              onTap: () => RiwayatDetailHelper.viewDetail(
+                                  context, item, isPengajuan),
                             );
                           },
                         ),
             ),
-            
           ],
         ),
       ),

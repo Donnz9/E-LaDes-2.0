@@ -30,7 +30,7 @@ class RiwayatItem extends StatelessWidget {
 
     // Menentukan warna dan ikon berdasarkan status
     switch (status.toLowerCase()) {
-      case 'masuk':
+      case 'diproses':
         statusColor = Colors.blue;
         statusIcon = Icons.arrow_downward;
         break;
@@ -183,7 +183,7 @@ class RiwayatItem extends StatelessWidget {
                             ),
                           );
                         } else if (status.toLowerCase() == 'tolak' ||
-                            status.toLowerCase() == 'masuk') {
+                            status.toLowerCase() == 'Diproses') {
                           // Jika tolak atau masuk, tampilkan hapus dan edit
                           menuItems.add(
                             const PopupMenuItem<String>(

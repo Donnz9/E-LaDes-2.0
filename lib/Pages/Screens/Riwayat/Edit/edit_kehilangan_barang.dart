@@ -1,12 +1,13 @@
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
-import 'package:elades20/Services/config.dart';
+import 'package:elades20/Services/Riwayat/editPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditKehilanganBarang extends StatefulWidget {
   final Map<String, dynamic> data;
-  const EditKehilanganBarang({super.key, required this.data});
+  final Function(int)? onNavigate;
+  const EditKehilanganBarang({super.key, required this.data, this.onNavigate,});
 
   @override
   State<EditKehilanganBarang> createState() => _EditKehilanganBarangState();
@@ -53,17 +54,6 @@ class _EditKehilanganBarangState extends State<EditKehilanganBarang> {
     _barangHilangController.text = data['barang_yang_hilang'] ?? '';
     _tempatKehilanganController.text = data['tempat_kehilangan'] ?? '';
     _selectedGender = data['jenis_kelamin'];
-
-    // Load media paths jika ada
-    if (data['file'] != null && data['file'] is List) {
-      List<dynamic> rawMedia = data['file'];
-      _mediaPaths = rawMedia
-          .map((filename) =>
-              "${AppConfig.uploads}/uploads/pengajuan/$filename")
-          .cast<String>()
-          .toList();
-    }
-    print("[DEBUG] Media URLs: $_mediaPaths");
   }
 
   @override
@@ -100,7 +90,7 @@ class _EditKehilanganBarangState extends State<EditKehilanganBarang> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat pengantar kehilangan barang untuk keperluan administrasi pelaporan kehilangan di kepolisian.",
+                  "Cek pengajuan permohonan surat pengantar kehilangan barang anda.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -110,7 +100,7 @@ class _EditKehilanganBarangState extends State<EditKehilanganBarang> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengajuan",
+                "Edit Pengajuan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -235,38 +225,41 @@ class _EditKehilanganBarangState extends State<EditKehilanganBarang> {
                     },
                   );
 
-                  // try {
-                  //   // Jika user sudah
-                  //   final response = await KehilanganBarangService.submitForm(
-                  //     nama: _namaController.text,
-                  //     tempatLahir: _tempatLahirController.text,
-                  //     tanggalLahir: _tanggalLahirController.text,
-                  //     agama: _agamaController.text,
-                  //     jenisKelamin: _selectedGender!,
-                  //     pekerjaan: _pekerjaanController.text,
-                  //     alamat: _alamatController.text,
-                  //     barang: _barangHilangController.text,
-                  //     tanggalHilang: _tanggalHilangController.text,
-                  //     tempatKehilangan: _tempatKehilanganController.text,
-                  //     filePaths: _mediaPaths, // Pass all media paths
-                  //     username: widget.user.nama,
-                  //   );
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
+                  try {
+                    // Jika user sudah
+                    final response = await editKehilanganBarangService.submitForm(
+                      nama: _namaController.text,
+                      tempatLahir: _tempatLahirController.text,
+                      tanggalLahir: _tanggalLahirController.text,
+                      agama: _agamaController.text,
+                      jenisKelamin: _selectedGender!,
+                      pekerjaan: _pekerjaanController.text,
+                      alamat: _alamatController.text,
+                      barang: _barangHilangController.text,
+                      tanggalHilang: _tanggalHilangController.text,
+                      tempatKehilangan: _tempatKehilanganController.text,
+                      filePaths: _mediaPaths, // Pass all media paths
+                      no_pengajuan: widget.data['no_pengajuan']?.toString() ?? '',
+                    );
+                    // Close loading dialog
+                    Navigator.pop(context);
 
-                  //   if (response['status'] == 'success') {
-                  //     Snackbar.show(context, "Pengajuan berhasil dikirim!");
-                  //     Navigator.pop(context);
-                  //     widget.onNavigate(0);
-                  //   } else {
-                  //     Snackbar.show(context, "Gagal: ${response['message']}",
-                  //         isError: true);
-                  //   }
-                  // } catch (e) {
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
-                  //   Snackbar.show(context, "Error: $e", isError: true);
-                  // }
+                    if (response['status'] == 'success') {
+                      Snackbar.show(context, "Pengajuan berhasil dirubah!");
+                      Navigator.pop(context);
+
+                      if (widget.onNavigate != null) {
+                        widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
+                      }
+                    } else {
+                      Snackbar.show(context, "Gagal: ${response['message']}",
+                          isError: true);
+                    }
+                  } catch (e) {
+                    // Close loading dialog
+                    Navigator.pop(context);
+                    Snackbar.show(context, "Error: $e", isError: true);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4B9560),
@@ -276,7 +269,7 @@ class _EditKehilanganBarangState extends State<EditKehilanganBarang> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Permohonan",
+                  "Simpan Perubahan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

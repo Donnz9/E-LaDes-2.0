@@ -1,15 +1,20 @@
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
+import 'package:elades20/Services/Riwayat/editPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditTidakMasukKerja extends StatefulWidget {
   final Map<String, dynamic> data;
-  const EditTidakMasukKerja({super.key, required this.data});
+  final Function(int)? onNavigate;
+  const EditTidakMasukKerja({
+    super.key,
+    required this.data,
+    this.onNavigate,
+  });
 
   @override
-  State<EditTidakMasukKerja> createState() =>
-      _EditTidakMasukKerjaState();
+  State<EditTidakMasukKerja> createState() => _EditTidakMasukKerjaState();
 }
 
 class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
@@ -19,6 +24,7 @@ class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
   void initState() {
     super.initState();
     requestPermissions();
+    fillFormFromData(widget.data);
   }
 
   Future<void> requestPermissions() async {
@@ -32,10 +38,38 @@ class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
   final TextEditingController _tempatLahirController = TextEditingController();
   final TextEditingController _tanggalLahirController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
-  final TextEditingController _tanggalAwalIzinController = TextEditingController();
-  final TextEditingController _tanggalAkhirIzinController = TextEditingController();
+  final TextEditingController _tanggalAwalIzinController =
+      TextEditingController();
+  final TextEditingController _tanggalAkhirIzinController =
+      TextEditingController();
   final TextEditingController _alasanController = TextEditingController();
   final TextEditingController _instansiController = TextEditingController();
+
+  void fillFormFromData(Map<String, dynamic> data) {
+    // Helper: pisah "Tempat, Tanggal"
+    List<String> splitTempatTanggal(String? value) {
+      if (value == null || !value.contains(',')) return ['', ''];
+      final parts = value.split(',');
+      return [parts[0].trim(), parts[1].trim()];
+    }
+
+    List<String> splitRangeTanggal(String? value) {
+      if (value == null || !value.contains(' - ')) return ['', ''];
+      final parts = value.split(' - ');
+      return [parts[0].trim(), parts[1].trim()];
+    }
+
+    final ttl = splitTempatTanggal(data['tempat_tanggal_lahir']);
+    final ttlizin = splitRangeTanggal(data['tanggal_izin']);
+    _namaController.text = data['nama'] ?? '';
+    _tempatLahirController.text = ttl[0];
+    _tanggalLahirController.text = ttl[1];
+    _alamatController.text = data['alamat'] ?? '';
+    _tanggalAwalIzinController.text = ttlizin[0];
+    _tanggalAkhirIzinController.text = ttlizin[1];
+    _alasanController.text = data['alasan'] ?? '';
+    _instansiController.text = data['instansi'] ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,14 +173,13 @@ class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (
-                    _namaController.text.isEmpty ||
-                    _tempatLahirController.text.isEmpty ||
-                    _tanggalLahirController.text.isEmpty ||
-                    _tanggalAwalIzinController.text.isEmpty ||
-                    _alasanController.text.isEmpty ||
-                    _instansiController.text.isEmpty ||
-                    _alamatController.text.isEmpty) {
+                  if (_namaController.text.isEmpty ||
+                      _tempatLahirController.text.isEmpty ||
+                      _tanggalLahirController.text.isEmpty ||
+                      _tanggalAwalIzinController.text.isEmpty ||
+                      _alasanController.text.isEmpty ||
+                      _instansiController.text.isEmpty ||
+                      _alamatController.text.isEmpty) {
                     Snackbar.show(context, "Semua data wajib diisi!",
                         isError: true);
                     return;
@@ -188,35 +221,38 @@ class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
                     },
                   );
 
-                  // try {
-                  //   // Jika user sudah
-                  //   final response = await TidakMasukKerjaService.submitForm(
-                  //     nama: _namaController.text,
-                  //     tempatLahir: _tempatLahirController.text,
-                  //     tanggalLahir: _tanggalLahirController.text,
-                  //     alamat: _alamatController.text,
-                  //     tanggalAwalIzin: _tanggalAwalIzinController.text,
-                  //     tanggalAkhirIzin: _tanggalAkhirIzinController.text,
-                  //     alasan: _alasanController.text,
-                  //     instansi: _instansiController.text,
-                  //     filePaths: _mediaPaths,
-                  //   );
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
+                  try {
+                    // Jika user sudah
+                    final response = await editTidakMasukKerjaService.submitForm(
+                      nama: _namaController.text,
+                      tempatLahir: _tempatLahirController.text,
+                      tanggalLahir: _tanggalLahirController.text,
+                      alamat: _alamatController.text,
+                      tanggalAwalIzin: _tanggalAwalIzinController.text,
+                      tanggalAkhirIzin: _tanggalAkhirIzinController.text,
+                      alasan: _alasanController.text,
+                      instansi: _instansiController.text,
+                      filePaths: _mediaPaths,
+                      no_pengajuan: widget.data['no_pengajuan']?.toString() ?? '',
+                    );
+                    // Close loading dialog
+                    Navigator.pop(context);
 
-                  //   if (response['status'] == 'success') {
-                  //     Snackbar.show(context, "Pengajuan berhasil dikirim!");
-                  //     Navigator.pop(context);
-                  //     widget.onNavigate(0);
-                  //   } else {
-                  //     Snackbar.show(context, "Gagal: ${response['message']}",
-                  //         isError: true);
-                  //   }
-                  // } catch (e) {
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
-                  //   Snackbar.show(context, "Error: $e", isError: true);
-                  // }
+                    if (response['status'] == 'success') {
+                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Navigator.pop(context);
+                      if (widget.onNavigate != null) {
+                        widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
+                      }
+                    } else {
+                      Snackbar.show(context, "Gagal: ${response['message']}",
+                          isError: true);
+                    }
+                  } catch (e) {
+                    // Close loading dialog
+                    Navigator.pop(context);
+                    Snackbar.show(context, "Error: $e", isError: true);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4B9560),

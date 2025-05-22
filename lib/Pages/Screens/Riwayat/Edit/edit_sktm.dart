@@ -1,12 +1,13 @@
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
+import 'package:elades20/Services/Riwayat/editPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditSktm extends StatefulWidget {
-  const EditSktm({
-    Key? key, required data,
-  }) : super(key: key);
+  final Map<String, dynamic> data;
+  final Function(int)? onNavigate;
+  const EditSktm({super.key, required this.data, this.onNavigate,});
 
   @override
   State<EditSktm> createState() =>
@@ -20,6 +21,7 @@ class _EditSktmState extends State<EditSktm> {
   void initState() {
     super.initState();
     requestPermissions();
+    fillFormFromData(widget.data);
   }
 
   Future<void> requestPermissions() async {
@@ -55,6 +57,37 @@ class _EditSktmState extends State<EditSktm> {
   String? _selectedGender;
   final TextEditingController _alamatController = TextEditingController();
   final TextEditingController _keperluanController = TextEditingController();
+
+  void fillFormFromData(Map<String, dynamic> data) {
+    List<String> splitTempatTanggal(String? value) {
+      if (value == null || !value.contains(',')) return ['', ''];
+      final parts = value.split(',');
+      return [parts[0].trim(), parts[1].trim()];
+    }
+    //bapak
+    final ttlBpk = splitTempatTanggal(data['tempat_tanggal_lahir_bapak']);
+    _namaBpkController.text = data['nama_bapak'] ?? '';
+    _tempatLahirBpkController.text = ttlBpk[0];
+    _tanggalLahirBpkController.text = ttlBpk[1];
+    _pekerjaanBpkController.text = data['pekerjaan_bapak'] ?? '';
+    _alamatBpkController.text = data['alamat_bapak'] ?? '';
+    //ibu
+    final ttlIbu = splitTempatTanggal(data['tempat_tanggal_lahir_ibu']);
+    _namaIbuController.text = data['nama_ibu'] ?? '';
+    _tempatLahirIbuController.text = ttlIbu[0];
+    _tanggalLahirIbuController.text = ttlIbu[1];
+    _pekerjaanIbuController.text = data['pekerjaan_ibu'] ?? '';
+    _alamatIbuController.text = data['alamat_ibu'] ?? '';
+    //anak
+    final ttlAnak = splitTempatTanggal(data['tempat_tanggal_lahir_ibu']);
+    _namaController.text = data['nama'] ?? '';
+    _nikController.text = data['nik'] ?? '';
+    _tempatLahirController.text = ttlAnak[0];
+    _tanggalLahirController.text = ttlAnak[1];
+    _selectedGender = data['jenis_kelamin_anak'];
+    _alamatController.text = data['alamat'] ?? '';
+    _keperluanController.text = data['keperluan'] ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,50 +304,52 @@ class _EditSktmState extends State<EditSktm> {
                     },
                   );
 
-                  // try {
-                  //   // Jika user sudah
-                  //   final response = await SKTMService.submitForm(
-                  //     //bpk
-                  //     namaBpk: _namaBpkController.text,
-                  //     tempatLahirBpk: _tempatLahirBpkController.text,
-                  //     tanggalLahirBpk: _tanggalLahirBpkController.text,
-                  //     pekerjaanBpk: _pekerjaanBpkController.text,
-                  //     alamatBpk: _alamatController.text,
+                  try {
+                    // Jika user sudah
+                    final response = await editSKTMService.submitForm(
+                      //bpk
+                      namaBpk: _namaBpkController.text,
+                      tempatLahirBpk: _tempatLahirBpkController.text,
+                      tanggalLahirBpk: _tanggalLahirBpkController.text,
+                      pekerjaanBpk: _pekerjaanBpkController.text,
+                      alamatBpk: _alamatController.text,
 
-                  //     //ibu
-                  //     namaIbu: _namaIbuController.text,
-                  //     tempatLahirIbu: _tempatLahirIbuController.text,
-                  //     tanggalLahirIbu: _tanggalLahirIbuController.text,
-                  //     pekerjaanIbu: _pekerjaanIbuController.text,
-                  //     alamatIbu: _alamatController.text,
+                      //ibu
+                      namaIbu: _namaIbuController.text,
+                      tempatLahirIbu: _tempatLahirIbuController.text,
+                      tanggalLahirIbu: _tanggalLahirIbuController.text,
+                      pekerjaanIbu: _pekerjaanIbuController.text,
+                      alamatIbu: _alamatController.text,
 
-                  //     //anak
-                  //     nama: _namaController.text,
-                  //     nik: _nikController.text,
-                  //     tempatLahir: _tempatLahirController.text,
-                  //     tanggalLahir: _tanggalLahirController.text,
-                  //     jenisKelamin: _selectedGender!,
-                  //     alamat: _alamatController.text,
-                  //     keperluan: _keperluanController.text,
-                  //     filePaths: _mediaPaths, // Pass all media paths
-                  //     username: widget.user.nama,
-                  //   );
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
+                      //anak
+                      nama: _namaController.text,
+                      nik: _nikController.text,
+                      tempatLahir: _tempatLahirController.text,
+                      tanggalLahir: _tanggalLahirController.text,
+                      jenisKelamin: _selectedGender!,
+                      alamat: _alamatController.text,
+                      keperluan: _keperluanController.text,
+                      filePaths: _mediaPaths, // Pass all media paths
+                      no_pengajuan: widget.data['no_pengajuan']?.toString() ?? '',
+                    );
+                    // Close loading dialog
+                    Navigator.pop(context);
 
-                  //   if (response['status'] == 'success') {
-                  //     Snackbar.show(context, "Pengajuan berhasil dikirim!");
-                  //     Navigator.pop(context);
-                  //     widget.onNavigate(0);
-                  //   } else {
-                  //     Snackbar.show(context, "Gagal: ${response['message']}",
-                  //         isError: true);
-                  //   }
-                  // } catch (e) {
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
-                  //   Snackbar.show(context, "Error: $e", isError: true);
-                  // }
+                    if (response['status'] == 'success') {
+                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Navigator.pop(context);
+                      if (widget.onNavigate != null) {
+                        widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
+                      }
+                    } else {
+                      Snackbar.show(context, "Gagal: ${response['message']}",
+                          isError: true);
+                    }
+                  } catch (e) {
+                    // Close loading dialog
+                    Navigator.pop(context);
+                    Snackbar.show(context, "Error: $e", isError: true);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4B9560),

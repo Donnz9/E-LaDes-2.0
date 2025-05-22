@@ -1,11 +1,17 @@
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
+import 'package:elades20/Services/Riwayat/editPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditKeramaian extends StatefulWidget {
   final Map<String, dynamic> data;
-  const EditKeramaian({super.key, required this.data});
+  final Function(int)? onNavigate;
+  const EditKeramaian({
+    super.key,
+    required this.data,
+    this.onNavigate,
+  });
 
   @override
   State<EditKeramaian> createState() => _EditKeramaianState();
@@ -18,6 +24,7 @@ class _EditKeramaianState extends State<EditKeramaian> {
   void initState() {
     super.initState();
     requestPermissions();
+    fillFormFromData(widget.data);
   }
 
   Future<void> requestPermissions() async {
@@ -34,6 +41,16 @@ class _EditKeramaianState extends State<EditKeramaian> {
   final TextEditingController _tanggalController = TextEditingController();
   final TextEditingController _waktuController = TextEditingController();
   final TextEditingController _tempatController = TextEditingController();
+
+  void fillFormFromData(Map<String, dynamic> data) {
+    _namaController.text = data['nama'] ?? '';
+    _nikController.text = data['nik'] ?? '';
+    _alamatController.text = data['alamat'] ?? '';
+    _kegiatanController.text = data['kegiatan'] ?? '';
+    _tanggalController.text = data['tanggal'] ?? '';
+    _waktuController.text = data['waktu'] ?? '';
+    _tempatController.text = data['tempat'] ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,35 +196,37 @@ class _EditKeramaianState extends State<EditKeramaian> {
                     },
                   );
 
-                  // try {
-                  //   // Jika user sudah
-                  //   final response = await KeramaianService.submitForm(
-                  //     nama: _namaController.text,
-                  //     alamat: _alamatController.text,
-                  //     nik: _nikController.text,
-                  //     kegiatan: _kegiatanController.text,
-                  //     tanggal: _tanggalController.text,
-                  //     waktu: _waktuController.text,
-                  //     tempat: _tempatController.text,
-                  //     filePaths: _mediaPaths, // Pass all media paths
-                  //     username: widget.user.nama,
-                  //   );
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
+                  try {
+                    // Jika user sudah
+                    final response = await editKeramaianService.submitForm(
+                      nama: _namaController.text,
+                      alamat: _alamatController.text,
+                      nik: _nikController.text,
+                      kegiatan: _kegiatanController.text,
+                      tanggal: _tanggalController.text,
+                      waktu: _waktuController.text,
+                      tempat: _tempatController.text,
+                      filePaths: _mediaPaths, // Pass all media paths
+                      no_pengajuan: widget.data['no_pengajuan']?.toString() ?? '',
+                    );
+                    // Close loading dialog
+                    Navigator.pop(context);
 
-                  //   if (response['status'] == 'success') {
-                  //     Snackbar.show(context, "Pengajuan berhasil dikirim!");
-                  //     Navigator.pop(context);
-                  //     widget.onNavigate(0);
-                  //   } else {
-                  //     Snackbar.show(context, "Gagal: ${response['message']}",
-                  //         isError: true);
-                  //   }
-                  // } catch (e) {
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
-                  //   Snackbar.show(context, "Error: $e", isError: true);
-                  // }
+                    if (response['status'] == 'success') {
+                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Navigator.pop(context);
+                      if (widget.onNavigate != null) {
+                        widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
+                      }
+                    } else {
+                      Snackbar.show(context, "Gagal: ${response['message']}",
+                          isError: true);
+                    }
+                  } catch (e) {
+                    // Close loading dialog
+                    Navigator.pop(context);
+                    Snackbar.show(context, "Error: $e", isError: true);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4B9560),

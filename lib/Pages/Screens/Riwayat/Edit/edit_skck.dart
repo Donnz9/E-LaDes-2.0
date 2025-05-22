@@ -1,11 +1,13 @@
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
+import 'package:elades20/Services/Riwayat/editPengajuan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EditSkck extends StatefulWidget {
   final Map<String, dynamic> data;
-  const EditSkck({super.key, required this.data});
+  final Function(int)? onNavigate;
+  const EditSkck({super.key, required this.data, this.onNavigate});
 
   @override
   State<EditSkck> createState() => _EditSkckState();
@@ -18,6 +20,7 @@ class _EditSkckState extends State<EditSkck> {
   void initState() {
     super.initState();
     requestPermissions();
+    fillFormFromData(widget.data);
   }
 
   Future<void> requestPermissions() async {
@@ -37,6 +40,19 @@ class _EditSkckState extends State<EditSkck> {
   String? _selectedStatusPerkawinan;
   final TextEditingController _pekerjaanController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
+
+  void fillFormFromData(Map<String, dynamic> data) {
+    _namaController.text = data['nama'] ?? '';
+    _nikController.text = data['nik'] ?? '';
+    _tempatLahirController.text = data['tempat_lahir'] ?? '';
+    _tanggalLahirController.text = data['tanggal_lahir'] ?? '';
+    _selectedKebangsaan = data['kebangsaan'];
+    _agamaController.text = data['agama'] ?? '';
+    _selectedGender = data['jenis_kelamin'];
+    _selectedStatusPerkawinan = data['status_perkawinan'];
+    _pekerjaanController.text = data['pekerjaan'] ?? '';
+    _alamatController.text = data['alamat'] ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,38 +240,40 @@ class _EditSkckState extends State<EditSkck> {
                     },
                   );
 
-                  // try {
-                  //   // Jika user sudah
-                  //   final response = await SKCKService.submitForm(
-                  //     nama: _namaController.text,
-                  //     nik: _nikController.text,
-                  //     tempatLahir: _tempatLahirController.text,
-                  //     tanggalLahir: _tanggalLahirController.text,
-                  //     kebangsaan: _selectedKebangsaan!,
-                  //     agama: _agamaController.text,
-                  //     jenisKelamin: _selectedGender!,
-                  //     statusPerkawinan: _selectedStatusPerkawinan!,
-                  //     pekerjaan: _pekerjaanController.text,
-                  //     alamat: _alamatController.text,
-                  //     filePaths: _mediaPaths, // Pass all media paths
-                  //     username: widget.user.nama,
-                  //   );
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
+                  try {
+                    // Jika user sudah
+                    final response = await editSKCKService.submitForm(
+                      nama: _namaController.text,
+                      nik: _nikController.text,
+                      tempatLahir: _tempatLahirController.text,
+                      tanggalLahir: _tanggalLahirController.text,
+                      kebangsaan: _selectedKebangsaan!,
+                      agama: _agamaController.text,
+                      jenisKelamin: _selectedGender!,
+                      statusPerkawinan: _selectedStatusPerkawinan!,
+                      pekerjaan: _pekerjaanController.text,
+                      alamat: _alamatController.text,
+                      filePaths: _mediaPaths, // Pass all media paths
+                      no_pengajuan: widget.data['no_pengajuan']?.toString() ?? '',
+                    );
+                    // Close loading dialog
+                    Navigator.pop(context);
 
-                  //   if (response['status'] == 'success') {
-                  //     Snackbar.show(context, "Pengajuan berhasil dikirim!");
-                  //     Navigator.pop(context);
-                  //     widget.onNavigate(0);
-                  //   } else {
-                  //     Snackbar.show(context, "Gagal: ${response['message']}",
-                  //         isError: true);
-                  //   }
-                  // } catch (e) {
-                  //   // Close loading dialog
-                  //   Navigator.pop(context);
-                  //   Snackbar.show(context, "Error: $e", isError: true);
-                  // }
+                    if (response['status'] == 'success') {
+                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Navigator.pop(context);
+                      if (widget.onNavigate != null) {
+                        widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
+                      }
+                    } else {
+                      Snackbar.show(context, "Gagal: ${response['message']}",
+                          isError: true);
+                    }
+                  } catch (e) {
+                    // Close loading dialog
+                    Navigator.pop(context);
+                    Snackbar.show(context, "Error: $e", isError: true);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4B9560),
