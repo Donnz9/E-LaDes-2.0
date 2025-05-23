@@ -1,7 +1,5 @@
-import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
-import 'package:elades20/Services/Pengaduan/pengaduan_service.dart';
 import 'package:elades20/Services/Riwayat/editPengaduan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -89,7 +87,7 @@ class _EditInfrastrukturState extends State<EditInfrastruktur> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan laporan pengaduan terkait infrastruktur desa, seperti jalan rusak, saluran air tersumbat, atau fasilitas umum yang tidak layak guna mendorong perbaikan dari pihak terkait.",
+                  "Cek data laporan pengaduan infrastruktur anda.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -99,7 +97,7 @@ class _EditInfrastrukturState extends State<EditInfrastruktur> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengaduan",
+                "Edit Pengaduan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -226,7 +224,7 @@ class _EditInfrastrukturState extends State<EditInfrastruktur> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengaduan berhasil dikirim!\nTerima kasih atas laporanya");
+                      Snackbar.show(context, "Pengaduan berhasil dirubah!\nTerima kasih atas laporanya");
                       Navigator.pop(context);
                       if (widget.onNavigate != null) {
                         widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
@@ -249,7 +247,7 @@ class _EditInfrastrukturState extends State<EditInfrastruktur> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Pengaduan",
+                  "Simpan Perubahan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

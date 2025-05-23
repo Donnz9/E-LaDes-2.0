@@ -88,7 +88,7 @@ class _EditSkckState extends State<EditSkck> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat pengantar SKCK untuk keperluan administrasi pembuatan SKCK di kantor kepolisian.",
+                  "Cek data laporan pengajuan permohonan surat pengantar SKCK anda.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -98,7 +98,7 @@ class _EditSkckState extends State<EditSkck> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengajuan",
+                "Edit Pengajuan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -260,7 +260,7 @@ class _EditSkckState extends State<EditSkck> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Snackbar.show(context, "Pengajuan berhasil dirubah!");
                       Navigator.pop(context);
                       if (widget.onNavigate != null) {
                         widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
@@ -283,7 +283,7 @@ class _EditSkckState extends State<EditSkck> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Permohonan",
+                  "Simpan Perubahan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

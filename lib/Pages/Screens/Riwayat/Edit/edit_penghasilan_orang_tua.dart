@@ -109,7 +109,7 @@ class _EditPenghasilanOrangTuaState extends State<EditPenghasilanOrangTua> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat keterangan penghasilan orang tua untuk keperluan administrasi yang membutuhkan informasi besaran pendapatan keluarga, seperti pengajuan beasiswa, Kartu Indonesia Pintar (KIP), atau syarat pendaftaran sekolah dan perguruan tinggi.",
+                  "Cek data laporan pengajuan permohonan surat keterangan penghasilan orang tua anda.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -119,7 +119,7 @@ class _EditPenghasilanOrangTuaState extends State<EditPenghasilanOrangTua> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengajuan",
+                "Edit Pengajuan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -270,7 +270,7 @@ class _EditPenghasilanOrangTuaState extends State<EditPenghasilanOrangTua> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Snackbar.show(context, "Pengajuan berhasil dirubah!");
                       Navigator.pop(context);
                       if (widget.onNavigate != null) {
                         widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
@@ -293,7 +293,7 @@ class _EditPenghasilanOrangTuaState extends State<EditPenghasilanOrangTua> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Permohonan",
+                  "Simpan Perubahan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

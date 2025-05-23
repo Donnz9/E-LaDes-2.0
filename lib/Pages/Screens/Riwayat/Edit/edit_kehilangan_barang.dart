@@ -90,7 +90,7 @@ class _EditKehilanganBarangState extends State<EditKehilanganBarang> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Cek pengajuan permohonan surat pengantar kehilangan barang anda.",
+                  "Cek data laporan pengajuan permohonan surat pengantar kehilangan barang anda.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,

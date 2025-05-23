@@ -105,8 +105,7 @@ class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  // "Ajukan permohonan surat izin tidak masuk kerja sebagai dokumen resmi untuk memberitahukan ketidakhadiran dalam pekerjaan karena alasan tertentu, seperti sakit, urusan keluarga, atau keperluan mendesak lainnya.",
-                  "Cek pengajuan permohonan surat izin tidak masuk kerja anda",
+                  "Cek data laporan pengajuan permohonan surat izin tidak masuk kerja anda",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -239,7 +238,7 @@ class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Snackbar.show(context, "Pengajuan berhasil dirubah!");
                       Navigator.pop(context);
                       if (widget.onNavigate != null) {
                         widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
@@ -262,7 +261,7 @@ class _EditTidakMasukKerjaState extends State<EditTidakMasukKerja> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Permohonan",
+                  "Simpan Perubahan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

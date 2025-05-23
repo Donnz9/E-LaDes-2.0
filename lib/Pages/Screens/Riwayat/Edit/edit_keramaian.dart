@@ -86,7 +86,7 @@ class _EditKeramaianState extends State<EditKeramaian> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan permohonan surat izin keramaian sebagai syarat administratif untuk menyelenggarakan acara yang melibatkan orang banyak, seperti hajatan, pertunjukan, atau kegiatan masyarakat lainnya, dengan persetujuan dari pihak desa.",
+                  "Cek data laporan pengajuan permohonan surat izin keramaian anda.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -96,7 +96,7 @@ class _EditKeramaianState extends State<EditKeramaian> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengajuan",
+                "Edit Pengajuan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -213,7 +213,7 @@ class _EditKeramaianState extends State<EditKeramaian> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengajuan berhasil dikirim!");
+                      Snackbar.show(context, "Pengajuan berhasil dirubah!");
                       Navigator.pop(context);
                       if (widget.onNavigate != null) {
                         widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
@@ -236,7 +236,7 @@ class _EditKeramaianState extends State<EditKeramaian> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Permohonan",
+                  "Simpan Perubahan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

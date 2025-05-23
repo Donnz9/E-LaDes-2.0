@@ -110,13 +110,13 @@ class RiwayatItem extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  nama,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  ),
-                ),
+                // Text(
+                //   nama,
+                //   style: const TextStyle(
+                //     fontWeight: FontWeight.w500,
+                //     fontSize: 14,
+                //   ),
+                // ),
                 const SizedBox(height: 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

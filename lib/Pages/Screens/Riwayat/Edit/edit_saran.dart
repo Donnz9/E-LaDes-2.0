@@ -1,7 +1,5 @@
-import 'package:elades20/Models/user_model.dart';
 import 'package:elades20/Pages/Widgets/form_widgets.dart';
 import 'package:elades20/Pages/Widgets/snackbar.dart';
-import 'package:elades20/Services/Pengaduan/pengaduan_service.dart';
 import 'package:elades20/Services/Riwayat/editPengaduan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -87,7 +85,7 @@ class _EditSaranState extends State<EditSaran> {
               const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  "Ajukan saran atau kritik sebagai bentuk partisipasi warga dalam pembangunan dan pelayanan desa, seperti usulan program, penilaian layanan, atau ide peningkatan fasilitas umum.",
+                  "Cek data laporan saran atau kritik anda.",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -97,7 +95,7 @@ class _EditSaranState extends State<EditSaran> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "Tambah Pengaduan",
+                "Edit Pengaduan",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -208,7 +206,7 @@ class _EditSaranState extends State<EditSaran> {
                     Navigator.pop(context);
 
                     if (response['status'] == 'success') {
-                      Snackbar.show(context, "Pengaduan berhasil dikirim!\nTerima kasih atas sarannya");
+                      Snackbar.show(context, "Pengaduan berhasil dirubah!\nTerima kasih atas sarannya");
                       Navigator.pop(context);
                       if (widget.onNavigate != null) {
                         widget.onNavigate!(1); // Index 1 adalah halaman Riwayat
@@ -231,7 +229,7 @@ class _EditSaranState extends State<EditSaran> {
                   ),
                 ),
                 child: const Text(
-                  "Ajukan Pengaduan",
+                  "Simpan Perubahan",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
