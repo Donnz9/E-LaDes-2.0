@@ -224,8 +224,8 @@ class _DashboardState extends State<Dashboard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     StatusPengajuanSuratCard(
-                      title: "Masuk",
-                      count: statusPengajuan?.masuk.toString() ?? "0",
+                      title: "Diproses",
+                      count: statusPengajuan?.diproses.toString() ?? "0",
                     ),
                     StatusPengajuanSuratCard(
                       title: "Selesai",

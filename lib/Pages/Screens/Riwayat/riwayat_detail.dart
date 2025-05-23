@@ -1,6 +1,9 @@
+import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_infrastruktur.dart';
+import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_keamanan.dart';
 import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_kehilangan_barang.dart';
 import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_keramaian.dart';
 import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_penghasilan_orang_tua.dart';
+import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_saran.dart';
 import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_skck.dart';
 import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_sktm.dart';
 import 'package:elades20/Pages/Screens/Riwayat/Edit/edit_tidak_masuk_kerja.dart';
@@ -21,18 +24,16 @@ class RiwayatDetailHelper {
 
   static Future<void> viewDetail(
       BuildContext context, dynamic item, bool isPengajuan) async {
-    final String kodeSurat = item['kode_surat'] ?? '';
-    final String noPengajuan = item['no_pengajuan'] ?? '';
-    print(
-        '[DEBUG] Menampilkan detail untuk kode_surat: $kodeSurat, no_pengajuan: $noPengajuan');
+    final String kode =
+        isPengajuan ? item['kode_surat'] ?? '' : item['kode_pengaduan'] ?? '';
+    final String nomor =
+        isPengajuan ? item['no_pengajuan'] ?? '' : item['no_pengaduan'] ?? '';
+    final response = isPengajuan
+        ? await RiwayatService.getSuratDetail(
+            noPengajuan: nomor, kodeSurat: kode)
+        : await RiwayatService.getPengaduanDetail(
+            noPengaduan: nomor, kodePengaduan: kode);
 
-    // Step 1: Ambil detail surat dari backend
-    final response = await RiwayatService.getSuratDetail(
-      noPengajuan: noPengajuan,
-      kodeSurat: kodeSurat,
-    );
-
-    print('[DEBUG] Request noPengajuan: $noPengajuan, kodeSurat: $kodeSurat');
     print('[DEBUG] Response: $response');
 
     if (!response['success']) {
@@ -54,31 +55,50 @@ class RiwayatDetailHelper {
     // Step 2: Navigasi berdasarkan kode surat sambil bawa data
     try {
       Widget targetPage;
-
-      switch (kodeSurat.toLowerCase()) {
-        case 'tidak masuk kerja':
-          targetPage = EditTidakMasukKerja(data: detailData);
-          break;
-        case 'keramaian':
-          targetPage = EditKeramaian(data: detailData);
-          break;
-        case 'sktm':
-          targetPage = EditSktm(data: detailData);
-          break;
-        case 'penghasilan orang tua':
-          targetPage = EditPenghasilanOrangTua(data: detailData);
-          break;
-        case 'skck':
-          targetPage = EditSkck(data: detailData);
-          break;
-        case 'kehilangan barang':
-          targetPage = EditKehilanganBarang(data: detailData);
-          break;
-        default:
-          print('[ERROR] Kode surat tidak dikenali: $kodeSurat');
-          Snackbar.show(context, "Kode surat tidak dikenali: $kodeSurat",
-              isError: true);
-          return;
+      if (isPengajuan) {
+        switch (kode.toLowerCase()) {
+          case 'tidak masuk kerja':
+            targetPage = EditTidakMasukKerja(data: detailData);
+            break;
+          case 'keramaian':
+            targetPage = EditKeramaian(data: detailData);
+            break;
+          case 'sktm':
+            targetPage = EditSktm(data: detailData);
+            break;
+          case 'penghasilan orang tua':
+            targetPage = EditPenghasilanOrangTua(data: detailData);
+            break;
+          case 'skck':
+            targetPage = EditSkck(data: detailData);
+            break;
+          case 'kehilangan barang':
+            targetPage = EditKehilanganBarang(data: detailData);
+            break;
+          default:
+            print('[ERROR] Kode surat tidak dikenali: $kode');
+            Snackbar.show(context, "Kode surat tidak dikenali: $kode",
+                isError: true);
+            return;
+        }
+      } else {
+        // Kasus untuk pengaduan
+        switch (kode.toLowerCase()) {
+          case 'infrastruktur':
+            targetPage = EditInfrastruktur(data: detailData);
+            break;
+          case 'keamanan':
+            targetPage = EditKeamanan(data: detailData);
+            break;
+          case 'saran':
+            targetPage = EditSaran(data: detailData);
+            break;
+          default:
+            print('[ERROR] Kode pengaduan tidak dikenali: $kode');
+            Snackbar.show(context, "Kode pengaduan tidak dikenali: $kode",
+                isError: true);
+            return;
+        }
       }
 
       Navigator.push(

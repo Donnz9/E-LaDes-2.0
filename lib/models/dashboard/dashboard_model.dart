@@ -1,10 +1,10 @@
 class StatusPengajuan {
-  final int masuk;
+  final int diproses;
   final int selesai;
   final int tolak;
 
   StatusPengajuan({
-    required this.masuk,
+    required this.diproses,
     required this.selesai,
     required this.tolak,
   });
@@ -12,7 +12,7 @@ class StatusPengajuan {
   factory StatusPengajuan.fromJson(Map<String, dynamic> json) {
     // More robust parsing to handle various data types
     return StatusPengajuan(
-      masuk: _parseIntSafely(json['Masuk']),
+      diproses: _parseIntSafely(json['Diproses']),
       selesai: _parseIntSafely(json['Selesai']),
       tolak: _parseIntSafely(json['Tolak']),
     );

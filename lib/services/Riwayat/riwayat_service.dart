@@ -84,14 +84,6 @@ class RiwayatService {
     String? kodeSurat,
   }) async {
     try {
-      // final response = await http.post(
-      //   Uri.parse("${AppConfig.baseUrl}/get_pengajuan"),
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: jsonEncode({
-      //     'no_pengajuan': noPengajuan,
-      //     'kode_surat': kodeSurat,
-      //   }),
-      // );
       final url = Uri.parse("${AppConfig.baseUrl}/get_pengajuan");
       print("URL yang dibentuk: $url");
 
@@ -100,6 +92,44 @@ class RiwayatService {
         body: {
           'no_pengajuan': noPengajuan,
           'kode_surat': kodeSurat,
+        },
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        if (responseData['status'] == 'success') {
+          return {'success': true, 'data': responseData['data']};
+        } else {
+          return {
+            'success': false,
+            'message': responseData['message'] ?? 'Data tidak ditemukan'
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': 'Gagal memuat detail. Status code: ${response.statusCode}'
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Terjadi kesalahan: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getPengaduanDetail({
+    required String noPengaduan,
+    String? kodePengaduan,
+  }) async {
+    try {
+      final url = Uri.parse("${AppConfig.baseUrl}/get_pengaduan");
+      print("URL yang dibentuk: $url");
+
+      final response = await http.post(
+        url,
+        body: {
+          'no_pengaduan': noPengaduan,
+          'kode_pengaduan': kodePengaduan,
         },
       );
 

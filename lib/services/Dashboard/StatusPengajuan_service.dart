@@ -9,7 +9,7 @@ class StatusPengajuanService {
       print("Fetching status for user: $username");
       
       // Default values to return if anything fails
-      final defaultStatus = StatusPengajuan(masuk: 0, selesai: 0, tolak: 0);
+      final defaultStatus = StatusPengajuan(diproses: 0, selesai: 0, tolak: 0);
       
       // Create the request
       final response = await http.post(
@@ -95,7 +95,7 @@ class StatusPengajuanService {
       }
     } catch (e) {
       print("General error in fetchStatus: $e");
-      return StatusPengajuan(masuk: 0, selesai: 0, tolak: 0);
+      return StatusPengajuan(diproses: 0, selesai: 0, tolak: 0);
     }
   }
 }

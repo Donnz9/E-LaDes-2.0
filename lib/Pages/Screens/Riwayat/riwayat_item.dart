@@ -5,7 +5,6 @@ class RiwayatItem extends StatelessWidget {
   final String noPengajuan;
   final String kodeSurat;
   final String nama;
-  // final String nik;
   final String tanggal;
   final String status;
   final bool isPengajuan;
@@ -16,7 +15,6 @@ class RiwayatItem extends StatelessWidget {
     required this.noPengajuan,
     required this.kodeSurat,
     required this.nama,
-    // required this.nik,
     required this.tanggal,
     required this.status,
     required this.isPengajuan,
