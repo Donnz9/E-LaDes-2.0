@@ -73,7 +73,10 @@ class _MainNavigationState extends State<MainNavigation> {
         onNavigate: _onItemTapped,
         user: currentUser,
       ),
-      const Notifikasi(),
+      Notifikasi(
+        onNavigate: _onItemTapped,
+        user: currentUser,
+      ),
       Profile(
         user: currentUser,
         onProfileUpdated: _updateUserModel,

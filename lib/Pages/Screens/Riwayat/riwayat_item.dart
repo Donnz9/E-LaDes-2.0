@@ -138,81 +138,17 @@ class RiwayatItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Menu Pop Up
-                    PopupMenuButton<String>(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Colors.grey[600],
-                        size: 20,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      onSelected: (value) {
-                        switch (value) {
-                          case 'delete':
-                            _showDeleteConfirmation(context);
-                            break;
-                          case 'edit':
-                            _showEditDialog(context);
-                            break;
-                          case 'download':
-                            _downloadDocument(context);
-                            break;
-                        }
-                      },
-                      itemBuilder: (context) {
-                        // Kondisikan menu berdasarkan status
-                        List<PopupMenuEntry<String>> menuItems = [];
-
-                        if (status.toLowerCase() == 'selesai') {
-                          // Jika selesai, hanya tampilkan unduh
-                          menuItems.add(
-                            const PopupMenuItem<String>(
-                              value: 'download',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.download,
-                                      color: Color(0xFF4B9560)),
-                                  SizedBox(width: 8),
-                                  Text('Unduh'),
-                                ],
-                              ),
-                            ),
-                          );
-                        } else if (status.toLowerCase() == 'tolak' ||
-                            status.toLowerCase() == 'Diproses') {
-                          // Jika tolak atau masuk, tampilkan hapus dan edit
-                          menuItems.add(
-                            const PopupMenuItem<String>(
-                              value: 'edit',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit, color: Colors.blue),
-                                  SizedBox(width: 8),
-                                  Text('Edit'),
-                                ],
-                              ),
-                            ),
-                          );
-
-                          menuItems.add(
-                            const PopupMenuItem<String>(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete, color: Colors.red),
-                                  SizedBox(width: 8),
-                                  Text('Hapus'),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-
-                        return menuItems;
-                      },
-                    ),
+                    IconButton(
+                        icon: Icon(
+                          // Icons.more_vert,
+                          Icons.delete,
+                          color: Colors.grey[600],
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          _showDeleteConfirmation(context);
+                          
+                        }),
                   ],
                 ),
               ],
@@ -235,7 +171,7 @@ class RiwayatItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        content: const Text('Apakah Anda yakin ingin menghapus item ini?'),
+        content: const Text('Apakah Anda yakin ingin menghapus Data ini?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -246,9 +182,8 @@ class RiwayatItem extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              // TODO: Implementasi hapus item
               Navigator.pop(context);
-              Snackbar.show(context, "Item berhasil dihapus");
+              Snackbar.show(context, "Data berhasil dihapus");
             },
             child: const Text(
               'Hapus',
@@ -258,15 +193,5 @@ class RiwayatItem extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  // Fungsi untuk menampilkan dialog edit
-  void _showEditDialog(BuildContext context) {
-    Snackbar.show(context, "Edit item akan tersedia");
-  }
-
-  // Fungsi untuk download dokumen
-  void _downloadDocument(BuildContext context) {
-    Snackbar.show(context, "Dokumen sedang diunduh...");
   }
 }
