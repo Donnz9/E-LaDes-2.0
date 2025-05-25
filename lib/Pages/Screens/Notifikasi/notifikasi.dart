@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:elades20/Models/notifikasi/notifikasi_model.dart';
+import 'package:elades20/Pages/Widgets/snackbar.dart';
 import 'package:elades20/Services/Notifikasi/notifikasi_service.dart';
 import 'package:flutter/material.dart';
 
@@ -51,12 +52,7 @@ class _NotifikasiState extends State<Notifikasi> {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal memuat notifikasi: ${e.toString()}'),
-            duration: Duration(seconds: 2),
-          ),
-        );
+        Snackbar.show(context, "Gagal memuat notifikasi", isError: true);
         debugPrint('Gagal memuat notifikasi: ${e.toString()}');
       }
     }
@@ -69,14 +65,7 @@ class _NotifikasiState extends State<Notifikasi> {
       setState(() {
         notifications.removeWhere((notif) => notif.id == notificationId);
       });
-
-      // Tampilkan snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Notifikasi telah dibaca'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      Snackbar.show(context, "Notifikasi telah dibaca");
     }
   }
 
@@ -147,24 +136,6 @@ class _NotifikasiState extends State<Notifikasi> {
                           color: Color(0xFF4B9560),
                         ),
                       ),
-                      // Badge counter
-                      if (notifications.isNotEmpty)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '${notifications.length}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                   const SizedBox(height: 5),
