@@ -166,7 +166,8 @@ class _SuratPengantarKehilanganBarangState
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (_namaController.text.isEmpty ||
+                  if (_mediaPaths.isEmpty ||
+                    _namaController.text.isEmpty ||
                       _tempatLahirController.text.isEmpty ||
                       _tanggalLahirController.text.isEmpty ||
                       _agamaController.text.isEmpty ||

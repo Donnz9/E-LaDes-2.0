@@ -117,7 +117,7 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
                   (paths) => setState(() => _mediaPaths = paths)),
               const SizedBox(height: 16),
               FormWidgets.buildTextField(
-                  label: "Nama Lengkap (opsional)", controller: _namaController),
+                  label: "Nama Lengkap", controller: _namaController),
               FormWidgets.buildTextField(
                   label: "Alamat (opsional)", controller: _alamatController),
               FormWidgets.buildTextField(
@@ -136,7 +136,9 @@ class _PengaduanSaranState extends State<PengaduanSaran> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (_topikController.text.isEmpty ||
+                  if (_mediaPaths.isEmpty ||
+                  _namaController.text.isEmpty ||
+                    _topikController.text.isEmpty ||
                       _judulSaranController.text.isEmpty ||
                       _deskripsiController.text.isEmpty ||
                       _tanggalController.text.isEmpty) {

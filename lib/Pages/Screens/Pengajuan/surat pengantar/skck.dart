@@ -182,7 +182,8 @@ class _SuratPengantarSkckState extends State<SuratPengantarSkck> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (_namaController.text.isEmpty ||
+                  if (_mediaPaths.isEmpty ||
+                    _namaController.text.isEmpty ||
                       _nikController.text.isEmpty ||
                       _tempatLahirController.text.isEmpty ||
                       _tanggalLahirController.text.isEmpty ||

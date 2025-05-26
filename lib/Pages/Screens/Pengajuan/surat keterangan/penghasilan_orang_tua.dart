@@ -167,7 +167,7 @@ class _SuratKeteranganPenghasilanOrangTuaState extends State<SuratKeteranganPeng
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (
+                  if (_mediaPaths.isEmpty ||
                       //ortu
                       _namaOrtuController.text.isEmpty ||
                           _tanggalLahirOrtuController.text.isEmpty ||

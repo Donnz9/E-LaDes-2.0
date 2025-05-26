@@ -16,15 +16,32 @@ class KabarDesaCard extends StatelessWidget {
     final DateFormat formatter = DateFormat('dd MMMM yyyy');
     final String formattedDate = formatter.format(kabarDesa.tanggal);
 
-    // Construct the image URL properly - make sure it's a valid network URL
+    // Construct the image URL properly
     String imageUrl = "";
     if (kabarDesa.gambar.isNotEmpty) {
-      // Make sure we have a valid URL with properly encoded path components
-      String encodedFilename = Uri.encodeComponent(kabarDesa.gambar);
+      // Clean up the image path first
+      String cleanPath = kabarDesa.gambar;
+      
+      // Remove any leading '../' or './'
+      cleanPath = cleanPath.replaceAll(RegExp(r'^\.\.\/'), '');
+      cleanPath = cleanPath.replaceAll(RegExp(r'^\.\/'), '');
+      
+      // If path already contains 'uploads/gambar_kabar_desa/', extract just the filename
+      if (cleanPath.contains('uploads/gambar_kabar_desa/')) {
+        // Extract filename after the last '/'
+        List<String> pathParts = cleanPath.split('/');
+        String filename = pathParts.last;
+        cleanPath = filename;
+      }
+      
+      // Now construct the proper URL
+      String encodedFilename = Uri.encodeComponent(cleanPath);
       imageUrl = "${AppConfig.uploads}/uploads/gambar_kabar_desa/$encodedFilename";
       
       // Debug log the image URL
-      print("KabarDesaCard: Loading image from URL: $imageUrl");
+      print("KabarDesaCard: Original path: ${kabarDesa.gambar}");
+      print("KabarDesaCard: Cleaned path: $cleanPath");
+      print("KabarDesaCard: Final URL: $imageUrl");
     }
 
     return Container(
@@ -50,15 +67,13 @@ class KabarDesaCard extends StatelessWidget {
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
               child: FadeInImage.assetNetwork(
-                placeholder: 'assets/images/placeholder.png', // Make sure you have this asset
+                placeholder: 'assets/images/placeholder.png',
                 image: imageUrl,
                 width: double.infinity,
                 height: 150,
                 fit: BoxFit.cover,
                 imageErrorBuilder: (context, error, stackTrace) {
                   print("KabarDesaCard: Error loading image: $error for URL: $imageUrl");
-                  // Attempt to diagnose URI parsing issues
-                  print("KabarDesaCard: URI parsing test: ${Uri.parse(imageUrl)}");
                   return Container(
                     height: 150,
                     color: Colors.grey[200],

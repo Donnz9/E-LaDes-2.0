@@ -214,7 +214,7 @@ class _SuratKeteranganTidakMampuState extends State<SuratKeteranganTidakMampu> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (
+                  if (_mediaPaths.isEmpty ||
                       //bpk
                       _namaBpkController.text.isEmpty ||
                           _tanggalLahirBpkController.text.isEmpty ||

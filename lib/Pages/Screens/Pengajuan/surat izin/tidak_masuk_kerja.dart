@@ -146,7 +146,7 @@ class _SuratIzinTidakMasukKerjaState extends State<SuratIzinTidakMasukKerja> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (
+                  if (_mediaPaths.isEmpty ||
                     _namaController.text.isEmpty ||
                     _tempatLahirController.text.isEmpty ||
                     _tanggalLahirController.text.isEmpty ||

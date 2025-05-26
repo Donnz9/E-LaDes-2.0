@@ -18,8 +18,29 @@ class KabarDesaDetailDialog extends StatelessWidget {
     // Construct the image URL properly
     String imageUrl = "";
     if (kabarDesa.gambar.isNotEmpty) {
-      String encodedFilename = Uri.encodeComponent(kabarDesa.gambar);
+      // Clean up the image path first
+      String cleanPath = kabarDesa.gambar;
+      
+      // Remove any leading '../' or './'
+      cleanPath = cleanPath.replaceAll(RegExp(r'^\.\.\/'), '');
+      cleanPath = cleanPath.replaceAll(RegExp(r'^\.\/'), '');
+      
+      // If path already contains 'uploads/gambar_kabar_desa/', extract just the filename
+      if (cleanPath.contains('uploads/gambar_kabar_desa/')) {
+        // Extract filename after the last '/'
+        List<String> pathParts = cleanPath.split('/');
+        String filename = pathParts.last;
+        cleanPath = filename;
+      }
+      
+      // Now construct the proper URL
+      String encodedFilename = Uri.encodeComponent(cleanPath);
       imageUrl = "${AppConfig.uploads}/uploads/gambar_kabar_desa/$encodedFilename";
+      
+      // Debug log the image URL
+      print("KabarDesaDetailDialog: Original path: ${kabarDesa.gambar}");
+      print("KabarDesaDetailDialog: Cleaned path: $cleanPath");
+      print("KabarDesaDetailDialog: Final URL: $imageUrl");
     }
 
     return Dialog(
@@ -84,11 +105,22 @@ class KabarDesaDetailDialog extends StatelessWidget {
                           height: 200,
                           fit: BoxFit.cover,
                           imageErrorBuilder: (context, error, stackTrace) {
+                            print("KabarDesaDetailDialog: Error loading image: $error for URL: $imageUrl");
                             return Container(
                               height: 200,
                               color: Colors.grey[200],
-                              child: const Center(
-                                child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Gambar tidak tersedia',
+                                      style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           },

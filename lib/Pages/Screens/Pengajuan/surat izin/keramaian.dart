@@ -130,14 +130,17 @@ class _SuratIzinKeramaianState extends State<SuratIzinKeramaian> {
                   controller: _tanggalController,
                   context: context),
               FormWidgets.buildTimeField(
-                  label: "Waktu", controller: _waktuController, context: context),
+                  label: "Waktu",
+                  controller: _waktuController,
+                  context: context),
               FormWidgets.buildTextField(
                   label: "Tempat", controller: _tempatController),
 
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  if (_namaController.text.isEmpty ||
+                  if (_mediaPaths.isEmpty ||
+                      _namaController.text.isEmpty ||
                       _nikController.text.isEmpty ||
                       _kegiatanController.text.isEmpty ||
                       _tanggalController.text.isEmpty ||
@@ -164,8 +167,9 @@ class _SuratIzinKeramaianState extends State<SuratIzinKeramaian> {
                             )),
                         TextButton(
                             onPressed: () => Navigator.of(context).pop(true),
-                            child: const Text("Sudah",
-                                style: TextStyle(color: Color(0xFF4B9560)),
+                            child: const Text(
+                              "Sudah",
+                              style: TextStyle(color: Color(0xFF4B9560)),
                             )),
                       ],
                     ),
